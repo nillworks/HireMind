@@ -11,6 +11,10 @@ export const auth = betterAuth({
     client,
   }),
 
+  emailAndPassword: {
+    enabled: true,
+  },
+
   plugins: [
     jwt({
       jwks: {

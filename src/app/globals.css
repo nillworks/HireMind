@@ -3,3 +3,127 @@
 @import 'shadcn/tailwind.css';
 
 @custom-variant dark (&:is(.dark *));
+
+@theme {
+
+  /* ==========================================================
+     FONT FAMILY
+  ========================================================== */
+
+  --font-PrimaryFont: "Plus Jakarta Sans", sans-serif;
+  --font-SecondaryFont: "Inter", sans-serif;
+
+
+  /* ==========================================================
+     FIRST PRIMARY COLOR (RED)
+  ========================================================== */
+
+  --color-PrimaryColorLight: #FFEFEF;
+  --color-PrimaryColorLightHover: #FFE8E8;
+  --color-PrimaryColorLightActive: #FFCFCF;
+
+  --color-PrimaryColor: #FF6363;
+  --color-PrimaryColorHover: #E65959;
+  --color-PrimaryColorActive: #CC4F4F;
+
+  --color-PrimaryColorDark: #BF4A4A;
+  --color-PrimaryColorDarkHover: #993B3B;
+  --color-PrimaryColorDarkActive: #732D2D;
+
+  --color-PrimaryColorDarker: #592323;
+
+
+  /* ==========================================================
+     SECOND PRIMARY COLOR (GREEN)
+  ========================================================== */
+
+  --color-SrcPrimaryColorLight: #E7F1F1;
+  --color-SrcPrimaryColorLightHover: #DBEAE9;
+  --color-SrcPrimaryColorLightActive: #B5D5D2;
+
+  --color-SrcPrimaryColor: #0F766E;
+  --color-SrcPrimaryColorHover: #0E6A63;
+  --color-SrcPrimaryColorActive: #0C5E58;
+
+  --color-SrcPrimaryColorDark: #0B5953;
+  --color-SrcPrimaryColorDarkHover: #094742;
+  --color-SrcPrimaryColorDarkActive: #073531;
+
+  --color-SrcPrimaryColorDarker: #052927;
+
+
+  /* ==========================================================
+     NEUTRAL COLORS
+  ========================================================== */
+
+  --color-Background: #FAFAFA;
+  --color-Surface: #FFFFFF;
+
+  --color-Border: #E2E8F0;
+  --color-BorderLight: #F1F5F9;
+
+  --color-TextPrimary: #0F172A;
+  --color-TextSecondary: #475569;
+  --color-TextMuted: #94A3B8;
+
+  --color-White: #FFFFFF;
+  --color-Black: #000000;
+
+
+  /* ==========================================================
+     SEMANTIC COLORS
+  ========================================================== */
+
+  --color-Success: var(--color-SrcPrimaryColor);
+  --color-Error: var(--color-PrimaryColor);
+  --color-Warning: #F59E0B;
+  --color-Info: #2563EB;
+
+
+  /* ==========================================================
+     COMPONENT COLORS
+  ========================================================== */
+
+  --color-PrimaryButton: var(--color-PrimaryColor);
+  --color-PrimaryButtonHover: var(--color-PrimaryColorHover);
+  --color-PrimaryButtonActive: var(--color-PrimaryColorActive);
+
+  --color-SecondaryButton: var(--color-SrcPrimaryColor);
+  --color-SecondaryButtonHover: var(--color-SrcPrimaryColorHover);
+  --color-SecondaryButtonActive: var(--color-SrcPrimaryColorActive);
+
+
+  /* ==========================================================
+     LINK COLORS
+  ========================================================== */
+
+  --color-Link: var(--color-PrimaryColor);
+  --color-LinkHover: var(--color-PrimaryColorHover);
+  --color-LinkActive: var(--color-PrimaryColorActive);
+
+
+  /* ==========================================================
+     INPUT COLORS
+  ========================================================== */
+
+  --color-InputBorder: var(--color-Border);
+  --color-InputFocus: var(--color-PrimaryColor);
+  --color-InputBackground: var(--color-White);
+
+
+  /* ==========================================================
+     CARD COLORS
+  ========================================================== */
+
+  --color-CardBackground: var(--color-Surface);
+  --color-CardBorder: var(--color-Border);
+
+
+  /* ==========================================================
+     PAGE COLORS
+  ========================================================== */
+
+  --color-PageBackground: var(--color-Background);
+  --color-SectionBackground: var(--color-Surface);
+
+}

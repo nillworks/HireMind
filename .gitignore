@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+backendToFrontendApiConctionRole.md
+projectReqment.md
+code-refactor.md
+nextjs-component-rules.md

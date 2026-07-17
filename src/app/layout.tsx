@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
+import NavigationMenu from "@/components/shared/NavigationMenu";
 
 const primaryFont = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -26,7 +27,15 @@ export default function RootLayout({
       lang="en"
       className={`${primaryFont.variable} ${secondaryFont.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+
+        <NavigationMenu/>
+        <main>
+          {children}
+        </main>
+
+
+      </body>
     </html>
   );
 }

@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { LayoutDashboard, LogOut, User } from "lucide-react";
+import VerifiedBadge from "@/components/shared/VerifiedBadge";
 
 interface ProfileDropdownProps {
   user: {
@@ -78,9 +79,12 @@ export default function ProfileDropdown({ user, userLinks }: ProfileDropdownProp
       >
         <div className="w-full rounded-2xl bg-Surface border border-Border shadow-lg overflow-hidden">
           <div className="p-4 border-b border-Border bg-SrcPrimaryColorLight/30">
-            <p className="text-sm font-semibold font-SecondaryFont text-TextPrimary truncate">
-              {user.name || "User"}
-            </p>
+            <div className="flex items-center gap-1.5">
+              <p className="text-sm font-semibold font-SecondaryFont text-TextPrimary truncate">
+                {user.name || "User"}
+              </p>
+              <VerifiedBadge size={12} />
+            </div>
             <p className="text-xs font-SecondaryFont text-TextSecondary truncate mt-0.5">
               {user.email || "user@example.com"}
             </p>

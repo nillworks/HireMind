@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import ActiveLink, { type NavItem } from "@/components/shared/ActiveLink";
 import MobileMenu from "@/components/shared/MobileMenu";
 import ProfileDropdown from "@/components/shared/ProfileDropDown";
+import VerifiedBadge from "@/components/shared/VerifiedBadge";
 import { signOut, useSession } from "@/lib/auth-client";
 import { toast } from "sonner";
 import CustomToast from "@/components/shared/CustomToast";
@@ -88,6 +89,7 @@ console.log(user);
               <span className="text-lg font-bold font-PrimaryFont tracking-tight text-TextPrimary group-hover:text-PrimaryColor transition-colors duration-200">
                 TalentAI
               </span>
+              <VerifiedBadge size={12} />
             </Link>
 
             <nav

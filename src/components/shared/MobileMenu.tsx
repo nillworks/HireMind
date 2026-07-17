@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { X, LogIn, UserPlus, ChevronRight, Sparkles } from "lucide-react";
 import ActiveLink, { type NavItem } from "@/components/shared/ActiveLink";
+import VerifiedBadge from "@/components/shared/VerifiedBadge";
 import { cn } from "@/lib/utils";
 
 interface MobileMenuProps {
@@ -83,6 +84,7 @@ export default function MobileMenu({
             <span className="text-base font-bold font-PrimaryFont text-TextPrimary tracking-tight">
               TalentAI
             </span>
+            <VerifiedBadge size={10} />
           </div>
           <button
             onClick={onClose}

@@ -82,6 +82,7 @@ const RegesterPage = () => {
       email: data.email as string,
       password: data.password as string,
       image: imageUrl,
+      role: "seeker",
     });
 
     if (signUpError) {

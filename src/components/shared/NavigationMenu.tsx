@@ -44,9 +44,9 @@ console.log(user);
   }
 
   const dashboardHref: Record<string, string> = {
-    user: "/dashboard",
-    recruiter: "/dashboard",
-    admin: "/dashboard",
+    seeker: `/dashboard/seeker`,
+    recruiter: `/dashboard/recruiter`,
+    admin: `/dashboard/admin`,
   };
 
   const handleSignOut = async () => {

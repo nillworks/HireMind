@@ -25,4 +25,21 @@ export const auth = betterAuth({
       },
     }),
   ],
+
+  hooks: {
+    before: async (request) => {
+      return { request };
+    },
+  },
+
+  user: {
+    additionalFields: {
+      role: {
+        type: "string",
+        required: false,
+        defaultValue: "seeker",
+        input: true,
+      },
+    },
+  },
 });

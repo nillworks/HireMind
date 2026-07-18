@@ -14,10 +14,13 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import type { RecruiterJob } from "@/lib/api/recruiter/recruiterJobsApi";
 import JobCard from "./JobCard";
+import JobTableRow from "./JobTableRow";
 
 interface JobListProps {
   initialJobs: RecruiterJob[];
 }
+
+type ViewMode = "card" | "table";
 
 const statusOptions = ["all", "pending", "approved", "rejected"] as const;
 
@@ -37,6 +40,17 @@ const sortOptions = [
   { value: "most_applied", label: "Most Applied" },
 ] as const;
 
+const tableHeaders = [
+  { label: "Job Title", className: "text-left" },
+  { label: "Type", className: "text-left hidden md:table-cell" },
+  { label: "Location", className: "text-left hidden lg:table-cell" },
+  { label: "Salary", className: "text-left hidden xl:table-cell" },
+  { label: "Apps", className: "text-center hidden lg:table-cell" },
+  { label: "Status", className: "text-left" },
+  { label: "Posted", className: "text-left hidden xl:table-cell" },
+  { label: "Actions", className: "text-right" },
+] as const;
+
 const JobList = ({ initialJobs }: JobListProps) => {
   const [jobs, setJobs] = useState<RecruiterJob[]>(initialJobs);
   const [searchQuery, setSearchQuery] = useState("");
@@ -44,6 +58,7 @@ const JobList = ({ initialJobs }: JobListProps) => {
   const [jobTypeFilter, setJobTypeFilter] = useState<string>("all");
   const [sortBy, setSortBy] = useState<string>("newest");
   const [showFilters, setShowFilters] = useState(false);
+  const [viewMode, setViewMode] = useState<ViewMode>("card");
 
   const filteredJobs = useMemo(() => {
     let result = [...jobs];
@@ -173,19 +188,47 @@ const JobList = ({ initialJobs }: JobListProps) => {
             className="pl-9 h-10 bg-white dark:bg-[#1e293b] border-Border dark:border-secondary text-TextPrimary dark:text-surface font-SecondaryFont placeholder:text-TextMuted rounded-xl"
           />
         </div>
-        <Button
-          type="button"
-          variant="outline"
-          onClick={() => setShowFilters(!showFilters)}
-          className={`h-10 px-4 rounded-xl font-SecondaryFont font-medium border-Border dark:border-secondary transition-colors ${
-            showFilters
-              ? "bg-SrcPrimaryColorLight text-SrcPrimaryColor border-SrcPrimaryColor/30 dark:bg-SrcPrimaryColorDark/20"
-              : "text-TextSecondary dark:text-text-secondary hover:bg-Background dark:hover:bg-dark-bg"
-          }`}
-        >
-          <SlidersHorizontal size={16} />
-          Filters
-        </Button>
+        <div className="flex gap-2">
+          <div className="flex items-center rounded-xl border border-Border dark:border-secondary overflow-hidden">
+            <button
+              type="button"
+              onClick={() => setViewMode("card")}
+              className={`flex items-center justify-center size-10 transition-colors cursor-pointer ${
+                viewMode === "card"
+                  ? "bg-SrcPrimaryColor text-white"
+                  : "bg-white dark:bg-[#1e293b] text-TextMuted hover:bg-Background dark:hover:bg-dark-bg"
+              }`}
+              aria-label="Card view"
+            >
+              <LayoutGrid size={16} />
+            </button>
+            <button
+              type="button"
+              onClick={() => setViewMode("table")}
+              className={`flex items-center justify-center size-10 transition-colors cursor-pointer ${
+                viewMode === "table"
+                  ? "bg-SrcPrimaryColor text-white"
+                  : "bg-white dark:bg-[#1e293b] text-TextMuted hover:bg-Background dark:hover:bg-dark-bg"
+              }`}
+              aria-label="Table view"
+            >
+              <List size={16} />
+            </button>
+          </div>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={() => setShowFilters(!showFilters)}
+            className={`h-10 px-4 rounded-xl font-SecondaryFont font-medium border-Border dark:border-secondary transition-colors cursor-pointer ${
+              showFilters
+                ? "bg-SrcPrimaryColorLight text-SrcPrimaryColor border-SrcPrimaryColor/30 dark:bg-SrcPrimaryColorDark/20"
+                : "text-TextSecondary dark:text-text-secondary hover:bg-Background dark:hover:bg-dark-bg"
+            }`}
+          >
+            <SlidersHorizontal size={16} />
+            Filters
+          </Button>
+        </div>
       </div>
 
       {showFilters && (
@@ -200,7 +243,7 @@ const JobList = ({ initialJobs }: JobListProps) => {
                   key={status}
                   type="button"
                   onClick={() => setStatusFilter(status)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-SecondaryFont font-medium transition-colors ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-SecondaryFont font-medium transition-colors cursor-pointer ${
                     statusFilter === status
                       ? "bg-SrcPrimaryColor text-white"
                       : "bg-Background dark:bg-dark-bg text-TextSecondary dark:text-text-secondary hover:bg-Border dark:hover:bg-secondary border border-Border dark:border-secondary"
@@ -224,7 +267,7 @@ const JobList = ({ initialJobs }: JobListProps) => {
                   key={type}
                   type="button"
                   onClick={() => setJobTypeFilter(type)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-SecondaryFont font-medium transition-colors ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-SecondaryFont font-medium transition-colors cursor-pointer ${
                     jobTypeFilter === type
                       ? "bg-PrimaryColor text-white"
                       : "bg-Background dark:bg-dark-bg text-TextSecondary dark:text-text-secondary hover:bg-Border dark:hover:bg-secondary border border-Border dark:border-secondary"
@@ -250,7 +293,7 @@ const JobList = ({ initialJobs }: JobListProps) => {
                   key={opt.value}
                   type="button"
                   onClick={() => setSortBy(opt.value)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-SecondaryFont font-medium transition-colors ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-SecondaryFont font-medium transition-colors cursor-pointer ${
                     sortBy === opt.value
                       ? "bg-gradient-to-r from-PrimaryColor to-SrcPrimaryColor text-white"
                       : "bg-Background dark:bg-dark-bg text-TextSecondary dark:text-text-secondary hover:bg-Border dark:hover:bg-secondary border border-Border dark:border-secondary"
@@ -265,22 +308,49 @@ const JobList = ({ initialJobs }: JobListProps) => {
       )}
 
       {filteredJobs.length > 0 ? (
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
-          {filteredJobs.map((job) => (
-            <JobCard
-              key={job._id}
-              job={job}
-              onDeleted={() => handleDeleteFromList(job._id)}
-            />
-          ))}
-        </div>
+        viewMode === "card" ? (
+          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-5">
+            {filteredJobs.map((job) => (
+              <JobCard
+                key={job._id}
+                job={job}
+                onDeleted={() => handleDeleteFromList(job._id)}
+              />
+            ))}
+          </div>
+        ) : (
+          <div className="rounded-2xl bg-white dark:bg-[#1e293b] border border-Border dark:border-secondary overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full">
+                <thead>
+                  <tr className="border-b border-Border dark:border-secondary bg-Background/50 dark:bg-dark-bg/50">
+                    {tableHeaders.map((header) => (
+                      <th
+                        key={header.label}
+                        className={`${header.className} py-3 px-4 text-[11px] font-SecondaryFont font-semibold text-TextMuted uppercase tracking-wider`}
+                      >
+                        {header.label}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {filteredJobs.map((job) => (
+                    <JobTableRow
+                      key={job._id}
+                      job={job}
+                      onDeleted={() => handleDeleteFromList(job._id)}
+                    />
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        )
       ) : (
         <div className="flex flex-col items-center justify-center py-16 rounded-2xl bg-white dark:bg-[#1e293b] border border-Border dark:border-secondary">
           <div className="flex size-16 items-center justify-center rounded-2xl bg-gradient-to-br from-PrimaryColorLight to-SrcPrimaryColorLight dark:from-PrimaryColorDark/20 dark:to-SrcPrimaryColorDark/20 mb-4">
-            <FolderOpen
-              size={28}
-              className="text-PrimaryColor"
-            />
+            <FolderOpen size={28} className="text-PrimaryColor" />
           </div>
           <h3 className="text-base font-semibold font-PrimaryFont text-TextPrimary dark:text-surface">
             {jobs.length === 0
@@ -302,7 +372,7 @@ const JobList = ({ initialJobs }: JobListProps) => {
                 setJobTypeFilter("all");
                 setSortBy("newest");
               }}
-              className="mt-4 h-9 px-4 rounded-xl font-SecondaryFont text-sm border-Border dark:border-secondary text-SrcPrimaryColor hover:bg-SrcPrimaryColorLight dark:hover:bg-SrcPrimaryColorDark/20"
+              className="mt-4 h-9 px-4 rounded-xl font-SecondaryFont text-sm border-Border dark:border-secondary text-SrcPrimaryColor hover:bg-SrcPrimaryColorLight dark:hover:bg-SrcPrimaryColorDark/20 cursor-pointer"
             >
               Clear Filters
             </Button>

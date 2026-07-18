@@ -76,7 +76,7 @@ const DeleteJobDialog = ({
             variant="outline"
             onClick={() => onOpenChange(false)}
             disabled={isDeleting}
-            className="rounded-xl font-SecondaryFont border-Border dark:border-secondary text-TextSecondary dark:text-text-secondary hover:bg-Background dark:hover:bg-dark-bg"
+            className="rounded-xl font-SecondaryFont border-Border dark:border-secondary text-TextSecondary dark:text-text-secondary hover:bg-Background dark:hover:bg-dark-bg cursor-pointer"
           >
             Cancel
           </Button>
@@ -84,7 +84,7 @@ const DeleteJobDialog = ({
             type="button"
             onClick={handleDelete}
             disabled={isDeleting}
-            className="rounded-xl font-SecondaryFont bg-PrimaryColor hover:bg-PrimaryColorHover text-white transition-colors"
+            className="rounded-xl font-SecondaryFont bg-PrimaryColor hover:bg-PrimaryColorHover text-white transition-colors cursor-pointer"
           >
             {isDeleting ? (
               <>

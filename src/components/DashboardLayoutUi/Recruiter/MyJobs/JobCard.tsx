@@ -16,43 +16,18 @@ import {
 import { Button } from "@/components/ui/button";
 import type { RecruiterJob } from "@/lib/api/recruiter/recruiterJobsApi";
 import DeleteJobDialog from "./DeleteJobDialog";
+import {
+  statusConfig,
+  jobTypeConfig,
+  formatJobType,
+  formatSalary,
+  formatDate,
+} from "./job-helpers";
 
 interface JobCardProps {
   job: RecruiterJob;
   onDeleted: () => void;
 }
-
-const statusConfig: Record<
-  string,
-  { label: string; className: string }
-> = {
-  pending: {
-    label: "Pending",
-    className:
-      "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-800",
-  },
-  approved: {
-    label: "Approved",
-    className:
-      "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800",
-  },
-  rejected: {
-    label: "Rejected",
-    className:
-      "bg-red-50 text-red-700 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800",
-  },
-};
-
-const jobTypeConfig: Record<string, string> = {
-  "full-time":
-    "bg-SrcPrimaryColorLight text-SrcPrimaryColor dark:bg-SrcPrimaryColorDark/20 dark:text-SrcPrimaryColor",
-  "part-time":
-    "bg-PrimaryColorLight text-PrimaryColor dark:bg-PrimaryColorDark/20 dark:text-PrimaryColor",
-  remote:
-    "bg-gradient-to-r from-PrimaryColorLight to-SrcPrimaryColorLight text-TextSecondary dark:from-PrimaryColorDark/20 dark:to-SrcPrimaryColorDark/20 dark:text-text-secondary",
-  contract:
-    "bg-amber-50 text-amber-700 dark:bg-amber-900/20 dark:text-amber-400",
-};
 
 const JobCard = ({ job, onDeleted }: JobCardProps) => {
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -66,22 +41,6 @@ const JobCard = ({ job, onDeleted }: JobCardProps) => {
   const jobType =
     jobTypeConfig[job.jobType] ??
     "bg-Border text-TextSecondary dark:bg-secondary dark:text-text-secondary";
-
-  const formattedDate = job.createdAt
-    ? new Date(job.createdAt).toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      })
-    : "N/A";
-
-  const formattedDeadline = job.deadline
-    ? new Date(job.deadline).toLocaleDateString("en-US", {
-        month: "short",
-        day: "numeric",
-        year: "numeric",
-      })
-    : "N/A";
 
   return (
     <>
@@ -100,10 +59,7 @@ const JobCard = ({ job, onDeleted }: JobCardProps) => {
               </div>
             ) : (
               <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-PrimaryColorLight to-SrcPrimaryColorLight dark:from-PrimaryColorDark/20 dark:to-SrcPrimaryColorDark/20">
-                <Briefcase
-                  size={18}
-                  className="text-PrimaryColor"
-                />
+                <Briefcase size={18} className="text-PrimaryColor" />
               </div>
             )}
             <div className="min-w-0">
@@ -127,10 +83,7 @@ const JobCard = ({ job, onDeleted }: JobCardProps) => {
             <span
               className={`inline-flex items-center rounded-lg px-2 py-0.5 text-[11px] font-medium ${jobType}`}
             >
-              {job.jobType
-                ? job.jobType.charAt(0).toUpperCase() +
-                  job.jobType.slice(1)
-                : "N/A"}
+              {formatJobType(job.jobType)}
             </span>
             <span className="inline-flex items-center gap-1">
               <MapPin size={12} className="text-TextMuted" />
@@ -140,16 +93,7 @@ const JobCard = ({ job, onDeleted }: JobCardProps) => {
 
           <div className="flex items-center gap-1 text-xs font-SecondaryFont text-TextSecondary dark:text-text-secondary">
             <DollarSign size={12} className="text-SrcPrimaryColor shrink-0" />
-            <span>
-              {job.salaryMin
-                ? `${job.salaryMin.toLocaleString()}`
-                : "0"}{" "}
-              &ndash;{" "}
-              {job.salaryMax
-                ? `${job.salaryMax.toLocaleString()}`
-                : "0"}{" "}
-              BDT
-            </span>
+            <span>{formatSalary(job.salaryMin, job.salaryMax)}</span>
           </div>
 
           <div className="flex items-center gap-1 text-xs font-SecondaryFont text-TextMuted">
@@ -163,10 +107,10 @@ const JobCard = ({ job, onDeleted }: JobCardProps) => {
           <div className="flex items-center gap-4 text-xs font-SecondaryFont text-TextMuted">
             <span className="inline-flex items-center gap-1">
               <Calendar size={12} className="shrink-0" />
-              Posted {formattedDate}
+              Posted {formatDate(job.createdAt)}
             </span>
             <span className="inline-flex items-center gap-1">
-              Deadline {formattedDeadline}
+              Deadline {formatDate(job.deadline)}
             </span>
           </div>
         </div>
@@ -174,13 +118,13 @@ const JobCard = ({ job, onDeleted }: JobCardProps) => {
         <div className="pt-4 border-t border-Border dark:border-secondary flex items-center gap-2">
           <Link
             href={`/dashboard/recruiter/my-jobs/${job._id}`}
-            className="flex-1"
+            className="flex-1 cursor-pointer"
           >
             <Button
               type="button"
               variant="outline"
               size="sm"
-              className="w-full h-8 rounded-lg font-SecondaryFont text-xs border-Border dark:border-secondary text-TextSecondary dark:text-text-secondary hover:bg-PrimaryColorLight dark:hover:bg-PrimaryColorDark/20 hover:text-PrimaryColor hover:border-PrimaryColor/30 transition-colors"
+              className="w-full h-8 rounded-lg font-SecondaryFont text-xs border-Border dark:border-secondary text-TextSecondary dark:text-text-secondary hover:bg-PrimaryColorLight dark:hover:bg-PrimaryColorDark/20 hover:text-PrimaryColor hover:border-PrimaryColor/30 transition-colors cursor-pointer"
             >
               <Eye size={14} />
               View
@@ -188,13 +132,13 @@ const JobCard = ({ job, onDeleted }: JobCardProps) => {
           </Link>
           <Link
             href={`/dashboard/recruiter/my-jobs/${job._id}/edit`}
-            className="flex-1"
+            className="flex-1 cursor-pointer"
           >
             <Button
               type="button"
               variant="outline"
               size="sm"
-              className="w-full h-8 rounded-lg font-SecondaryFont text-xs border-Border dark:border-secondary text-TextSecondary dark:text-text-secondary hover:bg-SrcPrimaryColorLight dark:hover:bg-SrcPrimaryColorDark/20 hover:text-SrcPrimaryColor hover:border-SrcPrimaryColor/30 transition-colors"
+              className="w-full h-8 rounded-lg font-SecondaryFont text-xs border-Border dark:border-secondary text-TextSecondary dark:text-text-secondary hover:bg-SrcPrimaryColorLight dark:hover:bg-SrcPrimaryColorDark/20 hover:text-SrcPrimaryColor hover:border-SrcPrimaryColor/30 transition-colors cursor-pointer"
             >
               <Pencil size={14} />
               Edit
@@ -205,7 +149,7 @@ const JobCard = ({ job, onDeleted }: JobCardProps) => {
             variant="outline"
             size="sm"
             onClick={() => setDeleteOpen(true)}
-            className="h-8 w-8 shrink-0 rounded-lg border-Border dark:border-secondary text-TextMuted hover:bg-PrimaryColorLight dark:hover:bg-PrimaryColorDark/20 hover:text-PrimaryColor hover:border-PrimaryColor/30 transition-colors p-0"
+            className="h-8 w-8 shrink-0 rounded-lg border-Border dark:border-secondary text-TextMuted hover:bg-PrimaryColorLight dark:hover:bg-PrimaryColorDark/20 hover:text-PrimaryColor hover:border-PrimaryColor/30 transition-colors p-0 cursor-pointer"
           >
             <Trash2 size={14} />
           </Button>

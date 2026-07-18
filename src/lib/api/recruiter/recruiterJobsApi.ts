@@ -54,6 +54,23 @@ export const getMyJobs = async (): Promise<RecruiterJob[]> => {
   }
 };
 
+export const getRecruiterJob = async (
+  jobId: string,
+): Promise<RecruiterJob | null> => {
+  try {
+    const authHeaders = await headersAuthorization();
+    const res = await fetch(`${API}/api/recruiter/jobs/${jobId}`, {
+      cache: 'no-store',
+      headers: { ...authHeaders, 'Content-Type': 'application/json' },
+    });
+    if (!res.ok) return null;
+    const json = await res.json();
+    return json.data ?? null;
+  } catch {
+    return null;
+  }
+};
+
 export const updateJob = async (
   jobId: string,
   updates: Record<string, unknown>,

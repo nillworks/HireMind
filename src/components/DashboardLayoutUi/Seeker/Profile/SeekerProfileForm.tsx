@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -78,7 +77,6 @@ const textareaClasses =
   "flex w-full rounded-xl border border-Border dark:border-secondary bg-white dark:bg-[#0f172a] px-3 py-2.5 text-sm font-SecondaryFont text-TextPrimary dark:text-surface placeholder:text-TextMuted outline-none focus:border-PrimaryColor focus:ring-2 focus:ring-PrimaryColor/20 transition-colors resize-none";
 
 const SeekerProfileForm = ({ profile }: SeekerProfileFormProps) => {
-  const router = useRouter();
   const [saving, setSaving] = useState(false);
 
   const [phone, setPhone] = useState(profile?.phone ?? "");
@@ -218,7 +216,6 @@ const SeekerProfileForm = ({ profile }: SeekerProfileFormProps) => {
         body: JSON.stringify(payload),
       });
       toast.success("Profile updated successfully!");
-      router.refresh();
     } catch (err) {
       const msg =
         err instanceof Error ? err.message : "Failed to update profile.";

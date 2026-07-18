@@ -29,26 +29,28 @@ const fetchClient = async <T>(
     authHeaders["Authorization"] = `Bearer ${cachedToken}`;
   }
 
+  const { headers: optionHeaders, ...restOptions } = options || {};
+
   const res = await fetch(`${apiUrl}${endpoint}`, {
+    ...restOptions,
     credentials: "include",
     headers: {
       ...authHeaders,
-      ...options?.headers,
+      ...optionHeaders,
     },
-    ...options,
   });
 
-  if (res.status === 401) {
+  if (res.status === 401 || res.status === 403) {
     cachedToken = await fetchToken();
     if (cachedToken) {
       authHeaders["Authorization"] = `Bearer ${cachedToken}`;
       const retryRes = await fetch(`${apiUrl}${endpoint}`, {
+        ...restOptions,
         credentials: "include",
         headers: {
           ...authHeaders,
-          ...options?.headers,
+          ...optionHeaders,
         },
-        ...options,
       });
       if (!retryRes.ok) {
         const error = await retryRes.json().catch(() => ({}));

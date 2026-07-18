@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import fetchClient from "@/lib/utils/fetchClient";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
 import Image from "next/image";
 import {
   Building2,
@@ -58,7 +57,6 @@ const companySizeOptions = [
 ];
 
 const RecruiterProfileForm = ({ profile }: RecruiterProfileFormProps) => {
-  const router = useRouter();
   const [isSaving, setIsSaving] = useState(false);
 
   const [companyName, setCompanyName] = useState(profile?.companyName ?? "");
@@ -127,7 +125,6 @@ const RecruiterProfileForm = ({ profile }: RecruiterProfileFormProps) => {
       });
 
       toast.success("Profile updated successfully");
-      router.refresh();
     } catch (error) {
       toast.error("Failed to update profile");
     } finally {

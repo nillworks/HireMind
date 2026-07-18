@@ -23,6 +23,17 @@ export const auth = betterAuth({
           crv: 'Ed25519',
         },
       },
+      jwt: {
+        definePayload: (session) => {
+          return {
+            sub: session.user.id,
+            id: session.user.id,
+            email: session.user.email,
+            name: session.user.name,
+            role: session.user.role,
+          };
+        },
+      },
     }),
   ],
 

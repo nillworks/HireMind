@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react"
 import { toast } from "sonner"
 import { UserPlus } from "lucide-react"
+import { useSession } from "@/lib/auth-client"
 import {
   applyAsRecruiter,
   getRecruiterApplyStatus,
@@ -24,6 +25,9 @@ const initialFormData: RecruiterApplyData = {
 }
 
 const ApplyRecruiterPage = () => {
+  const { data: session } = useSession()
+  const user = session?.user
+
   const [status, setStatus] = useState<RecruiterStatusResponse | null>(null)
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
@@ -50,7 +54,11 @@ const ApplyRecruiterPage = () => {
     }
     setSubmitting(true)
     try {
-      await applyAsRecruiter(formData)
+      await applyAsRecruiter({
+        ...formData,
+        name: formData.name || user?.name || "",
+        userImage: user?.image || "",
+      })
       toast.success("Application submitted successfully!")
       setStatus({ status: "pending" })
     } catch (err) {
@@ -84,7 +92,12 @@ const ApplyRecruiterPage = () => {
 
       {(currentStatus === "pending" ||
         currentStatus === "approved" ||
-        currentStatus === "rejected") && <StatusBanner status={currentStatus} />}
+        currentStatus === "rejected") && (
+        <StatusBanner
+          status={currentStatus}
+          rejectionReason={status?.rejectionReason}
+        />
+      )}
 
       {currentStatus === "none" && (
         <ApplicationForm

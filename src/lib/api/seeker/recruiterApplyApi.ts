@@ -3,6 +3,7 @@ import fetchClient from "@/lib/utils/fetchClient";
 export interface RecruiterApplyData {
   name: string;
   company: string;
+  userImage?: string;
   companyWebsite?: string;
   description?: string;
   experience?: string;
@@ -14,6 +15,7 @@ export interface RecruiterApplyResponse {
 
 export interface RecruiterStatusResponse {
   status: "pending" | "approved" | "rejected" | "none";
+  rejectionReason?: string;
 }
 
 export const applyAsRecruiter = async (

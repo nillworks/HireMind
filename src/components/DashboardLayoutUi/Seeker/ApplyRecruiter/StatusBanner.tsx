@@ -37,9 +37,10 @@ const statusConfig: Record<string, StatusInfo> = {
 
 interface StatusBannerProps {
   status: "pending" | "approved" | "rejected"
+  rejectionReason?: string
 }
 
-const StatusBanner = ({ status }: StatusBannerProps) => {
+const StatusBanner = ({ status, rejectionReason }: StatusBannerProps) => {
   const info = statusConfig[status]
   if (!info) return null
 
@@ -58,6 +59,16 @@ const StatusBanner = ({ status }: StatusBannerProps) => {
         <p className="text-sm font-SecondaryFont mt-1 opacity-80">
           {info.description}
         </p>
+        {status === "rejected" && rejectionReason && (
+          <div className="mt-3 p-3 rounded-xl bg-red-100/50 dark:bg-red-900/20 border border-red-200/50 dark:border-red-800/50">
+            <p className="text-xs font-SecondaryFont font-medium text-red-700 dark:text-red-400 mb-1">
+              Reason from admin:
+            </p>
+            <p className="text-sm font-SecondaryFont text-red-800 dark:text-red-300">
+              {rejectionReason}
+            </p>
+          </div>
+        )}
       </div>
     </div>
   )

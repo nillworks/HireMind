@@ -25,6 +25,7 @@ import {
   UserCog,
   Bot,
   ScrollText,
+  UserCircle,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
@@ -64,6 +65,7 @@ const seekerSections: SidebarSection[] = [
       { label: "My Applications", href: "/dashboard/seeker/applications", icon: FileCheck },
       { label: "Saved Jobs", href: "/dashboard/seeker/saved-jobs", icon: Heart },
       { label: "Apply as Recruiter", href: "/dashboard/seeker/apply-recruiter", icon: UserPlus },
+      { label: "Profile", href: "/dashboard/seeker/profile", icon: UserCircle },
     ],
   },
   {
@@ -84,6 +86,7 @@ const recruiterSections: SidebarSection[] = [
       { label: "Post a Job", href: "/dashboard/recruiter/post-job", icon: PlusCircle },
       { label: "My Jobs", href: "/dashboard/recruiter/my-jobs", icon: Briefcase },
       { label: "Analytics", href: "/dashboard/recruiter/analytics", icon: BarChart3 },
+      { label: "Profile", href: "/dashboard/recruiter/profile", icon: UserCircle },
     ],
   },
   {

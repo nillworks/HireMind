@@ -1,11 +1,17 @@
-import ManageJobsPage from '@/components/DashboardLayoutUi/Admin/ManageJobs/ManageJobsPage'
+import type { Metadata } from "next";
+import ManageJobsPage from "@/components/DashboardLayoutUi/Admin/ManageJobs/ManageJobsPage";
 
-const page = () => {
-  return (
-    <>
-      <ManageJobsPage />
-    </>
-  )
-}
+export const metadata: Metadata = {
+  title: "Manage Jobs | TalentAI",
+  description: "Admin panel to review and manage all job listings.",
+};
 
-export default page
+const ManageJobsRoute = ({
+  searchParams,
+}: {
+  searchParams?: Promise<{ status?: string }>;
+}) => {
+  return <ManageJobsPage searchParams={searchParams} />;
+};
+
+export default ManageJobsRoute;

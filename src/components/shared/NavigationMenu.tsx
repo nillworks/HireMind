@@ -24,7 +24,6 @@ const LOGGED_IN_NAV: NavItem[] = [
   { id: 2, label: "Browse Jobs", href: "/jobs" },
   { id: 3, label: "My Applications", href: "/my-applications" },
   { id: 4, label: "AI Tools", href: "/ai-tools" },
-  { id: 5, label: "Dashboard", href: "/dashboard" },
 ];
 
 const AUTH_LINKS = {
@@ -67,7 +66,10 @@ console.log(user);
       label: "Dashboard",
       href: dashboardHref[(user?.role as string)?.toLowerCase()] || "/dashboard",
     },
-    profile: { label: "Profile", href: "/profile" },
+    profile: {
+      label: "Profile",
+      href: `/dashboard/${(user?.role as string)?.toLowerCase() || "seeker"}/profile`,
+    },
     logout: { label: "Logout", onClick: handleSignOut },
   };
 

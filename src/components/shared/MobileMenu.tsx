@@ -2,10 +2,29 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { X, LogIn, UserPlus, ChevronRight, Sparkles } from "lucide-react";
+import {
+  X,
+  LogIn,
+  UserPlus,
+  Sparkles,
+  Home,
+  Briefcase,
+  FileCheck,
+  LayoutDashboard,
+  UserCircle,
+  LogOut,
+} from "lucide-react";
 import ActiveLink, { type NavItem } from "@/components/shared/ActiveLink";
 import VerifiedBadge from "@/components/shared/VerifiedBadge";
 import { cn } from "@/lib/utils";
+
+const iconMap: Record<string, React.ElementType> = {
+  "/": Home,
+  "/jobs": Briefcase,
+  "/about": Briefcase,
+  "/my-applications": FileCheck,
+  "/ai-tools": Sparkles,
+};
 
 interface MobileMenuProps {
   isOpen: boolean;
@@ -98,32 +117,30 @@ export default function MobileMenu({
         {/* Nav Items */}
         <div className="flex-1 overflow-y-auto overscroll-contain">
           <nav className="px-5 py-6 space-y-1">
-            {navItems.map((item, index) => (
-              <Link
-                key={item.id}
-                href={item.href}
-                onClick={onClose}
-                className={cn(
-                  "group flex items-center justify-between px-4 py-3.5 rounded-2xl text-sm font-medium font-SecondaryFont transition-all duration-300",
-                  pathname === item.href
-                    ? "bg-PrimaryColorLight text-PrimaryColor shadow-sm"
-                    : "text-TextSecondary hover:text-TextPrimary hover:bg-SurfaceHover"
-                )}
-                style={{
-                  animationDelay: `${index * 60}ms`,
-                  animation: isOpen ? "slideInRight 0.4s ease-out forwards" : "none",
-                }}
-              >
-                <span>{item.label}</span>
-                <ChevronRight
-                  size={16}
+            {navItems.map((item, index) => {
+              const Icon = iconMap[item.href] || Briefcase;
+              const isActive = pathname === item.href;
+              return (
+                <Link
+                  key={item.id}
+                  href={item.href}
+                  onClick={onClose}
                   className={cn(
-                    "transition-all duration-300 opacity-0 -translate-x-2 group-hover:opacity-100 group-hover:translate-x-0",
-                    pathname === item.href && "text-PrimaryColor opacity-100 translate-x-0"
+                    "group flex items-center gap-3 px-4 py-3.5 rounded-2xl text-sm font-medium font-SecondaryFont transition-all duration-300",
+                    isActive
+                      ? "bg-PrimaryColorLight text-PrimaryColor shadow-sm"
+                      : "text-TextSecondary hover:text-TextPrimary hover:bg-SurfaceHover"
                   )}
-                />
-              </Link>
-            ))}
+                  style={{
+                    animationDelay: `${index * 60}ms`,
+                    animation: isOpen ? "slideInRight 0.4s ease-out forwards" : "none",
+                  }}
+                >
+                  <Icon size={18} className="shrink-0" />
+                  <span>{item.label}</span>
+                </Link>
+              );
+            })}
           </nav>
 
           {/* Bottom Auth Section */}
@@ -153,26 +170,27 @@ export default function MobileMenu({
                   <Link
                     href={userLinks.dashboard.href}
                     onClick={onClose}
-                    className="flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium font-SecondaryFont text-TextSecondary hover:text-TextPrimary hover:bg-white/60 transition-all duration-200"
+                    className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium font-SecondaryFont text-TextSecondary hover:text-TextPrimary hover:bg-white/60 transition-all duration-200"
                   >
+                    <LayoutDashboard size={18} className="shrink-0" />
                     <span>{userLinks.dashboard.label}</span>
-                    <ChevronRight size={16} className="opacity-0 group-hover:opacity-100" />
                   </Link>
                   <Link
                     href={userLinks.profile.href}
                     onClick={onClose}
-                    className="flex items-center justify-between px-4 py-3 rounded-xl text-sm font-medium font-SecondaryFont text-TextSecondary hover:text-TextPrimary hover:bg-white/60 transition-all duration-200"
+                    className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium font-SecondaryFont text-TextSecondary hover:text-TextPrimary hover:bg-white/60 transition-all duration-200"
                   >
+                    <UserCircle size={18} className="shrink-0" />
                     <span>{userLinks.profile.label}</span>
-                    <ChevronRight size={16} className="opacity-0 group-hover:opacity-100" />
                   </Link>
                   <button
                     onClick={() => {
                       onClose();
                       if (userLinks.logout.onClick) userLinks.logout.onClick();
                     }}
-                    className="w-full text-left px-4 py-3 rounded-xl text-sm font-semibold font-SecondaryFont text-PrimaryColor hover:bg-PrimaryColorLight/50 transition-all duration-200 cursor-pointer"
+                    className="flex items-center gap-3 w-full text-left px-4 py-3 rounded-xl text-sm font-semibold font-SecondaryFont text-PrimaryColor hover:bg-PrimaryColorLight/50 transition-all duration-200 cursor-pointer"
                   >
+                    <LogOut size={18} className="shrink-0" />
                     {userLinks.logout.label}
                   </button>
                 </div>

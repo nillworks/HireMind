@@ -1,12 +1,13 @@
-import AnalyticsPage from "@/components/DashboardLayoutUi/Recruiter/Analytics/AnalyticsPage"
+import type { Metadata } from "next";
+import { AnalyticsPage } from "@/components/DashboardLayoutUi/Recruiter/Analytics";
 
+export const metadata: Metadata = {
+  title: "Analytics | TalentAI",
+  description: "Recruiter analytics dashboard with job insights and trends.",
+};
 
-const page = () => {
-  return (
-    <>
-      <AnalyticsPage/>
-    </>
-  )
-}
+const AnalyticsRoute = () => {
+  return <AnalyticsPage />;
+};
 
-export default page
+export default AnalyticsRoute;

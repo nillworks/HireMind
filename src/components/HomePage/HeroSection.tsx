@@ -66,9 +66,9 @@ const HeroSection = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
             onSubmit={handleSearch}
-            className="mt-10 flex flex-col sm:flex-row gap-0 p-2 bg-Surface rounded-2xl shadow-lg border border-Border max-w-2xl mx-auto"
+            className="mt-10 flex gap-3 flex-col sm:flex-row gap-0 p-2 bg-Surface rounded-2xl shadow-lg border border-Border max-w-2xl mx-auto"
           >
-            <div className="flex-1 relative">
+            <div className="flex-1 gap-3 relative">
               <Search
                 size={18}
                 className="absolute left-3 top-1/2 -translate-y-1/2 text-TextMuted"

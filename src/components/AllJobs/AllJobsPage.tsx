@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect } from "react"
 import { Briefcase, Sparkles } from "lucide-react"
 import { getJobs, type JobsQuery } from "@/lib/api/public/jobsApi"
-import JobCard from "./JobCard"
+import JobCard from "@/components/shared/JobCard"
 import JobCardSkeleton from "./JobCardSkeleton"
 import JobFilters from "./JobFilters"
 

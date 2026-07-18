@@ -28,7 +28,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 
 interface SidebarItem {
   label: string;
@@ -42,14 +42,17 @@ interface SidebarSection {
 }
 
 interface User {
-  name?: string;
-  email?: string;
-  image?: string;
-  role?: string;
+  id?: string;
+  name?: string | null;
+  email?: string | null;
+  image?: string | null;
+  role?: string | null;
 }
 
 interface DashboardSidebarProps {
   user: User | null;
+  collapsed?: boolean;
+  onToggle?: () => void;
 }
 
 const seekerSections: SidebarSection[] = [
@@ -127,22 +130,12 @@ const getSectionsByRole = (role: string): SidebarSection[] => {
   }
 };
 
-export default function DashboardSidebar({ user }: DashboardSidebarProps) {
+export default function DashboardSidebar({ user, collapsed = false, onToggle }: DashboardSidebarProps) {
   const pathname = usePathname();
-  const [collapsed, setCollapsed] = useState(false);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    const saved = localStorage.getItem("dashboardSidebarCollapsed");
-    if (saved) setCollapsed(saved === "true");
     setMounted(true);
-  }, []);
-
-  const toggleCollapsed = useCallback(() => {
-    setCollapsed(prev => {
-      localStorage.setItem("dashboardSidebarCollapsed", String(!prev));
-      return !prev;
-    });
   }, []);
 
   if (!mounted) return null;
@@ -176,7 +169,7 @@ export default function DashboardSidebar({ user }: DashboardSidebarProps) {
           </AnimatePresence>
         </Link>
         <button
-          onClick={toggleCollapsed}
+          onClick={onToggle}
           className="flex size-8 items-center justify-center rounded-lg text-TextSecondary dark:text-text-secondary hover:bg-BorderLight dark:hover:bg-secondary/20 transition-colors duration-200 cursor-pointer"
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
         >

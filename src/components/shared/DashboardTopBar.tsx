@@ -13,10 +13,11 @@ import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 interface User {
-  name?: string;
-  email?: string;
-  image?: string;
-  role?: string;
+  id?: string;
+  name?: string | null;
+  email?: string | null;
+  image?: string | null;
+  role?: string | null;
 }
 
 interface DashboardTopBarProps {

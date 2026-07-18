@@ -1,11 +1,5 @@
-import React from 'react'
+import { RecruiterOverviewPage } from "@/components/DashboardLayoutUi/Recruiter/Overview";
 
-const page = () => {
-  return (
-    <div>
-      
-    </div>
-  )
+export default function RecruiterDashboard() {
+  return <RecruiterOverviewPage />;
 }
-
-export default page

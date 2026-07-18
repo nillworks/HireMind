@@ -7,7 +7,7 @@ const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
 
   return (
     <Suspense fallback={<div className="flex h-screen items-center justify-center bg-Background dark:bg-dark-bg"><div className="h-8 w-8 animate-spin rounded-full border-2 border-PrimaryColor border-t-transparent"/></div>}>
-      <DashboardShell user={user}>
+      <DashboardShell user={user || null}>
         {children}
       </DashboardShell>
     </Suspense>

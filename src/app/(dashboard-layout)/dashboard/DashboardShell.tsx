@@ -6,10 +6,11 @@ import DashboardTopBar from "@/components/shared/DashboardTopBar";
 import { cn } from "@/lib/utils";
 
 interface User {
-  name?: string;
-  email?: string;
-  image?: string;
-  role?: string;
+  id?: string;
+  name?: string | null;
+  email?: string | null;
+  image?: string | null;
+  role?: string | null;
 }
 
 export default function DashboardShell({

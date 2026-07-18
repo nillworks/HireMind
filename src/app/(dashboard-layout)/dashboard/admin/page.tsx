@@ -1,10 +1,10 @@
-import React from 'react'
+import OverviewPage from '@/components/DashboardLayoutUi/Admin/Overview/OverviewPage'
 
 const page = () => {
   return (
-    <div>
-      
-    </div>
+    <>
+     <OverviewPage  /> 
+    </>
   )
 }
 

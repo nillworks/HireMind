@@ -87,6 +87,26 @@ const RecruiterProfileForm = ({ profile }: RecruiterProfileFormProps) => {
       toast.error("Company name is required");
       return;
     }
+    if (!phone.trim()) {
+      toast.error("Phone number is required");
+      return;
+    }
+    if (!industry) {
+      toast.error("Industry is required");
+      return;
+    }
+    if (!companySize) {
+      toast.error("Company size is required");
+      return;
+    }
+    if (!companyDescription.trim()) {
+      toast.error("Company description is required");
+      return;
+    }
+    if (!companyLocation.trim()) {
+      toast.error("Company location is required");
+      return;
+    }
 
     setIsSaving(true);
 
@@ -148,7 +168,7 @@ const RecruiterProfileForm = ({ profile }: RecruiterProfileFormProps) => {
           <div className="space-y-2">
             <Label className="font-SecondaryFont text-TextPrimary dark:text-surface flex items-center gap-2">
               <Phone className="w-4 h-4 text-TextMuted" />
-              Phone
+              Phone <span className="text-PrimaryColor">*</span>
             </Label>
             <Input
               value={phone}
@@ -178,7 +198,7 @@ const RecruiterProfileForm = ({ profile }: RecruiterProfileFormProps) => {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
           <div className="space-y-2">
             <Label className="font-SecondaryFont text-TextPrimary dark:text-surface">
-              Industry
+              Industry <span className="text-PrimaryColor">*</span>
             </Label>
             <select
               value={industry}
@@ -196,7 +216,7 @@ const RecruiterProfileForm = ({ profile }: RecruiterProfileFormProps) => {
 
           <div className="space-y-2">
             <Label className="font-SecondaryFont text-TextPrimary dark:text-surface">
-              Company Size
+              Company Size <span className="text-PrimaryColor">*</span>
             </Label>
             <select
               value={companySize}
@@ -276,7 +296,7 @@ const RecruiterProfileForm = ({ profile }: RecruiterProfileFormProps) => {
           </div>
           <div>
             <h2 className="text-lg font-semibold font-PrimaryFont text-TextPrimary dark:text-surface">
-              Company Description
+              Company Description <span className="text-PrimaryColor">*</span>
             </h2>
             <p className="text-sm font-SecondaryFont text-TextMuted">
               Tell candidates about your company
@@ -285,9 +305,9 @@ const RecruiterProfileForm = ({ profile }: RecruiterProfileFormProps) => {
         </div>
 
         <div className="space-y-2">
-          <Label className="font-SecondaryFont text-TextPrimary dark:text-surface">
-            Description
-          </Label>
+            <Label className="font-SecondaryFont text-TextPrimary dark:text-surface">
+              Description <span className="text-PrimaryColor">*</span>
+            </Label>
           <textarea
             value={companyDescription}
             onChange={(e) => setCompanyDescription(e.target.value)}
@@ -314,10 +334,10 @@ const RecruiterProfileForm = ({ profile }: RecruiterProfileFormProps) => {
         </div>
 
         <div className="space-y-2">
-          <Label className="font-SecondaryFont text-TextPrimary dark:text-surface flex items-center gap-2">
-            <MapPin className="w-4 h-4 text-TextMuted" />
-            Company Location
-          </Label>
+            <Label className="font-SecondaryFont text-TextPrimary dark:text-surface flex items-center gap-2">
+              <MapPin className="w-4 h-4 text-TextMuted" />
+              Company Location <span className="text-PrimaryColor">*</span>
+            </Label>
           <Input
             value={companyLocation}
             onChange={(e) => setCompanyLocation(e.target.value)}

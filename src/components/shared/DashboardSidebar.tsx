@@ -212,7 +212,7 @@ export default function DashboardSidebar({ user, collapsed = false, onToggle, pr
               r={radius}
               fill="none"
               stroke="currentColor"
-              strokeWidth="3"
+              strokeWidth="2"
               className="text-Border dark:text-secondary/30"
             />
             <circle
@@ -221,7 +221,7 @@ export default function DashboardSidebar({ user, collapsed = false, onToggle, pr
               r={radius}
               fill="none"
               stroke={completionColor.stroke}
-              strokeWidth="3"
+              strokeWidth="2"
               strokeLinecap="round"
               strokeDasharray={circumference}
               strokeDashoffset={strokeDashoffset}

@@ -162,6 +162,23 @@ const SeekerProfileForm = ({ profile }: SeekerProfileFormProps) => {
   };
 
   const handleSubmit = async () => {
+    if (!phone.trim()) {
+      toast.error("Phone number is required");
+      return;
+    }
+    if (!location.trim()) {
+      toast.error("Location is required");
+      return;
+    }
+    if (!bio.trim()) {
+      toast.error("Professional summary is required");
+      return;
+    }
+    if (skills.length === 0) {
+      toast.error("Add at least one skill");
+      return;
+    }
+
     const cleanedEducation = education.filter(
       (e) => e.institution.trim() || e.degree.trim() || e.field.trim()
     );
@@ -234,7 +251,7 @@ const SeekerProfileForm = ({ profile }: SeekerProfileFormProps) => {
               htmlFor="phone"
               className="text-TextPrimary dark:text-surface font-SecondaryFont"
             >
-              Phone Number
+              Phone Number <span className="text-PrimaryColor">*</span>
             </Label>
             <div className="relative">
               <Phone
@@ -257,7 +274,7 @@ const SeekerProfileForm = ({ profile }: SeekerProfileFormProps) => {
               htmlFor="location"
               className="text-TextPrimary dark:text-surface font-SecondaryFont"
             >
-              Location
+              Location <span className="text-PrimaryColor">*</span>
             </Label>
             <div className="relative">
               <MapPin
@@ -296,7 +313,7 @@ const SeekerProfileForm = ({ profile }: SeekerProfileFormProps) => {
             htmlFor="bio"
             className="text-TextPrimary dark:text-surface font-SecondaryFont"
           >
-            Bio
+            Bio <span className="text-PrimaryColor">*</span>
           </Label>
           <textarea
             id="bio"
@@ -438,7 +455,7 @@ const SeekerProfileForm = ({ profile }: SeekerProfileFormProps) => {
           </div>
           <div>
             <h3 className="text-base font-semibold font-PrimaryFont text-TextPrimary dark:text-surface">
-              Skills
+              Skills <span className="text-PrimaryColor">*</span>
             </h3>
             <p className="text-xs font-SecondaryFont text-TextMuted">
               Your key competencies (max 15)

@@ -26,6 +26,7 @@ import {
   Bot,
   ScrollText,
   UserCircle,
+  BadgeCheck,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
@@ -55,7 +56,15 @@ interface DashboardSidebarProps {
   user: User | null;
   collapsed?: boolean;
   onToggle?: () => void;
+  profileCompletion?: number;
 }
+
+const getCompletionColor = (percent: number) => {
+  if (percent >= 100) return { stroke: "#10B981", text: "text-emerald-500" };
+  if (percent >= 70) return { stroke: "#22C55E", text: "text-green-500" };
+  if (percent >= 40) return { stroke: "#F59E0B", text: "text-amber-500" };
+  return { stroke: "#EF4444", text: "text-red-500" };
+};
 
 const seekerSections: SidebarSection[] = [
   {
@@ -134,7 +143,7 @@ const getSectionsByRole = (role: string): SidebarSection[] => {
   }
 };
 
-export default function DashboardSidebar({ user, collapsed = false, onToggle }: DashboardSidebarProps) {
+export default function DashboardSidebar({ user, collapsed = false, onToggle, profileCompletion = 0 }: DashboardSidebarProps) {
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
 
@@ -146,6 +155,11 @@ export default function DashboardSidebar({ user, collapsed = false, onToggle }: 
 
   const role = user?.role || "seeker";
   const sections = getSectionsByRole(role);
+  const completion = Math.min(100, Math.max(0, profileCompletion));
+  const completionColor = getCompletionColor(completion);
+  const radius = 18;
+  const circumference = 2 * Math.PI * radius;
+  const strokeDashoffset = circumference - (completion / 100) * circumference;
 
   return (
     <aside
@@ -185,14 +199,55 @@ export default function DashboardSidebar({ user, collapsed = false, onToggle }: 
       </div>
 
       <div className="flex items-center gap-3 px-4 py-3 border-b border-Border dark:border-secondary/40">
-        <div className="relative flex size-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-PrimaryColor/20 to-SrcPrimaryColor/20">
-          <span className="font-semibold font-SecondaryFont text-sm text-TextPrimary dark:text-surface">
+        <div className="relative flex size-11 shrink-0 items-center justify-center">
+          <svg
+            className="absolute inset-0 -rotate-90"
+            width="44"
+            height="44"
+            viewBox="0 0 44 44"
+          >
+            <circle
+              cx="22"
+              cy="22"
+              r={radius}
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="3"
+              className="text-Border dark:text-secondary/30"
+            />
+            <circle
+              cx="22"
+              cy="22"
+              r={radius}
+              fill="none"
+              stroke={completionColor.stroke}
+              strokeWidth="3"
+              strokeLinecap="round"
+              strokeDasharray={circumference}
+              strokeDashoffset={strokeDashoffset}
+              className="transition-all duration-700 ease-out"
+            />
+          </svg>
+          <div className="relative flex size-9 items-center justify-center rounded-full bg-gradient-to-br from-PrimaryColor/20 to-SrcPrimaryColor/20 overflow-hidden">
             {user?.image ? (
-              <Image width={60} height={60} className="rounded-full" src={user?.image} alt="image" />
+              <Image
+                width={36}
+                height={36}
+                className="rounded-full object-cover"
+                src={user.image}
+                alt={user.name || "User"}
+              />
             ) : (
-              user?.name?.charAt(0)?.toUpperCase() || "U"
+              <span className="font-semibold font-SecondaryFont text-sm text-TextPrimary dark:text-surface">
+                {user?.name?.charAt(0)?.toUpperCase() || "U"}
+              </span>
             )}
-          </span>
+          </div>
+          {completion >= 100 && !collapsed && (
+            <div className="absolute -bottom-0.5 -right-0.5 flex size-4 items-center justify-center rounded-full bg-emerald-500">
+              <BadgeCheck size={10} className="text-white" />
+            </div>
+          )}
         </div>
         <AnimatePresence initial={false}>
           {!collapsed && (
@@ -205,13 +260,18 @@ export default function DashboardSidebar({ user, collapsed = false, onToggle }: 
               <span className="text-sm font-semibold font-SecondaryFont text-TextPrimary dark:text-surface truncate">
                 {user?.name || "User"}
               </span>
-              <span className="text-xs font-SecondaryFont text-TextMuted truncate">
-                {role === "admin"
-                  ? "Administrator"
-                  : role === "recruiter"
-                  ? "Recruiter"
-                  : "Job Seeker"}
-              </span>
+              <div className="flex items-center gap-1.5">
+                <span className="text-xs font-SecondaryFont text-TextMuted truncate">
+                  {role === "admin"
+                    ? "Administrator"
+                    : role === "recruiter"
+                    ? "Recruiter"
+                    : "Job Seeker"}
+                </span>
+                <span className={`text-[10px] font-semibold font-SecondaryFont ${completionColor.text}`}>
+                  {completion}%
+                </span>
+              </div>
             </motion.div>
           )}
         </AnimatePresence>

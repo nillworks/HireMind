@@ -5,6 +5,7 @@ export interface AdminBlog {
   authorId: string;
   authorName: string;
   authorImage?: string;
+  authorRole?: string;
   tags: string[];
   createdAt: string;
   updatedAt?: string;

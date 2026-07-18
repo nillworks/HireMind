@@ -1,11 +1,17 @@
-import BlogPosts from '@/components/DashboardLayoutUi/Admin/BlogPosts/BlogPosts'
+import type { Metadata } from "next";
+import BlogPostsPage from "@/components/DashboardLayoutUi/Admin/BlogPosts/BlogPostsPage";
 
-const page = () => {
-  return (
-    <>
-      <BlogPosts/>
-    </>
-  )
-}
+export const metadata: Metadata = {
+  title: "Blog Posts | TalentAI Admin",
+  description: "Manage all community blog posts on TalentAI.",
+};
 
-export default page
+const BlogPostsRoute = ({
+  searchParams,
+}: {
+  searchParams?: Promise<{ role?: string; search?: string }>;
+}) => {
+  return <BlogPostsPage searchParams={searchParams} />;
+};
+
+export default BlogPostsRoute;

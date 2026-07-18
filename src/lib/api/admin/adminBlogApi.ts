@@ -23,10 +23,14 @@ export const createBlogPost = async (data: {
   }
 };
 
-export const getAllBlogsAdmin = async () => {
+export const getAllBlogsAdmin = async (authorRole?: string, search?: string) => {
   try {
     const authHeaders = await headersAuthorization();
-    const res = await fetch(`${API}/api/admin/blog`, {
+    const params = new URLSearchParams();
+    if (authorRole && authorRole !== "all") params.set("authorRole", authorRole);
+    if (search) params.set("search", search);
+    const qs = params.toString() ? `?${params.toString()}` : "";
+    const res = await fetch(`${API}/api/admin/blog${qs}`, {
       cache: "no-store",
       headers: { ...authHeaders, "Content-Type": "application/json" },
     });

@@ -23,6 +23,7 @@ interface BlogAuthor {
   name?: string;
   email?: string;
   image?: string | null;
+  role?: string | null;
 }
 
 interface AddBlogPostFormProps {
@@ -85,6 +86,7 @@ const AddBlogPostForm = ({ user }: AddBlogPostFormProps) => {
           content: content.trim(),
           tags,
           authorImage: user?.image || "",
+          authorRole: user?.role || "admin",
         }),
       });
 

@@ -3,6 +3,7 @@ import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
 import NavigationMenu from "@/components/shared/NavigationMenu";
 import Footer from "@/components/shared/Footer";
+import CustomToast from "@/components/shared/CustomToast";
 
 const primaryFont = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -35,6 +36,7 @@ export default function RootLayout({
           {children}
         </main>
         <Footer/>
+        <CustomToast/>
 
 
       </body>

@@ -1,9 +1,9 @@
 import 'server-only';
-import { cookies } from 'next/headers';
+import { getTokenServer } from '../getTokenServer';
+
 
 const headersAuthorization = async (): Promise<Record<string, string>> => {
-  const cookieStore = await cookies();
-  const token = cookieStore.get('token')?.value;
+    const token = await getTokenServer();
 
   if (!token) return {};
 

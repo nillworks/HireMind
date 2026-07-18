@@ -7,5 +7,7 @@ export const getTokenServer = async () => {
     headers: await headers(),
   });
 
+  console.log(token)
+
   return token || null;
 };

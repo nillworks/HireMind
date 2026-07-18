@@ -1,12 +1,51 @@
+"use client";
+
+import { useState, useEffect, useCallback } from "react";
+import { Heart } from "lucide-react";
 import { type Job } from "@/lib/api/public/jobsApi";
+import { toggleSaveJob, checkIfSaved } from "@/lib/api/public/savedJobsApi";
+import { useSession } from "@/lib/auth-client";
+import { cn } from "@/lib/utils";
+import { toast } from "sonner";
 
 interface JobCardProps {
   job: Job;
 }
 
 const JobCard = ({ job }: JobCardProps) => {
+  const { data: session } = useSession();
+  const [isSaved, setIsSaved] = useState(false);
+  const [checking, setChecking] = useState(true);
+
   const daysLeft = Math.ceil(
     (new Date(job.deadline).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
+  );
+
+  useEffect(() => {
+    if (!session?.user) {
+      setChecking(false);
+      return;
+    }
+    checkIfSaved(job._id)
+      .then((res) => setIsSaved(res.saved))
+      .catch(() => {})
+      .finally(() => setChecking(false));
+  }, [job._id, session?.user]);
+
+  const handleToggleSave = useCallback(
+    async (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (!session?.user) return;
+      try {
+        const res = await toggleSaveJob(job._id);
+        setIsSaved(res.saved);
+        toast.success(res.saved ? "Job saved" : "Job removed from saved");
+      } catch {
+        toast.error("Failed to save job");
+      }
+    },
+    [job._id, session?.user]
   );
 
   return (
@@ -41,6 +80,29 @@ const JobCard = ({ job }: JobCardProps) => {
               </p>
             </div>
           </div>
+
+          {session?.user && (
+            <button
+              onClick={handleToggleSave}
+              disabled={checking}
+              className={cn(
+                "size-8 rounded-full flex items-center justify-center shrink-0 transition-all duration-200 cursor-pointer",
+                "hover:bg-PrimaryColorLight dark:hover:bg-PrimaryColorDark/20",
+                isSaved
+                  ? "text-PrimaryColor"
+                  : "text-TextMuted hover:text-PrimaryColor"
+              )}
+              aria-label={isSaved ? "Unsave job" : "Save job"}
+            >
+              <Heart
+                size={18}
+                className={cn(
+                  "transition-all duration-200",
+                  isSaved && "fill-PrimaryColor"
+                )}
+              />
+            </button>
+          )}
         </div>
 
         <p className="text-sm font-SecondaryFont text-TextSecondary dark:text-text-secondary line-clamp-2 mb-4">

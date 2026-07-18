@@ -22,8 +22,9 @@ const LOGGED_OUT_NAV: NavItem[] = [
 const LOGGED_IN_NAV: NavItem[] = [
   { id: 1, label: "Home", href: "/" },
   { id: 2, label: "Browse Jobs", href: "/jobs" },
-  { id: 3, label: "My Applications", href: "/my-applications" },
-  { id: 4, label: "AI Tools", href: "/ai-tools" },
+  { id: 3, label: "Saved Jobs", href: "/saved-jobs" },
+  { id: 4, label: "My Applications", href: "/my-applications" },
+  { id: 5, label: "AI Tools", href: "/ai-tools" },
 ];
 
 const AUTH_LINKS = {

@@ -5,7 +5,6 @@ import {
   Clock,
   Calendar,
   Users,
-  Bookmark,
   Share2,
   Briefcase,
   CheckCircle2,
@@ -13,7 +12,7 @@ import {
   ExternalLink,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Badge } from "@/components/ui/badge"
+import SaveJobButton from "./SaveJobButton"
 
 interface JobDetailsProps {
   job: Job
@@ -172,13 +171,7 @@ const JobDetails = ({ job }: JobDetailsProps) => {
               </Button>
 
               <div className="flex gap-3 mt-4">
-                <Button
-                  variant="outline"
-                  className="flex-1 h-10 rounded-xl border-Border dark:border-secondary font-SecondaryFont text-sm cursor-pointer"
-                >
-                  <Bookmark className="size-4 mr-2" />
-                  Save
-                </Button>
+                <SaveJobButton jobId={job._id} />
                 <Button
                   variant="outline"
                   className="flex-1 h-10 rounded-xl border-Border dark:border-secondary font-SecondaryFont text-sm cursor-pointer"

@@ -29,6 +29,7 @@ import {
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState, useEffect } from "react";
+import Image from "next/image";
 
 interface SidebarItem {
   label: string;
@@ -151,7 +152,7 @@ export default function DashboardSidebar({ user, collapsed = false, onToggle }: 
       )}
     >
       <div className="flex h-16 items-center justify-between px-4 border-b border-Border dark:border-secondary/40">
-        <Link href="/dashboard" className="flex items-center gap-2.5">
+        <Link href="/" className="flex items-center gap-2.5">
           <div className="flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-PrimaryColor to-SrcPrimaryColor shadow-sm">
             <span className="text-white font-bold font-PrimaryFont text-sm">T</span>
           </div>
@@ -183,7 +184,11 @@ export default function DashboardSidebar({ user, collapsed = false, onToggle }: 
       <div className="flex items-center gap-3 px-4 py-3 border-b border-Border dark:border-secondary/40">
         <div className="relative flex size-9 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-PrimaryColor/20 to-SrcPrimaryColor/20">
           <span className="font-semibold font-SecondaryFont text-sm text-TextPrimary dark:text-surface">
-            {user?.name?.charAt(0)?.toUpperCase() || "U"}
+            {user?.image ? (
+              <Image width={60} height={60} className="rounded-full" src={user?.image} alt="image" />
+            ) : (
+              user?.name?.charAt(0)?.toUpperCase() || "U"
+            )}
           </span>
         </div>
         <AnimatePresence initial={false}>

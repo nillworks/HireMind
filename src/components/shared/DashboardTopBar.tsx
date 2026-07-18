@@ -11,6 +11,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 
 interface User {
   id?: string;
@@ -202,9 +203,13 @@ export default function DashboardTopBar({
 
         <div className="flex items-center gap-3 pl-2 border-l border-Border dark:border-secondary/40">
           <div className="flex size-9 items-center justify-center rounded-full bg-gradient-to-br from-PrimaryColor/20 to-SrcPrimaryColor/20">
-            <span className="font-semibold font-SecondaryFont text-sm text-TextPrimary dark:text-surface">
-              {user?.name?.charAt(0)?.toUpperCase() || "U"}
-            </span>
+             <span className="font-semibold font-SecondaryFont text-sm text-TextPrimary dark:text-surface">
+                        {user?.image ? (
+                          <Image width={60} height={60} className="rounded-full" src={user?.image} alt="image" />
+                        ) : (
+                          user?.name?.charAt(0)?.toUpperCase() || "U"
+                        )}
+                      </span>
           </div>
           <div className="hidden md:flex flex-col">
             <span className="text-sm font-semibold font-SecondaryFont text-TextPrimary dark:text-surface leading-tight">

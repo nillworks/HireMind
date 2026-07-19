@@ -12,10 +12,12 @@ import {
   Pencil,
   Trash2,
   Briefcase,
+  UserCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { RecruiterJob } from "@/lib/api/recruiter/recruiterJobsApi";
 import DeleteJobDialog from "./DeleteJobDialog";
+import ApplicantsModal from "./ApplicantsModal";
 import {
   statusConfig,
   jobTypeConfig,
@@ -31,6 +33,7 @@ interface JobCardProps {
 
 const JobCard = ({ job, onDeleted }: JobCardProps) => {
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [applicantsOpen, setApplicantsOpen] = useState(false);
 
   const hasValidLogo =
     job.companyLogo &&
@@ -130,6 +133,16 @@ const JobCard = ({ job, onDeleted }: JobCardProps) => {
               View
             </Button>
           </Link>
+          <Button
+            type="button"
+            variant="outline"
+            size="sm"
+            onClick={() => setApplicantsOpen(true)}
+            className="h-8 px-3 rounded-lg font-SecondaryFont text-xs border-Border dark:border-secondary text-TextSecondary dark:text-text-secondary hover:bg-SrcPrimaryColorLight dark:hover:bg-SrcPrimaryColorDark/20 hover:text-SrcPrimaryColor hover:border-SrcPrimaryColor/30 transition-colors cursor-pointer"
+          >
+            <UserCheck size={14} />
+            {job.applicationCount ?? 0}
+          </Button>
           <Link
             href={`/dashboard/recruiter/my-jobs/${job._id}/edit`}
             className="flex-1 cursor-pointer"
@@ -149,7 +162,7 @@ const JobCard = ({ job, onDeleted }: JobCardProps) => {
             variant="outline"
             size="sm"
             onClick={() => setDeleteOpen(true)}
-            className="h-8 w-8 shrink-0 rounded-lg border-Border dark:border-secondary text-TextMuted hover:bg-PrimaryColorLight dark:hover:bg-PrimaryColorDark/20 hover:text-PrimaryColor hover:border-PrimaryColor/30 transition-colors p-0 cursor-pointer"
+            className="h-8 w-8 shrink-0 rounded-lg border-Border dark:border-secondary text-TextMuted hover:bg-PrimaryColorLight dark:hover:bg-PrimaryColorDark/20 hover:text-PrimaryColor hover:border-PrimaryColor/30 p-0 cursor-pointer"
           >
             <Trash2 size={14} />
           </Button>
@@ -164,6 +177,13 @@ const JobCard = ({ job, onDeleted }: JobCardProps) => {
         open={deleteOpen}
         onOpenChange={setDeleteOpen}
         onDeleted={onDeleted}
+      />
+
+      <ApplicantsModal
+        jobId={job._id}
+        jobTitle={job.title}
+        open={applicantsOpen}
+        onOpenChange={setApplicantsOpen}
       />
     </>
   );

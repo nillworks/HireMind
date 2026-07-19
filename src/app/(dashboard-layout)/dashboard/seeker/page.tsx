@@ -1,10 +1,12 @@
+import OverviewPage from "@/components/DashboardLayoutUi/Seeker/Overview/OverviewPage"
 
 
 const page = () => {
   return (
-    <div>
-      
-    </div>
+    <>
+     <OverviewPage /> 
+    </>
+    
   )
 }
 

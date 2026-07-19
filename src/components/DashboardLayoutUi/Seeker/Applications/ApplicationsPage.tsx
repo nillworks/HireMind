@@ -13,6 +13,7 @@ import {
   FileText,
   Loader2,
   Search,
+  MessageSquare,
 } from "lucide-react";
 import { getMyApplications, withdrawApplication } from "@/lib/api/seeker/applicationsApi";
 import { toast } from "sonner";
@@ -34,6 +35,7 @@ interface Application {
   portfolioUrl: string;
   coverLetter: string;
   status: "pending" | "reviewed" | "accepted" | "rejected";
+  feedback?: string;
   createdAt: string;
   job: ApplicationJob | null;
 }
@@ -51,6 +53,8 @@ const ApplicationsPage = () => {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState<string>("all");
   const [withdrawing, setWithdrawing] = useState<string | null>(null);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [viewedFeedback, setViewedFeedback] = useState<Set<string>>(new Set());
 
   useEffect(() => {
     fetchApplications();
@@ -218,7 +222,10 @@ const ApplicationsPage = () => {
                 {filtered.map((app) => {
                   const status = statusConfig[app.status] || statusConfig.pending;
                   const StatusIcon = status.icon;
+                  const isExpanded = expandedId === app._id;
+                  const hasUnviewedFeedback = app.feedback && !viewedFeedback.has(app._id);
                   return (
+                    <>
                     <tr
                       key={app._id}
                       className="hover:bg-BorderLight/50 dark:hover:bg-secondary/10 transition-colors"
@@ -279,6 +286,37 @@ const ApplicationsPage = () => {
                             <ExternalLink size={12} />
                             View
                           </Link>
+                          {app.feedback && (
+                            <button
+                              onClick={() => {
+                                if (isExpanded) {
+                                  setExpandedId(null);
+                                } else {
+                                  setExpandedId(app._id);
+                                  setViewedFeedback((prev) => new Set(prev).add(app._id));
+                                }
+                              }}
+                              className={`relative inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold font-SecondaryFont transition-colors cursor-pointer ${
+                                isExpanded
+                                  ? "bg-PrimaryColorLight dark:bg-PrimaryColorDark/20 text-PrimaryColor"
+                                  : app.status === "rejected"
+                                  ? "bg-red-50 dark:bg-red-900/20 text-red-500 hover:bg-red-100 dark:hover:bg-red-900/30"
+                                  : app.status === "accepted"
+                                  ? "bg-emerald-50 dark:bg-emerald-900/20 text-emerald-500 hover:bg-emerald-100 dark:hover:bg-emerald-900/30"
+                                  : app.status === "reviewed"
+                                  ? "bg-blue-50 dark:bg-blue-900/20 text-blue-500 hover:bg-blue-100 dark:hover:bg-blue-900/30"
+                                  : "bg-BorderLight dark:bg-secondary/20 text-TextMuted hover:bg-Border dark:hover:bg-secondary/30"
+                              }`}
+                            >
+                              <MessageSquare size={12} className={app.status === "rejected" && !isExpanded ? "animate-pulse" : ""} />
+                              {app.status === "accepted" && !isExpanded && (
+                                <span className="size-4 rounded-full bg-emerald-500 text-white flex items-center justify-center text-[9px] font-bold leading-none">+</span>
+                              )}
+                              {hasUnviewedFeedback && app.status === "rejected" && (
+                                <span className="absolute -top-1 -right-1 size-2.5 rounded-full bg-red-500 animate-pulse border-2 border-white dark:border-[#1e293b]" />
+                              )}
+                            </button>
+                          )}
                           {app.status === "pending" && (
                             <button
                               onClick={() => handleWithdraw(app._id)}
@@ -296,6 +334,24 @@ const ApplicationsPage = () => {
                         </div>
                       </td>
                     </tr>
+                    {isExpanded && app.feedback && (
+                      <tr key={`${app._id}-feedback`}>
+                        <td colSpan={5} className="px-6 py-3 bg-BorderLight/30 dark:bg-secondary/5">
+                          <div className="flex items-start gap-2">
+                            <MessageSquare size={14} className="text-PrimaryColor mt-0.5 shrink-0" />
+                            <div>
+                              <p className="text-[11px] font-semibold font-PrimaryFont text-TextMuted uppercase mb-0.5">
+                                Recruiter Feedback
+                              </p>
+                              <p className="text-xs font-SecondaryFont text-TextSecondary dark:text-text-secondary leading-relaxed">
+                                {app.feedback}
+                              </p>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    )}
+                    </>
                   );
                 })}
               </tbody>

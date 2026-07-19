@@ -8,10 +8,12 @@ import {
   Pencil,
   Trash2,
   Briefcase,
+  UserCheck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { RecruiterJob } from "@/lib/api/recruiter/recruiterJobsApi";
 import DeleteJobDialog from "./DeleteJobDialog";
+import ApplicantsModal from "./ApplicantsModal";
 import {
   statusConfig,
   jobTypeConfig,
@@ -27,6 +29,7 @@ interface JobTableRowProps {
 
 const JobTableRow = ({ job, onDeleted }: JobTableRowProps) => {
   const [deleteOpen, setDeleteOpen] = useState(false);
+  const [applicantsOpen, setApplicantsOpen] = useState(false);
 
   const hasValidLogo =
     job.companyLogo &&
@@ -122,6 +125,16 @@ const JobTableRow = ({ job, onDeleted }: JobTableRowProps) => {
                 <Eye size={15} />
               </Button>
             </Link>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              onClick={() => setApplicantsOpen(true)}
+              className="h-8 w-8 rounded-lg text-TextMuted hover:text-SrcPrimaryColor hover:bg-SrcPrimaryColorLight dark:hover:bg-SrcPrimaryColorDark/20 p-0 transition-colors cursor-pointer"
+              aria-label="View applicants"
+            >
+              <UserCheck size={15} />
+            </Button>
             <Link href={`/dashboard/recruiter/my-jobs/${job._id}/edit`} className="cursor-pointer">
               <Button
                 type="button"
@@ -153,6 +166,13 @@ const JobTableRow = ({ job, onDeleted }: JobTableRowProps) => {
         open={deleteOpen}
         onOpenChange={setDeleteOpen}
         onDeleted={onDeleted}
+      />
+
+      <ApplicantsModal
+        jobId={job._id}
+        jobTitle={job.title}
+        open={applicantsOpen}
+        onOpenChange={setApplicantsOpen}
       />
     </>
   );

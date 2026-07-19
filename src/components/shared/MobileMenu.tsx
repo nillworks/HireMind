@@ -16,6 +16,7 @@ import {
   Newspaper,
   Building2,
   Info,
+  MessageSquare,
 } from "lucide-react";
 import ActiveLink, { type NavItem } from "@/components/shared/ActiveLink";
 import VerifiedBadge from "@/components/shared/VerifiedBadge";
@@ -25,6 +26,7 @@ const iconMap: Record<string, React.ElementType> = {
   "/": Home,
   "/jobs": Briefcase,
   "/about": Info,
+  "/contact": MessageSquare,
   "/blog": Newspaper,
   "/company": Building2,
   "/my-applications": FileCheck,

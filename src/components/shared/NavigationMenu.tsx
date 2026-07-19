@@ -17,13 +17,16 @@ const LOGGED_OUT_NAV: NavItem[] = [
   { id: 1, label: "Home", href: "/" },
   { id: 2, label: "Browse Jobs", href: "/jobs" },
   { id: 3, label: "About", href: "/about" },
+  { id: 4, label: "Contact", href: "/contact" },
 ];
 
 const LOGGED_IN_NAV: NavItem[] = [
   { id: 1, label: "Home", href: "/" },
   { id: 2, label: "Browse Jobs", href: "/jobs" },
-  { id: 3, label: "Blog", href: "/blog" },
-  { id: 4, label: "Company", href: "/company" },
+  { id: 3, label: "About", href: "/about" },
+  { id: 4, label: "Contact", href: "/contact" },
+  { id: 5, label: "Blog", href: "/blog" },
+  { id: 6, label: "Company", href: "/company" },
   // { id: 3, label: "Saved Jobs", href: "/saved-jobs" },
   // { id: 4, label: "My Applications", href: "/my-applications" },
   // { id: 5, label: "AI Tools", href: "/ai-tools" },

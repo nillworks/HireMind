@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Fragment } from "react";
 import Link from "next/link";
 import {
   Briefcase,
@@ -225,9 +225,8 @@ const ApplicationsPage = () => {
                   const isExpanded = expandedId === app._id;
                   const hasUnviewedFeedback = app.feedback && !viewedFeedback.has(app._id);
                   return (
-                    <>
+                    <Fragment key={app._id}>
                     <tr
-                      key={app._id}
                       className="hover:bg-BorderLight/50 dark:hover:bg-secondary/10 transition-colors"
                     >
                       <td className="px-6 py-4">
@@ -351,7 +350,7 @@ const ApplicationsPage = () => {
                         </td>
                       </tr>
                     )}
-                    </>
+                    </Fragment>
                   );
                 })}
               </tbody>

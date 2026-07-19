@@ -31,6 +31,7 @@ export const auth = betterAuth({
             email: session.user.email,
             name: session.user.name,
             role: session.user.role,
+            plan: session.user.plan,
           };
         },
       },
@@ -49,6 +50,12 @@ export const auth = betterAuth({
         type: "string",
         required: false,
         defaultValue: "seeker",
+        input: true,
+      },
+      plan: {
+        type: "string",
+        required: false,
+        defaultValue: "free_seeker",
         input: true,
       },
     },

@@ -21,6 +21,7 @@ import {
   ScrollText,
   UserCircle,
   BadgeCheck,
+  CreditCard,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { AnimatePresence, motion } from "framer-motion";
@@ -110,6 +111,7 @@ const adminSections: SidebarSection[] = [
       { label: "Overview", href: "/dashboard/admin", icon: LayoutDashboard },
       { label: "Manage Users", href: "/dashboard/admin/users", icon: Users },
       { label: "Manage Jobs", href: "/dashboard/admin/jobs", icon: Briefcase },
+      { label: "Manage Plans", href: "/dashboard/admin/plans", icon: CreditCard },
       { label: "Recruiter Applications", href: "/dashboard/admin/recruiters", icon: UserCheck },
     ],
   },

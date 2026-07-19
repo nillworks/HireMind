@@ -22,6 +22,7 @@ import ProfileCompletionCard from "./ProfileCompletionCard";
 import RecentApplications from "./RecentApplications";
 import QuickActionsCard from "./QuickActionsCard";
 import OverviewSkeleton from "./OverviewSkeleton";
+import PlanUpgradeCard from "./PlanUpgradeCard";
 
 const OverviewPage = () => {
   const { data: session } = useSession();
@@ -109,12 +110,19 @@ const OverviewPage = () => {
         <div className="lg:col-span-2">
           <QuickActionsCard />
         </div>
-        <ProfileCompletionCard
-          profile={profile}
-          completionPercent={completionPercent}
-          userName={userName}
-          userImage={userImage}
-        />
+        <div className="space-y-5">
+          <ProfileCompletionCard
+            profile={profile}
+            completionPercent={completionPercent}
+            userName={userName}
+            userImage={userImage}
+          />
+          <PlanUpgradeCard
+            currentPlan={(session?.user as any)?.plan || "free_seeker"}
+            usage={applications.length}
+            limit={5}
+          />
+        </div>
       </div>
 
       <RecentApplications applications={applications} />

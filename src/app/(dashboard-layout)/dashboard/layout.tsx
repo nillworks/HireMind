@@ -2,6 +2,8 @@ import { Suspense } from "react";
 import getUserSession from "@/lib/getUserSession";
 import DashboardShell from "./DashboardShell";
 
+export const dynamic = "force-dynamic";
+
 const DashboardLayout = async ({ children }: { children: React.ReactNode }) => {
   const user = await getUserSession();
 

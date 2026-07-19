@@ -3,7 +3,7 @@ import { auth } from "@/lib/auth";
 
 export async function GET() {
   try {
-    const { token } = await auth.api.getToken({
+    const { token } = await (auth() as any).api.getToken({
       headers: await (await import("next/headers")).headers(),
     });
 

@@ -6,7 +6,6 @@ import {
   Bookmark,
   TrendingUp,
   Clock,
-  Loader2,
 } from "lucide-react";
 import { useSession } from "@/lib/auth-client";
 import {
@@ -22,7 +21,7 @@ import ProfileCompletionCard from "./ProfileCompletionCard";
 import RecentApplications from "./RecentApplications";
 import QuickActionsCard from "./QuickActionsCard";
 import OverviewSkeleton from "./OverviewSkeleton";
-import PlanUpgradeCard from "./PlanUpgradeCard";
+
 
 const OverviewPage = () => {
   const { data: session } = useSession();
@@ -58,7 +57,6 @@ const OverviewPage = () => {
   const userImage = session?.user?.image || undefined;
 
   const pendingCount = applications.filter((a) => a.status === "pending").length;
-  const reviewedCount = applications.filter((a) => a.status === "reviewed").length;
 
   if (loading) {
     return <OverviewSkeleton />;
@@ -116,11 +114,6 @@ const OverviewPage = () => {
             completionPercent={completionPercent}
             userName={userName}
             userImage={userImage}
-          />
-          <PlanUpgradeCard
-            currentPlan={(session?.user as any)?.plan || "free_seeker"}
-            usage={applications.length}
-            limit={5}
           />
         </div>
       </div>

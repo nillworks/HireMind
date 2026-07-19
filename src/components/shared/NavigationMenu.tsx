@@ -71,11 +71,11 @@ console.log(user);
   const dynamicUserLinks = {
     dashboard: {
       label: "Dashboard",
-      href: dashboardHref[(user?.role as string)?.toLowerCase()] || "/dashboard",
+      href: dashboardHref[(user as any)?.role?.toLowerCase()] || "/dashboard",
     },
     profile: {
       label: "Profile",
-      href: `/dashboard/${(user?.role as string)?.toLowerCase() || "seeker"}/profile`,
+      href: `/dashboard/${(user as any)?.role?.toLowerCase() || "seeker"}/profile`,
     },
     logout: { label: "Logout", onClick: handleSignOut },
   };

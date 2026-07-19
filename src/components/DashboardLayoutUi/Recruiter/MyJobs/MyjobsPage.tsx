@@ -3,11 +3,15 @@ import Link from "next/link";
 import { Plus } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { getMyJobs } from "@/lib/api/recruiter/recruiterJobsApi";
+import getUserSession from "@/lib/getUserSession";
 import JobList from "./JobList";
 import MyJobsSkeleton from "./MyJobsSkeleton";
+import PlanUsageBar from "@/components/shared/PlanUsageBar";
 
 const MyJobsContent = async () => {
-  const jobs = await getMyJobs();
+  const [jobs, user] = await Promise.all([getMyJobs(), getUserSession()]);
+  const plan = (user as any)?.plan || "recruiter_free";
+  const jobCount = jobs?.length || 0;
 
   return (
     <div className="space-y-6">
@@ -30,6 +34,8 @@ const MyJobsContent = async () => {
           </Button>
         </Link>
       </div>
+
+      <PlanUsageBar plan={plan} role="recruiter" usage={jobCount} limit={5} />
 
       <JobList initialJobs={jobs} />
     </div>

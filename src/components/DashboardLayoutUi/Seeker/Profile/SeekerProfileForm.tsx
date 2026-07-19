@@ -6,6 +6,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import fetchClient from "@/lib/utils/fetchClient";
+import { useSession } from "@/lib/auth-client";
+import PlanUpgradeCard from "@/components/DashboardLayoutUi/Seeker/Overview/PlanUpgradeCard";
 import {
   User,
   Phone,
@@ -77,6 +79,7 @@ const textareaClasses =
   "flex w-full rounded-xl border border-Border dark:border-secondary bg-white dark:bg-[#0f172a] px-3 py-2.5 text-sm font-SecondaryFont text-TextPrimary dark:text-surface placeholder:text-TextMuted outline-none focus:border-PrimaryColor focus:ring-2 focus:ring-PrimaryColor/20 transition-colors resize-none";
 
 const SeekerProfileForm = ({ profile }: SeekerProfileFormProps) => {
+  const { data: session } = useSession();
   const [saving, setSaving] = useState(false);
 
   const [phone, setPhone] = useState(profile?.phone ?? "");
@@ -772,6 +775,11 @@ const SeekerProfileForm = ({ profile }: SeekerProfileFormProps) => {
           </div>
         )}
       </div>
+
+      <PlanUpgradeCard
+        currentPlan={(session?.user as any)?.plan || "free_seeker"}
+        role={(session?.user as any)?.role || "seeker"}
+      />
 
       <div className="flex items-center justify-end">
         <Button

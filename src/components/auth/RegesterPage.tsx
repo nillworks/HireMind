@@ -83,7 +83,7 @@ const RegesterPage = () => {
       password: data.password as string,
       image: imageUrl,
       role: "seeker",
-    });
+    } as any);
 
     if (signUpError) {
       toast.error(signUpError.message || "Registration failed. Please try again.");
@@ -156,7 +156,6 @@ const RegesterPage = () => {
                   </div>
                   {profileImagePreview && (
                     <span
-                      type="button"
                       onClick={(e) => {
                         e.stopPropagation();
                         removeImage();

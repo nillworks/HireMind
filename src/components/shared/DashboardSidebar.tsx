@@ -45,6 +45,7 @@ interface User {
   email?: string | null;
   image?: string | null;
   role?: string | null;
+  plan?: string | null;
 }
 
 interface DashboardSidebarProps {
@@ -243,6 +244,11 @@ export default function DashboardSidebar({
                 <span className="text-xs font-SecondaryFont text-TextMuted truncate">
                   {role === "admin" ? "Administrator" : role === "recruiter" ? "Recruiter" : "Job Seeker"}
                 </span>
+                {user?.plan && user.plan !== "free_seeker" && user.plan !== "recruiter_free" && (
+                  <span className="inline-flex items-center gap-0.5 text-[9px] font-bold font-SecondaryFont text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded-full">
+                    PRO
+                  </span>
+                )}
                 <span className={`text-[10px] font-semibold font-SecondaryFont ${completionColor.text} whitespace-nowrap`}>
                   {completion}%
                 </span>

@@ -3,12 +3,20 @@ import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
+let _stripe: Stripe | null = null;
+function getStripe() {
+  if (!_stripe && process.env.STRIPE_SECRET_KEY) {
+    _stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+  }
+  return _stripe;
+}
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 export async function POST(request: Request) {
   try {
-    if (!process.env.STRIPE_SECRET_KEY || process.env.STRIPE_SECRET_KEY.startsWith("sk_test_your")) {
+    const stripe = getStripe();
+    if (!stripe) {
       return NextResponse.json(
         { success: false, message: "Stripe not configured" },
         { status: 503 }
@@ -16,7 +24,7 @@ export async function POST(request: Request) {
     }
 
     const headersList = await headers();
-    const { token } = await auth.api.getToken({ headers: headersList as any });
+    const { token } = await (auth() as any).api.getToken({ headers: headersList as any });
     if (!token) {
       return NextResponse.json({ success: false, message: "Not authenticated" }, { status: 401 });
     }
@@ -26,28 +34,18 @@ export async function POST(request: Request) {
       return NextResponse.json({ success: false, message: "sessionId required" }, { status: 400 });
     }
 
-    const session = await stripe.checkout.sessions.retrieve(sessionId);
-    if (session.payment_status !== "paid") {
+    const stripeSession = await stripe.checkout.sessions.retrieve(sessionId);
+    if (stripeSession.payment_status !== "paid") {
       return NextResponse.json({ success: false, message: "Payment not completed" }, { status: 400 });
     }
 
-    const planId = session.metadata?.planId;
-    const userId = session.metadata?.userId;
-
-    if (!planId || !userId) {
-      return NextResponse.json({ success: false, message: "Invalid session metadata" }, { status: 400 });
-    }
-
-    const apiRes = await fetch(`${API_URL}/api/payments/update-plan`, {
+    const apiRes = await fetch(`${API_URL}/api/payments/confirm`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({
-        planId,
-        stripeSubscriptionId: session.subscription,
-      }),
+      body: JSON.stringify({ sessionId }),
     });
 
     const apiData = await apiRes.json();

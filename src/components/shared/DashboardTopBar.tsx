@@ -20,6 +20,7 @@ interface User {
   email?: string | null;
   image?: string | null;
   role?: string | null;
+  plan?: string | null;
 }
 
 interface DashboardTopBarProps {
@@ -211,8 +212,13 @@ export default function DashboardTopBar({
                       </span>
           </div>
           <div className="hidden md:flex flex-col">
-            <span className="text-sm font-semibold font-SecondaryFont text-TextPrimary dark:text-surface leading-tight">
+            <span className="text-sm font-semibold font-SecondaryFont text-TextPrimary dark:text-surface leading-tight flex items-center gap-1.5">
               {user?.name || "User"}
+              {user?.plan && user.plan !== "free_seeker" && user.plan !== "recruiter_free" && (
+                <span className="inline-flex items-center gap-0.5 text-[9px] font-bold font-SecondaryFont text-emerald-500 bg-emerald-500/10 px-1.5 py-0.5 rounded-full">
+                  PRO
+                </span>
+              )}
             </span>
             <span className="text-xs font-SecondaryFont text-TextMuted">
               {user?.role === "admin"

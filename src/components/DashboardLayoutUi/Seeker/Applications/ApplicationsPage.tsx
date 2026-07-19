@@ -16,6 +16,8 @@ import {
   MessageSquare,
 } from "lucide-react";
 import { getMyApplications, withdrawApplication } from "@/lib/api/seeker/applicationsApi";
+import { useSession } from "@/lib/auth-client";
+import PlanUsageBar from "@/components/shared/PlanUsageBar";
 import { toast } from "sonner";
 
 interface ApplicationJob {
@@ -48,6 +50,7 @@ const statusConfig: Record<string, { label: string; color: string; icon: React.E
 };
 
 const ApplicationsPage = () => {
+  const { data: session } = useSession();
   const [applications, setApplications] = useState<Application[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -138,6 +141,13 @@ const ApplicationsPage = () => {
           </div>
         ))}
       </div>
+
+      <PlanUsageBar
+        plan={(session?.user as any)?.plan || "free_seeker"}
+        role="seeker"
+        usage={applications.length}
+        limit={5}
+      />
 
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">

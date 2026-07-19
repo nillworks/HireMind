@@ -1,11 +1,11 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { CheckCircle2, ArrowRight, Loader2, XCircle } from "lucide-react";
 
-const PaymentSuccessPage = () => {
+const PaymentSuccessContent = () => {
   const searchParams = useSearchParams();
   const sessionId = searchParams.get("session_id");
   const [status, setStatus] = useState<"verifying" | "success" | "error">("verifying");
@@ -123,6 +123,18 @@ const PaymentSuccessPage = () => {
         Redirecting in {countdown}s...
       </p>
     </div>
+  );
+};
+
+const PaymentSuccessPage = () => {
+  return (
+    <Suspense fallback={
+      <div className="max-w-lg mx-auto px-4 py-20 text-center">
+        <Loader2 size={40} className="text-PrimaryColor animate-spin mx-auto mb-6" />
+      </div>
+    }>
+      <PaymentSuccessContent />
+    </Suspense>
   );
 };
 

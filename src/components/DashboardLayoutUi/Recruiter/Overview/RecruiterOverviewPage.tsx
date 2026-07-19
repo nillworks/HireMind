@@ -11,7 +11,12 @@ const RecruiterOverviewPage = async () => {
   return (
     <Suspense fallback={<OverviewSkeleton />}>
       <OverviewStatsSection />
-      <OverviewPage jobs={jobs} user={user ?? null} />
+      <OverviewPage
+        jobs={jobs}
+        user={user ?? null}
+        plan={(user as any)?.plan || "recruiter_free"}
+        jobCount={jobs?.length || 0}
+      />
     </Suspense>
   );
 };

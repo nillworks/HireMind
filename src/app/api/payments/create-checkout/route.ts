@@ -3,20 +3,19 @@ import { headers } from "next/headers";
 import { auth } from "@/lib/auth";
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "");
+let _stripe: Stripe | null = null;
+function getStripe() {
+  if (!_stripe && process.env.STRIPE_SECRET_KEY) {
+    _stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+  }
+  return _stripe;
+}
 
 export async function POST(request: Request) {
   try {
-    if (!process.env.STRIPE_SECRET_KEY || process.env.STRIPE_SECRET_KEY.startsWith("sk_test_your")) {
-      return NextResponse.json(
-        { success: false, message: "Stripe not configured. Set STRIPE_SECRET_KEY in .env.local" },
-        { status: 503 }
-      );
-    }
-
     const headersList = await headers();
 
-    const { token } = await auth.api.getToken({
+    const { token } = await (auth() as any).api.getToken({
       headers: headersList as any,
     });
 
@@ -27,7 +26,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const session = await auth.api.getSession({
+    const session = await auth().api.getSession({
       headers: headersList as any,
     });
 
@@ -45,6 +44,22 @@ export async function POST(request: Request) {
       return NextResponse.json(
         { success: false, message: "planId and price are required" },
         { status: 400 }
+      );
+    }
+
+    const userPlan = (user as any).plan || "free_seeker";
+    if (userPlan === planId) {
+      return NextResponse.json(
+        { success: false, message: "You are already on this plan" },
+        { status: 400 }
+      );
+    }
+
+    const stripe = getStripe();
+    if (!stripe) {
+      return NextResponse.json(
+        { success: false, message: "Stripe not configured. Set STRIPE_SECRET_KEY in .env.local" },
+        { status: 503 }
       );
     }
 

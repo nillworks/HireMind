@@ -13,7 +13,7 @@ import {
 } from "lucide-react";
 import fetchClient from "@/lib/utils/fetchClient";
 
-const isValidUrl = (str?: string) => {
+const isValidUrl = (str?: string): str is string => {
   if (!str) return false;
   try {
     new URL(str);

@@ -12,6 +12,7 @@ interface User {
   email?: string | null;
   image?: string | null;
   role?: string | null;
+  plan?: string | null;
 }
 
 function calculateSeekerCompletion(profile: Record<string, unknown> | null, user: User): number {

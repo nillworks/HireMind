@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import DashboardSidebar from "@/components/shared/DashboardSidebar";
 import DashboardTopBar from "@/components/shared/DashboardTopBar";
 import { cn } from "@/lib/utils";
@@ -16,8 +16,7 @@ interface User {
 
 function calculateSeekerCompletion(profile: Record<string, unknown> | null, user: User): number {
   let filled = 0;
-  let total = 10;
-
+  const total = 10;
   if (user.name) filled++;
   if (user.email) filled++;
   if (user.image) filled++;
@@ -28,14 +27,12 @@ function calculateSeekerCompletion(profile: Record<string, unknown> | null, user
   if (Array.isArray(profile?.skills) && (profile.skills as unknown[]).length > 0) filled++;
   if (Array.isArray(profile?.education) && (profile.education as unknown[]).length > 0) filled++;
   if (Array.isArray(profile?.experience) && (profile.experience as unknown[]).length > 0) filled++;
-
   return Math.round((filled / total) * 100);
 }
 
 function calculateRecruiterCompletion(profile: Record<string, unknown> | null, user: User): number {
   let filled = 0;
-  let total = 9;
-
+  const total = 9;
   if (user.name) filled++;
   if (user.email) filled++;
   if (user.image) filled++;
@@ -45,18 +42,15 @@ function calculateRecruiterCompletion(profile: Record<string, unknown> | null, u
   if (profile?.companyLocation) filled++;
   if (profile?.industry) filled++;
   if (profile?.phone) filled++;
-
   return Math.round((filled / total) * 100);
 }
 
 function calculateAdminCompletion(user: User): number {
   let filled = 0;
-  let total = 3;
-
+  const total = 3;
   if (user.name) filled++;
   if (user.email) filled++;
   if (user.image) filled++;
-
   return Math.round((filled / total) * 100);
 }
 
@@ -67,26 +61,32 @@ export default function DashboardShell({
   user: User | null;
   children: React.ReactNode;
 }) {
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  const [sidebarHovered, setSidebarHovered] = useState(false);
   const [profileCompletion, setProfileCompletion] = useState(0);
+  const hoverTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
-    const saved = localStorage.getItem("dashboardSidebarCollapsed");
-    if (saved) setSidebarCollapsed(saved === "true");
+    const handleResize = () => {
+      if (window.innerWidth >= 1024) setMobileSidebarOpen(false);
+    };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   useEffect(() => {
+    document.body.style.overflow = mobileSidebarOpen ? "hidden" : "";
+    return () => { document.body.style.overflow = ""; };
+  }, [mobileSidebarOpen]);
+
+  useEffect(() => {
     if (!user) return;
-
     const role = (user.role as string)?.toLowerCase();
-
     if (role === "admin") {
       setProfileCompletion(calculateAdminCompletion(user));
       return;
     }
-
     const endpoint = role === "recruiter" ? "/api/recruiter-profile/profile" : "/api/seeker/profile";
-
     fetchClient<{ data?: Record<string, unknown> | null }>(endpoint)
       .then((json) => {
         const profile = json?.data ?? null;
@@ -101,21 +101,66 @@ export default function DashboardShell({
       });
   }, [user]);
 
-  const toggleSidebar = () => setSidebarCollapsed((prev) => !prev);
+  const toggleMobileSidebar = useCallback(() => setMobileSidebarOpen((prev) => !prev), []);
+  const closeMobileSidebar = useCallback(() => setMobileSidebarOpen(false), []);
+
+  const startHoverClose = useCallback(() => {
+    hoverTimerRef.current = setTimeout(() => setSidebarHovered(false), 200);
+  }, []);
+
+  const cancelHoverClose = useCallback(() => {
+    if (hoverTimerRef.current) {
+      clearTimeout(hoverTimerRef.current);
+      hoverTimerRef.current = null;
+    }
+  }, []);
+
+  const handleSidebarMouseEnter = useCallback(() => {
+    cancelHoverClose();
+    setSidebarHovered(true);
+  }, [cancelHoverClose]);
+
+  const handleSidebarMouseLeave = useCallback(() => {
+    startHoverClose();
+  }, [startHoverClose]);
+
+  useEffect(() => {
+    return () => {
+      if (hoverTimerRef.current) clearTimeout(hoverTimerRef.current);
+    };
+  }, []);
+
+  const isExpanded = sidebarHovered;
 
   return (
-    <div className="flex h-screen bg-Background dark:bg-dark-bg">
-      <DashboardSidebar user={user} collapsed={sidebarCollapsed} onToggle={toggleSidebar} profileCompletion={profileCompletion} />
+    <div className="flex h-screen bg-Background dark:bg-dark-bg overflow-hidden">
+      {mobileSidebarOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 backdrop-blur-sm lg:hidden transition-opacity duration-300"
+          onClick={closeMobileSidebar}
+          aria-hidden="true"
+        />
+      )}
+
+      <DashboardSidebar
+        user={user}
+        expanded={isExpanded}
+        profileCompletion={profileCompletion}
+        mobileOpen={mobileSidebarOpen}
+        onMobileClose={closeMobileSidebar}
+        onMouseEnter={handleSidebarMouseEnter}
+        onMouseLeave={handleSidebarMouseLeave}
+      />
+
       <div
         className={cn(
-          "flex flex-1 flex-col transition-all duration-300 ease-out",
-          sidebarCollapsed ? "ml-[72px]" : "ml-[260px]"
+          "flex flex-1 flex-col transition-all duration-300 ease-out min-w-0",
+          "lg:ml-[72px]"
         )}
       >
         <DashboardTopBar
           user={user}
-          onToggleSidebar={toggleSidebar}
-          sidebarCollapsed={sidebarCollapsed}
+          onToggleSidebar={toggleMobileSidebar}
         />
         <main className="flex-1 overflow-y-auto px-4 lg:px-6 py-6">
           {children}

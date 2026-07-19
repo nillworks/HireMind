@@ -70,16 +70,13 @@ export const getJobs = async (query: JobsQuery = {}): Promise<JobsResponse> => {
 };
 
 export const getJobById = async (jobId: string): Promise<Job | null> => {
-  try {
-    const res = await fetch(`${API}/api/jobs/${jobId}`, {
-      cache: "no-store",
-    });
-    if (!res.ok) return null;
-    const json = await res.json();
-    return json.data ?? null;
-  } catch {
-    return null;
-  }
+  const res = await fetch(`${API}/api/jobs/${jobId}`, {
+    cache: "no-store",
+  });
+  if (res.status === 404) return null;
+  if (!res.ok) return null;
+  const json = await res.json();
+  return json.data ?? null;
 };
 
 export const getFeaturedJobs = async (): Promise<Job[]> => {

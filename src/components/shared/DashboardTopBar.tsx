@@ -6,7 +6,8 @@ import {
   Search,
   Moon,
   Sun,
-  MoveLeft,
+  Menu,
+  X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useState, useRef, useEffect } from "react";
@@ -25,6 +26,7 @@ interface DashboardTopBarProps {
   user: User | null;
   onToggleSidebar?: () => void;
   sidebarCollapsed?: boolean;
+  mobileSidebarOpen?: boolean;
 }
 
 const pageTitles: Record<string, string> = {
@@ -52,7 +54,7 @@ const pageTitles: Record<string, string> = {
 export default function DashboardTopBar({
   user,
   onToggleSidebar,
-  sidebarCollapsed,
+  mobileSidebarOpen,
 }: DashboardTopBarProps) {
   const pathname = usePathname();
   const [showSearch, setShowSearch] = useState(false);
@@ -94,16 +96,14 @@ export default function DashboardTopBar({
       <div className="flex items-center gap-3">
         <button
           onClick={onToggleSidebar}
-          className="flex size-9 items-center justify-center rounded-xl text-TextSecondary dark:text-text-secondary hover:bg-BorderLight dark:hover:bg-secondary/20 transition-colors duration-200 cursor-pointer lg:hidden"
+          className=" lg:hidden flex size-9 items-center justify-center rounded-xl text-TextSecondary dark:text-text-secondary hover:bg-BorderLight dark:hover:bg-secondary/20 transition-colors duration-200 cursor-pointer"
           aria-label="Toggle sidebar"
         >
-          <MoveLeft
-            size={18}
-            className={cn(
-              "transition-transform duration-300",
-              sidebarCollapsed && "rotate-180"
-            )}
-          />
+          {mobileSidebarOpen ? (
+            <X size={18} />
+          ) : (
+            <Menu size={18} />
+          )}
         </button>
 
         <div>

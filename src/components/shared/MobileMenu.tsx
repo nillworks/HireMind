@@ -13,6 +13,9 @@ import {
   LayoutDashboard,
   UserCircle,
   LogOut,
+  Newspaper,
+  Building2,
+  Info,
 } from "lucide-react";
 import ActiveLink, { type NavItem } from "@/components/shared/ActiveLink";
 import VerifiedBadge from "@/components/shared/VerifiedBadge";
@@ -21,7 +24,9 @@ import { cn } from "@/lib/utils";
 const iconMap: Record<string, React.ElementType> = {
   "/": Home,
   "/jobs": Briefcase,
-  "/about": Briefcase,
+  "/about": Info,
+  "/blog": Newspaper,
+  "/company": Building2,
   "/my-applications": FileCheck,
   "/ai-tools": Sparkles,
 };

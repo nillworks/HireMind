@@ -92,16 +92,16 @@ export default function DashboardTopBar({
 
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center justify-between gap-4 border-b border-Border dark:border-secondary/40 bg-white/80 dark:bg-[#0B1120]/80 backdrop-blur-xl px-4 lg:px-6">
-      <div className="flex lg:hidden items-center gap-3">
+      <div className="flex items-center gap-3">
         <button
           onClick={onToggleSidebar}
           className="flex size-9 items-center justify-center rounded-xl text-TextSecondary dark:text-text-secondary hover:bg-BorderLight dark:hover:bg-secondary/20 transition-colors duration-200 cursor-pointer"
           aria-label="Toggle sidebar"
         >
           {mobileSidebarOpen ? (
-            <X size={18} />
+            <X size={18} className="lg:hidden" />
           ) : (
-            <Menu size={18} />
+            <Menu size={18} className="lg:hidden" />
           )}
         </button>
 

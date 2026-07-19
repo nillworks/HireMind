@@ -170,7 +170,7 @@ export default function DashboardSidebar({
   const circumference = 2 * Math.PI * radius;
   const strokeDashoffset = circumference - (completion / 100) * circumference;
 
-  const showFullText = expanded;
+  const showFullText = expanded || mobileOpen;
 
   return (
     <aside
@@ -179,7 +179,7 @@ export default function DashboardSidebar({
       className={cn(
         "fixed left-0 top-0 z-40 flex h-screen flex-col bg-white dark:bg-[#0B1120] border-r border-Border dark:border-secondary/40 transition-all duration-300 ease-out",
         "max-lg:transition-transform max-lg:duration-300",
-        expanded ? "w-[260px] lg:w-[260px]" : "w-[72px] lg:w-[72px]",
+        expanded ? "lg:w-[260px]" : "lg:w-[72px]",
         "max-lg:w-[280px] max-lg:shadow-2xl",
         mobileOpen ? "max-lg:translate-x-0" : "max-lg:-translate-x-full",
         expanded && "lg:shadow-xl lg:z-50"

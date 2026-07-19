@@ -1,3 +1,7 @@
+"use client"
+
+import { useState, useEffect } from "react"
+import { useRouter } from "next/navigation"
 import { type Job } from "@/lib/api/public/jobsApi"
 import {
   MapPin,
@@ -10,18 +14,49 @@ import {
   CheckCircle2,
   Gift,
   ExternalLink,
+  Loader2,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import SaveJobButton from "./SaveJobButton"
+import ApplyModal from "./ApplyModal"
+import { useSession } from "@/lib/auth-client"
+import { checkIfApplied } from "@/lib/api/seeker/applicationsApi"
 
 interface JobDetailsProps {
   job: Job
 }
 
 const JobDetails = ({ job }: JobDetailsProps) => {
+  const router = useRouter()
+  const { data: session } = useSession()
+  const user = session?.user
+  const [modalOpen, setModalOpen] = useState(false)
+  const [alreadyApplied, setAlreadyApplied] = useState(false)
+  const [checkingApplied, setCheckingApplied] = useState(true)
+
   const daysLeft = Math.ceil(
     (new Date(job.deadline).getTime() - Date.now()) / (1000 * 60 * 60 * 24)
   )
+
+  useEffect(() => {
+    if (!user) {
+      setCheckingApplied(false)
+      return
+    }
+    checkIfApplied(job._id)
+      .then((res) => setAlreadyApplied(res.applied))
+      .catch(() => {})
+      .finally(() => setCheckingApplied(false))
+  }, [job._id, user])
+
+  const handleApplyClick = () => {
+    if (!user) {
+      router.push("/login")
+      return
+    }
+    if (alreadyApplied) return
+    setModalOpen(true)
+  }
 
   return (
     <div className="min-h-screen bg-Background dark:bg-[#0f172a]">
@@ -165,10 +200,31 @@ const JobDetails = ({ job }: JobDetailsProps) => {
                 Quick Apply
               </h3>
 
-              <Button className="w-full h-11 rounded-xl bg-gradient-to-r from-PrimaryColor to-SrcPrimaryColor text-white font-SecondaryFont font-semibold hover:opacity-90 transition-opacity cursor-pointer">
-                Apply Now
-                <ExternalLink className="size-4 ml-2" />
-              </Button>
+              {checkingApplied ? (
+                <Button
+                  disabled
+                  className="w-full h-11 rounded-xl bg-gradient-to-r from-PrimaryColor to-SrcPrimaryColor text-white font-SecondaryFont font-semibold cursor-not-allowed"
+                >
+                  <Loader2 className="size-4 mr-2 animate-spin" />
+                  Checking...
+                </Button>
+              ) : alreadyApplied ? (
+                <Button
+                  disabled
+                  className="w-full h-11 rounded-xl bg-SrcPrimaryColor/20 text-SrcPrimaryColor font-SecondaryFont font-semibold cursor-not-allowed"
+                >
+                  <CheckCircle2 className="size-4 mr-2" />
+                  Already Applied
+                </Button>
+              ) : (
+                <Button
+                  onClick={handleApplyClick}
+                  className="w-full h-11 rounded-xl bg-gradient-to-r from-PrimaryColor to-SrcPrimaryColor text-white font-SecondaryFont font-semibold hover:opacity-90 transition-opacity cursor-pointer"
+                >
+                  Apply Now
+                  <ExternalLink className="size-4 ml-2" />
+                </Button>
+              )}
 
               <div className="flex gap-3 mt-4">
                 <SaveJobButton jobId={job._id} />
@@ -227,6 +283,13 @@ const JobDetails = ({ job }: JobDetailsProps) => {
           </div>
         </div>
       </div>
+
+      <ApplyModal
+        job={job}
+        open={modalOpen}
+        onOpenChange={setModalOpen}
+        onApplySuccess={() => setAlreadyApplied(true)}
+      />
     </div>
   )
 }

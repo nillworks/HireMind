@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useTransition } from "react";
+import React, { useState, useTransition, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import fetchClient from "@/lib/utils/fetchClient";
 import { useSession } from "@/lib/auth-client";
+import JobPostHelper from "@/components/DashboardLayoutUi/Recruiter/MyJobs/JobPostHelper";
 
 const categories = [
   "Technology",
@@ -43,6 +44,12 @@ const jobTypes = [
   { value: "contract", label: "Contract" },
 ];
 
+interface JobPostData {
+  title: string; companyName: string; category: string; jobType: string;
+  location: string; salaryMin: number; salaryMax: number;
+  shortDescription: string; fullDescription: string; requirements: string[];
+}
+
 const PostJobForm = () => {
   const router = useRouter();
   const { data } = useSession();
@@ -51,6 +58,28 @@ const PostJobForm = () => {
   const [isPending, startTransition] = useTransition();
   const [requirements, setRequirements] = useState<string[]>([]);
   const [newRequirement, setNewRequirement] = useState("");
+  const [companyLogo, setCompanyLogo] = useState("");
+  const [logoError, setLogoError] = useState("");
+
+  const handleAIFill = useCallback((data: JobPostData) => {
+    const setVal = (id: string, val: string) => {
+      const el = document.getElementById(id) as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement | null;
+      if (el) el.value = val;
+    };
+
+    setVal('title', data.title);
+    setVal('companyName', data.companyName);
+    setVal('location', data.location);
+    setVal('category', data.category);
+    setVal('jobType', data.jobType);
+    setVal('salaryMin', String(data.salaryMin));
+    setVal('salaryMax', String(data.salaryMax));
+    setVal('shortDescription', data.shortDescription);
+    setVal('fullDescription', data.fullDescription);
+    if (data.requirements?.length) setRequirements(data.requirements);
+
+    toast.success("AI has filled the job post form!");
+  }, []);
 
   const addRequirement = () => {
     const trimmed = newRequirement.trim();
@@ -68,6 +97,26 @@ const PostJobForm = () => {
     if (e.key === "Enter") {
       e.preventDefault();
       addRequirement();
+    }
+  };
+
+  const isValidUrl = (url: string) => {
+    if (!url.trim()) return true;
+    try {
+      const parsed = new URL(url);
+      return parsed.protocol === "http:" || parsed.protocol === "https:";
+    } catch {
+      return false;
+    }
+  };
+
+  const handleLogoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const val = e.target.value;
+    setCompanyLogo(val);
+    if (val.trim() && !isValidUrl(val)) {
+      setLogoError("Please enter a valid URL (e.g. https://example.com/logo.png)");
+    } else {
+      setLogoError("");
     }
   };
 
@@ -90,6 +139,11 @@ const PostJobForm = () => {
       recruiterName: user?.name,
       recruiterEmail: user?.email,
     };
+
+    if (companyLogo.trim() && !isValidUrl(companyLogo)) {
+      setLogoError("Please enter a valid URL (e.g. https://example.com/logo.png)");
+      return;
+    }
 
     if (
       !jobData.title ||
@@ -176,10 +230,15 @@ const PostJobForm = () => {
               <Input
                 id="companyLogo"
                 name="companyLogo"
+                value={companyLogo}
+                onChange={handleLogoChange}
                 placeholder="https://example.com/logo.png"
-                className="pl-9 h-10 bg-Background dark:bg-dark-bg border-Border dark:border-secondary text-TextPrimary dark:text-surface font-SecondaryFont placeholder:text-TextMuted rounded-xl"
+                className={`pl-9 h-10 bg-Background dark:bg-dark-bg border-Border dark:border-secondary text-TextPrimary dark:text-surface font-SecondaryFont placeholder:text-TextMuted rounded-xl ${logoError ? "border-red-500 focus:border-red-500 focus:ring-red-500/20" : ""}`}
               />
             </div>
+            {logoError && (
+              <p className="text-xs text-red-500 mt-1 font-SecondaryFont">{logoError}</p>
+            )}
           </div>
 
           <div className="space-y-2">
@@ -425,32 +484,35 @@ const PostJobForm = () => {
         </div>
       </div>
 
-      <div className="flex items-center justify-end gap-3">
-        <Button
-          type="button"
-          onClick={() => router.back()}
-          variant="outline"
-          className="h-10 px-5 rounded-xl font-SecondaryFont font-medium border-Border dark:border-secondary text-TextSecondary dark:text-text-secondary hover:bg-Background dark:hover:bg-dark-bg transition-colors"
-        >
-          Cancel
-        </Button>
-        <Button
-          type="submit"
-          disabled={isPending}
-          className="h-10 px-6 rounded-xl bg-gradient-to-r from-PrimaryColor to-SrcPrimaryColor hover:from-PrimaryColorHover hover:to-SrcPrimaryColorHover text-white font-SecondaryFont font-semibold transition-all duration-200 shadow-md hover:shadow-lg"
-        >
-          {isPending ? (
-            <>
-              <Loader2 size={16} className="animate-spin" />
-              Posting...
-            </>
-          ) : (
-            <>
-              <CheckCircle size={16} />
-              Post Job
-            </>
-          )}
-        </Button>
+      <div className="flex items-center justify-between gap-3">
+        <JobPostHelper onFill={handleAIFill} />
+        <div className="flex items-center gap-3">
+          <Button
+            type="button"
+            onClick={() => router.back()}
+            variant="outline"
+            className="h-10 px-5 rounded-xl font-SecondaryFont font-medium border-Border dark:border-secondary text-TextSecondary dark:text-text-secondary hover:bg-Background dark:hover:bg-dark-bg transition-colors cursor-pointer"
+          >
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            disabled={isPending}
+            className="h-10 px-6 rounded-xl bg-gradient-to-r from-PrimaryColor to-SrcPrimaryColor hover:from-PrimaryColorHover hover:to-SrcPrimaryColorHover text-white font-SecondaryFont font-semibold transition-all duration-200 shadow-md hover:shadow-lg cursor-pointer"
+          >
+            {isPending ? (
+              <>
+                <Loader2 size={16} className="animate-spin" />
+                Posting...
+              </>
+            ) : (
+              <>
+                <CheckCircle size={16} />
+                Post Job
+              </>
+            )}
+          </Button>
+        </div>
       </div>
     </form>
   );

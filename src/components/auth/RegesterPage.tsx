@@ -13,6 +13,9 @@ import {
   UserPlus,
   X,
   Sparkles,
+  CheckCircle2,
+  AlertCircle,
+  Loader2,
 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -23,6 +26,13 @@ import { signUp, signOut } from "@/lib/auth-client";
 import { uploadImageToImgBB } from "@/lib/imageUpload";
 import CustomToast from "@/components/shared/CustomToast";
 
+interface FieldErrors {
+  name?: string;
+  email?: string;
+  password?: string;
+  confirmPassword?: string;
+}
+
 const RegesterPage = () => {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
@@ -30,7 +40,86 @@ const RegesterPage = () => {
   const [profileImagePreview, setProfileImagePreview] = useState<string | null>(null);
   const [profileImageFile, setProfileImageFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [errors, setErrors] = useState<FieldErrors>({});
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const validateEmail = (val: string): string | undefined => {
+    if (!val.trim()) return "Email is required";
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(val)) return "Please enter a valid email address";
+    return undefined;
+  };
+
+  const validatePassword = (val: string): string | undefined => {
+    if (!val) return "Password is required";
+    if (val.length < 8) return "Password must be at least 8 characters";
+    if (!/[A-Z]/.test(val)) return "Must contain an uppercase letter";
+    if (!/[a-z]/.test(val)) return "Must contain a lowercase letter";
+    if (!/[0-9]/.test(val)) return "Must contain a number";
+    return undefined;
+  };
+
+  const validateName = (val: string): string | undefined => {
+    if (!val.trim()) return "Full name is required";
+    if (val.trim().length < 2) return "Name must be at least 2 characters";
+    return undefined;
+  };
+
+  const validateConfirmPassword = (val: string): string | undefined => {
+    if (!val) return "Please confirm your password";
+    if (val !== password) return "Passwords do not match";
+    return undefined;
+  };
+
+  const validateField = (field: string, val: string): string | undefined => {
+    switch (field) {
+      case "name": return validateName(val);
+      case "email": return validateEmail(val);
+      case "password": return validatePassword(val);
+      case "confirmPassword": return validateConfirmPassword(val);
+      default: return undefined;
+    }
+  };
+
+  const getFieldError = (field: string, val: string): string | undefined => {
+    if (!touched[field]) return undefined;
+    return validateField(field, val);
+  };
+
+  const handleChange = (field: string, val: string, setter: (v: string) => void) => {
+    setter(val);
+    if (touched[field]) {
+      const err = validateField(field, val);
+      setErrors((prev) => ({ ...prev, [field]: err }));
+      if (field === "password" && touched["confirmPassword"]) {
+        const confirmErr = val !== confirmPassword ? "Passwords do not match" : undefined;
+        setErrors((prev) => ({ ...prev, confirmPassword: confirmErr }));
+      }
+    }
+  };
+
+  const handleBlur = (field: string, val: string) => {
+    setTouched((prev) => ({ ...prev, [field]: true }));
+    const err = validateField(field, val);
+    setErrors((prev) => ({ ...prev, [field]: err }));
+    if (field === "password" && confirmPassword) {
+      const confirmErr = val !== confirmPassword ? "Passwords do not match" : undefined;
+      setErrors((prev) => ({ ...prev, confirmPassword: confirmErr }));
+    }
+  };
+
+  const isFormValid = (): boolean => {
+    const nameErr = validateName(name);
+    const emailErr = validateEmail(email);
+    const passErr = validatePassword(password);
+    const confirmErr = validateConfirmPassword(confirmPassword);
+    return !nameErr && !emailErr && !passErr && !confirmErr;
+  };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -54,16 +143,20 @@ const RegesterPage = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    const allTouched = { name: true, email: true, password: true, confirmPassword: true };
+    setTouched(allTouched);
+
+    const nameErr = validateName(name);
+    const emailErr = validateEmail(email);
+    const passErr = validatePassword(password);
+    const confirmErr = validateConfirmPassword(confirmPassword);
+
+    setErrors({ name: nameErr, email: emailErr, password: passErr, confirmPassword: confirmErr });
+
+    if (nameErr || emailErr || passErr || confirmErr) return;
+
     setIsLoading(true);
-
-    const formData = new FormData(e.currentTarget);
-    const data = Object.fromEntries(formData);
-
-    if (data.password !== data.confirmPassword) {
-      toast.error("Passwords do not match");
-      setIsLoading(false);
-      return;
-    }
 
     let imageUrl: string | undefined;
 
@@ -78,9 +171,9 @@ const RegesterPage = () => {
     }
 
     const { error: signUpError } = await signUp.email({
-      name: data.name as string,
-      email: data.email as string,
-      password: data.password as string,
+      name,
+      email,
+      password,
       image: imageUrl,
       role: "seeker",
     } as any);
@@ -185,11 +278,8 @@ const RegesterPage = () => {
               </div>
 
               {/* Name Field */}
-              <div className="space-y-2">
-                <Label
-                  htmlFor="name"
-                  className="font-SecondaryFont text-TextPrimary"
-                >
+              <div className="space-y-1.5">
+                <Label htmlFor="name" className="font-SecondaryFont text-TextPrimary text-sm">
                   Full Name
                 </Label>
                 <div className="relative">
@@ -201,19 +291,35 @@ const RegesterPage = () => {
                     id="name"
                     name="name"
                     type="text"
+                    value={name}
+                    onChange={(e) => handleChange("name", e.target.value, setName)}
+                    onBlur={() => handleBlur("name", name)}
                     placeholder="John Doe"
-                    className="pl-10 h-11 rounded-xl border-Border bg-Surface text-TextPrimary placeholder:text-TextMuted focus:border-SrcPrimaryColor focus:ring-SrcPrimaryColor/20"
+                    className={cn(
+                      "pl-10 h-11 rounded-xl bg-Surface text-TextPrimary placeholder:text-TextMuted transition-colors",
+                      errors.name && touched.name
+                        ? "border-PrimaryColor focus:border-PrimaryColor focus:ring-PrimaryColor/20"
+                        : name && !errors.name
+                          ? "border-SrcPrimaryColor focus:border-SrcPrimaryColor focus:ring-SrcPrimaryColor/20"
+                          : "border-Border focus:border-SrcPrimaryColor focus:ring-SrcPrimaryColor/20"
+                    )}
                     required
                   />
+                  {name && !errors.name && (
+                    <CheckCircle2 size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-SrcPrimaryColor" />
+                  )}
                 </div>
+                {errors.name && touched.name && (
+                  <p className="flex items-center gap-1 text-xs text-PrimaryColor font-SecondaryFont mt-1">
+                    <AlertCircle size={12} />
+                    {errors.name}
+                  </p>
+                )}
               </div>
 
               {/* Email Field */}
-              <div className="space-y-2">
-                <Label
-                  htmlFor="email"
-                  className="font-SecondaryFont text-TextPrimary"
-                >
+              <div className="space-y-1.5">
+                <Label htmlFor="email" className="font-SecondaryFont text-TextPrimary text-sm">
                   Email
                 </Label>
                 <div className="relative">
@@ -225,19 +331,35 @@ const RegesterPage = () => {
                     id="email"
                     name="email"
                     type="email"
+                    value={email}
+                    onChange={(e) => handleChange("email", e.target.value, setEmail)}
+                    onBlur={() => handleBlur("email", email)}
                     placeholder="you@example.com"
-                    className="pl-10 h-11 rounded-xl border-Border bg-Surface text-TextPrimary placeholder:text-TextMuted focus:border-SrcPrimaryColor focus:ring-SrcPrimaryColor/20"
+                    className={cn(
+                      "pl-10 h-11 rounded-xl bg-Surface text-TextPrimary placeholder:text-TextMuted transition-colors",
+                      errors.email && touched.email
+                        ? "border-PrimaryColor focus:border-PrimaryColor focus:ring-PrimaryColor/20"
+                        : email && !errors.email
+                          ? "border-SrcPrimaryColor focus:border-SrcPrimaryColor focus:ring-SrcPrimaryColor/20"
+                          : "border-Border focus:border-SrcPrimaryColor focus:ring-SrcPrimaryColor/20"
+                    )}
                     required
                   />
+                  {email && !errors.email && (
+                    <CheckCircle2 size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-SrcPrimaryColor" />
+                  )}
                 </div>
+                {errors.email && touched.email && (
+                  <p className="flex items-center gap-1 text-xs text-PrimaryColor font-SecondaryFont mt-1">
+                    <AlertCircle size={12} />
+                    {errors.email}
+                  </p>
+                )}
               </div>
 
               {/* Password Field */}
-              <div className="space-y-2">
-                <Label
-                  htmlFor="password"
-                  className="font-SecondaryFont text-TextPrimary"
-                >
+              <div className="space-y-1.5">
+                <Label htmlFor="password" className="font-SecondaryFont text-TextPrimary text-sm">
                   Password
                 </Label>
                 <div className="relative">
@@ -249,29 +371,68 @@ const RegesterPage = () => {
                     id="password"
                     name="password"
                     type={showPassword ? "text" : "password"}
+                    value={password}
+                    onChange={(e) => handleChange("password", e.target.value, setPassword)}
+                    onBlur={() => handleBlur("password", password)}
                     placeholder="Create a password"
-                    className="pl-10 pr-10 h-11 rounded-xl border-Border bg-Surface text-TextPrimary placeholder:text-TextMuted focus:border-SrcPrimaryColor focus:ring-SrcPrimaryColor/20"
+                    className={cn(
+                      "pl-10 pr-10 h-11 rounded-xl bg-Surface text-TextPrimary placeholder:text-TextMuted transition-colors",
+                      errors.password && touched.password
+                        ? "border-PrimaryColor focus:border-PrimaryColor focus:ring-PrimaryColor/20"
+                        : password && !errors.password
+                          ? "border-SrcPrimaryColor focus:border-SrcPrimaryColor focus:ring-SrcPrimaryColor/20"
+                          : "border-Border focus:border-SrcPrimaryColor focus:ring-SrcPrimaryColor/20"
+                    )}
                     required
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-TextMuted hover:text-TextSecondary transition-colors cursor-pointer"
-                    aria-label={
-                      showPassword ? "Hide password" : "Show password"
-                    }
+                    aria-label={showPassword ? "Hide password" : "Show password"}
                   >
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
                 </div>
+                {errors.password && touched.password && (
+                  <p className="flex items-center gap-1 text-xs text-PrimaryColor font-SecondaryFont mt-1">
+                    <AlertCircle size={12} />
+                    {errors.password}
+                  </p>
+                )}
+                {password && !errors.password && (
+                  <p className="flex items-center gap-1 text-xs text-SrcPrimaryColor font-SecondaryFont mt-1">
+                    <CheckCircle2 size={12} />
+                    Password is strong
+                  </p>
+                )}
+                {password && (
+                  <div className="flex items-center gap-1.5 mt-1">
+                    {[
+                      { label: "8+ chars", met: password.length >= 8 },
+                      { label: "A-Z", met: /[A-Z]/.test(password) },
+                      { label: "a-z", met: /[a-z]/.test(password) },
+                      { label: "0-9", met: /[0-9]/.test(password) },
+                    ].map((rule) => (
+                      <span
+                        key={rule.label}
+                        className={cn(
+                          "text-[10px] font-medium font-SecondaryFont px-1.5 py-0.5 rounded-md transition-colors",
+                          rule.met
+                            ? "bg-SrcPrimaryColorLight text-SrcPrimaryColor dark:bg-SrcPrimaryColor/20"
+                            : "bg-BorderLight text-TextMuted dark:bg-secondary/20"
+                        )}
+                      >
+                        {rule.met ? "✓" : "○"} {rule.label}
+                      </span>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Confirm Password Field */}
-              <div className="space-y-2">
-                <Label
-                  htmlFor="confirm-password"
-                  className="font-SecondaryFont text-TextPrimary"
-                >
+              <div className="space-y-1.5">
+                <Label htmlFor="confirm-password" className="font-SecondaryFont text-TextPrimary text-sm">
                   Confirm Password
                 </Label>
                 <div className="relative">
@@ -283,64 +444,59 @@ const RegesterPage = () => {
                     id="confirm-password"
                     name="confirmPassword"
                     type={showConfirmPassword ? "text" : "password"}
+                    value={confirmPassword}
+                    onChange={(e) => handleChange("confirmPassword", e.target.value, setConfirmPassword)}
+                    onBlur={() => handleBlur("confirmPassword", confirmPassword)}
                     placeholder="Confirm your password"
                     className={cn(
-                      "pl-10 pr-10 h-11 rounded-xl bg-Surface text-TextPrimary placeholder:text-TextMuted",
-                      "border-Border focus:border-SrcPrimaryColor focus:ring-SrcPrimaryColor/20"
+                      "pl-10 pr-10 h-11 rounded-xl bg-Surface text-TextPrimary placeholder:text-TextMuted transition-colors",
+                      errors.confirmPassword && touched.confirmPassword
+                        ? "border-PrimaryColor focus:border-PrimaryColor focus:ring-PrimaryColor/20"
+                        : confirmPassword && !errors.confirmPassword
+                          ? "border-SrcPrimaryColor focus:border-SrcPrimaryColor focus:ring-SrcPrimaryColor/20"
+                          : "border-Border focus:border-SrcPrimaryColor focus:ring-SrcPrimaryColor/20"
                     )}
                     required
                   />
                   <button
                     type="button"
-                    onClick={() =>
-                      setShowConfirmPassword(!showConfirmPassword)
-                    }
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-TextMuted hover:text-TextSecondary transition-colors cursor-pointer"
-                    aria-label={
-                      showConfirmPassword ? "Hide password" : "Show password"
-                    }
+                    aria-label={showConfirmPassword ? "Hide password" : "Show password"}
                   >
-                    {showConfirmPassword ? (
-                      <EyeOff size={18} />
-                    ) : (
-                      <Eye size={18} />
-                    )}
+                    {showConfirmPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
+                  {confirmPassword && !errors.confirmPassword && (
+                    <CheckCircle2 size={16} className="absolute right-10 top-1/2 -translate-y-1/2 text-SrcPrimaryColor" />
+                  )}
                 </div>
+                {errors.confirmPassword && touched.confirmPassword && (
+                  <p className="flex items-center gap-1 text-xs text-PrimaryColor font-SecondaryFont mt-1">
+                    <AlertCircle size={12} />
+                    {errors.confirmPassword}
+                  </p>
+                )}
+                {confirmPassword && !errors.confirmPassword && (
+                  <p className="flex items-center gap-1 text-xs text-SrcPrimaryColor font-SecondaryFont mt-1">
+                    <CheckCircle2 size={12} />
+                    Passwords match
+                  </p>
+                )}
               </div>
 
-              {/* Register Button - Primary Red */}
+              {/* Register Button */}
               <Button
                 type="submit"
                 disabled={isLoading}
                 className={cn(
                   "w-full h-11 rounded-xl font-SecondaryFont font-semibold text-white cursor-pointer",
-                  "bg-PrimaryColor hover:bg-PrimaryColorHover active:bg-PrimaryColorActive",
-                  "transition-colors duration-200"
+                  "bg-gradient-to-r from-PrimaryColor to-SrcPrimaryColor hover:opacity-90",
+                  "transition-all duration-200 shadow-md hover:shadow-lg"
                 )}
               >
                 {isLoading ? (
                   <span className="flex items-center gap-2">
-                    <svg
-                      className="animate-spin h-5 w-5"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      />
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      />
-                    </svg>
+                    <Loader2 size={18} className="animate-spin" />
                     Creating account...
                   </span>
                 ) : (

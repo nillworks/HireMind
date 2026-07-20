@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Mail, Lock, Eye, EyeOff, LogIn, Sparkles } from "lucide-react";
+import { Mail, Lock, Eye, EyeOff, LogIn, Sparkles, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -18,6 +18,20 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+
+  const getRoleRedirect = async (): Promise<string> => {
+    try {
+      const res = await fetch("/api/auth/session");
+      if (res.ok) {
+        const data = await res.json();
+        const role: string = data?.user?.role || "seeker";
+        return `/dashboard/${role}`;
+      }
+    } catch {
+      // fallback
+    }
+    return "/dashboard/seeker";
+  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -38,8 +52,9 @@ const LoginPage = () => {
       return;
     }
 
+    const redirectTo = await getRoleRedirect();
     toast.success("Welcome back! Redirecting...");
-    router.push("/");
+    router.push(redirectTo);
     setIsLoading(false);
   };
 
@@ -76,11 +91,8 @@ const LoginPage = () => {
             {/* Login Form */}
             <form onSubmit={handleSubmit} className="space-y-5">
               {/* Email Field */}
-              <div className="space-y-2">
-                <Label
-                  htmlFor="email"
-                  className="font-SecondaryFont text-TextPrimary"
-                >
+              <div className="space-y-1.5">
+                <Label htmlFor="email" className="font-SecondaryFont text-TextPrimary text-sm">
                   Email
                 </Label>
                 <div className="relative">
@@ -100,11 +112,8 @@ const LoginPage = () => {
               </div>
 
               {/* Password Field */}
-              <div className="space-y-2">
-                <Label
-                  htmlFor="password"
-                  className="font-SecondaryFont text-TextPrimary"
-                >
+              <div className="space-y-1.5">
+                <Label htmlFor="password" className="font-SecondaryFont text-TextPrimary text-sm">
                   Password
                 </Label>
                 <div className="relative">
@@ -124,9 +133,7 @@ const LoginPage = () => {
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
                     className="absolute right-3 top-1/2 -translate-y-1/2 text-TextMuted hover:text-TextSecondary transition-colors cursor-pointer"
-                    aria-label={
-                      showPassword ? "Hide password" : "Show password"
-                    }
+                    aria-label={showPassword ? "Hide password" : "Show password"}
                   >
                     {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                   </button>
@@ -158,38 +165,19 @@ const LoginPage = () => {
                 </Link>
               </div>
 
-              {/* Login Button - Primary Red */}
+              {/* Login Button */}
               <Button
                 type="submit"
                 disabled={isLoading}
                 className={cn(
                   "w-full h-11 rounded-xl font-SecondaryFont font-semibold text-white cursor-pointer",
-                  "bg-PrimaryColor hover:bg-PrimaryColorHover active:bg-PrimaryColorActive",
-                  "transition-colors duration-200"
+                  "bg-gradient-to-r from-PrimaryColor to-SrcPrimaryColor hover:opacity-90",
+                  "transition-all duration-200 shadow-md hover:shadow-lg"
                 )}
               >
                 {isLoading ? (
                   <span className="flex items-center gap-2">
-                    <svg
-                      className="animate-spin h-5 w-5"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                    >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      />
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      />
-                    </svg>
+                    <Loader2 size={18} className="animate-spin" />
                     Signing in...
                   </span>
                 ) : (

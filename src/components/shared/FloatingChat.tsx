@@ -3,8 +3,9 @@
 import { useState, useRef, useEffect } from "react";
 import { useSession } from "@/lib/auth-client";
 import { sendChatMessage } from "@/lib/api/ai";
-import { MessageCircle, X, Send, Bot, Loader2, LogIn } from "lucide-react";
+import { MessageCircle, X, Send, Bot, Loader2, LogIn, Sparkles } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import ReactMarkdown from "react-markdown";
 
 interface ChatMsg {
@@ -18,6 +19,7 @@ export default function FloatingChat() {
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
   const { data: session, isPending } = useSession();
+  const pathname = usePathname();
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -77,14 +79,14 @@ export default function FloatingChat() {
     }
   };
 
-  if (isPending) return null;
+  if (isPending || pathname !== "/") return null;
 
   return (
     <>
       {!open && (
         <button
           onClick={() => setOpen(true)}
-          className="fixed bottom-6 right-6 z-50 size-14 rounded-full bg-gradient-to-r from-PrimaryColor to-SrcPrimaryColor text-white shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center"
+          className="fixed bottom-6 right-6 z-50 size-14 rounded-full bg-gradient-to-r from-PrimaryColor to-SrcPrimaryColor text-white shadow-lg hover:shadow-xl hover:shadow-PrimaryColor/20 hover:scale-105 active:scale-95 transition-all flex items-center justify-center cursor-pointer"
           aria-label="Open chat"
         >
           <MessageCircle size={24} />
@@ -100,7 +102,7 @@ export default function FloatingChat() {
             </div>
             <button
               onClick={() => setOpen(false)}
-              className="p-1 rounded-lg hover:bg-white/20 transition-colors"
+              className="p-1 rounded-lg hover:bg-white/20 transition-colors cursor-pointer"
             >
               <X size={16} />
             </button>
@@ -109,7 +111,9 @@ export default function FloatingChat() {
           <div className="flex-1 min-h-0 overflow-y-auto p-3 space-y-3" style={{ maxHeight: 400 }}>
             {!session ? (
               <div className="flex flex-col items-center justify-center h-full text-center py-8">
-                <Bot size={40} className="text-TextMuted mb-3" />
+                <div className="p-3 rounded-2xl bg-gradient-to-br from-PrimaryColorLight to-SrcPrimaryColorLight dark:from-PrimaryColor/20 dark:to-SrcPrimaryColor/20 mb-3">
+                  <Bot size={28} className="text-PrimaryColor dark:text-PrimaryColorLight" />
+                </div>
                 <p className="text-sm font-medium text-TextPrimary dark:text-white mb-1">
                   Login to use Career Coach
                 </p>
@@ -119,7 +123,7 @@ export default function FloatingChat() {
                 <Link
                   href="/login"
                   onClick={() => setOpen(false)}
-                  className="inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-medium bg-gradient-to-r from-PrimaryColor to-SrcPrimaryColor text-white hover:opacity-90 transition-opacity"
+                  className="inline-flex items-center gap-1.5 rounded-xl px-4 py-2 text-sm font-medium bg-gradient-to-r from-PrimaryColor to-SrcPrimaryColor text-white hover:opacity-90 transition-opacity cursor-pointer"
                 >
                   <LogIn size={14} />
                   Login Now
@@ -127,7 +131,9 @@ export default function FloatingChat() {
               </div>
             ) : messages.length === 0 ? (
               <div className="flex flex-col items-center justify-center h-full text-center py-6">
-                <Bot size={36} className="text-TextMuted mb-2" />
+                <div className="p-2.5 rounded-2xl bg-gradient-to-br from-SrcPrimaryColorLight to-PrimaryColorLight dark:from-SrcPrimaryColor/20 dark:to-PrimaryColor/20 mb-2">
+                  <Sparkles size={24} className="text-SrcPrimaryColor dark:text-SrcPrimaryColorLight" />
+                </div>
                 <p className="text-sm font-medium text-TextPrimary dark:text-white mb-1">
                   Ask me anything!
                 </p>
@@ -153,7 +159,7 @@ export default function FloatingChat() {
                     {msg.role === "model" && !msg.text ? (
                       <span className="inline-flex items-center gap-1">
                         <span className="size-1.5 rounded-full bg-PrimaryColor animate-bounce" style={{ animationDelay: "0ms" }} />
-                        <span className="size-1.5 rounded-full bg-PrimaryColor animate-bounce" style={{ animationDelay: "150ms" }} />
+                        <span className="size-1.5 rounded-full bg-SrcPrimaryColor animate-bounce" style={{ animationDelay: "150ms" }} />
                         <span className="size-1.5 rounded-full bg-PrimaryColor animate-bounce" style={{ animationDelay: "300ms" }} />
                       </span>
                     ) : msg.role === "model" ? (
@@ -209,7 +215,7 @@ export default function FloatingChat() {
               <button
                 onClick={handleSend}
                 disabled={!input.trim() || streaming}
-                className="size-7 rounded-lg bg-gradient-to-r from-PrimaryColor to-SrcPrimaryColor flex items-center justify-center text-white hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shrink-0"
+                className="size-7 rounded-lg bg-gradient-to-r from-PrimaryColor to-SrcPrimaryColor flex items-center justify-center text-white hover:opacity-90 disabled:opacity-50 disabled:cursor-not-allowed transition-all shrink-0 cursor-pointer"
               >
                 <Send size={12} />
               </button>

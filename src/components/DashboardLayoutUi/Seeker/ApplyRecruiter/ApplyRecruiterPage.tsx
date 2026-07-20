@@ -16,12 +16,29 @@ import ApplicationForm from "./ApplicationForm"
 import ApprovedCard from "./ApprovedCard"
 import BenefitsSection from "./BenefitsSection"
 
+interface FieldErrors {
+  company?: string
+  companyWebsite?: string
+  experience?: string
+  description?: string
+}
+
 const initialFormData: RecruiterApplyData = {
   name: "",
   company: "",
   companyWebsite: "",
   description: "",
   experience: "",
+}
+
+const isValidUrl = (url: string) => {
+  if (!url.trim()) return true
+  try {
+    const parsed = new URL(url)
+    return parsed.protocol === "http:" || parsed.protocol === "https:"
+  } catch {
+    return false
+  }
 }
 
 const ApplyRecruiterPage = () => {
@@ -32,6 +49,8 @@ const ApplyRecruiterPage = () => {
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
   const [formData, setFormData] = useState<RecruiterApplyData>(initialFormData)
+  const [errors, setErrors] = useState<FieldErrors>({})
+  const [touched, setTouched] = useState<Record<string, boolean>>({})
 
   useEffect(() => {
     getRecruiterApplyStatus()
@@ -40,18 +59,66 @@ const ApplyRecruiterPage = () => {
       .finally(() => setLoading(false))
   }, [])
 
+  const validate = (): FieldErrors => {
+    const errs: FieldErrors = {}
+    if (!formData.company.trim()) errs.company = "Company name is required"
+    if (formData.companyWebsite.trim() && !isValidUrl(formData.companyWebsite)) {
+      errs.companyWebsite = "Please enter a valid URL (e.g. https://example.com)"
+    }
+    if (formData.experience && (isNaN(Number(formData.experience)) || Number(formData.experience) < 0)) {
+      errs.experience = "Please enter a valid number"
+    }
+    if (formData.description.trim() && formData.description.trim().length < 10) {
+      errs.description = "Please write at least 10 characters"
+    }
+    return errs
+  }
+
+  const validateField = (name: string, value: string): string | undefined => {
+    switch (name) {
+      case "company":
+        return value.trim() ? undefined : "Company name is required"
+      case "companyWebsite":
+        return value.trim() && !isValidUrl(value) ? "Please enter a valid URL (e.g. https://example.com)" : undefined
+      case "experience":
+        return value && (isNaN(Number(value)) || Number(value) < 0) ? "Please enter a valid number" : undefined
+      case "description":
+        return value.trim() && value.trim().length < 10 ? "Please write at least 10 characters" : undefined
+      default:
+        return undefined
+    }
+  }
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }))
+    const { name, value } = e.target
+    setFormData((prev) => ({ ...prev, [name]: value }))
+    if (touched[name]) {
+      const err = validateField(name, value)
+      setErrors((prev) => ({ ...prev, [name]: err }))
+    }
+  }
+
+  const handleBlur = (
+    e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target
+    setTouched((prev) => ({ ...prev, [name]: true }))
+    const err = validateField(name, value)
+    setErrors((prev) => ({ ...prev, [name]: err }))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
-    if (!formData.company.trim()) {
-      toast.error("Company name is required")
-      return
-    }
+
+    const allTouched = { company: true, companyWebsite: true, experience: true, description: true }
+    setTouched(allTouched)
+    const validationErrors = validate()
+    setErrors(validationErrors)
+
+    if (Object.keys(validationErrors).length > 0) return
+
     setSubmitting(true)
     try {
       await applyAsRecruiter({
@@ -103,7 +170,10 @@ const ApplyRecruiterPage = () => {
         <ApplicationForm
           formData={formData}
           onChange={handleChange}
+          onBlur={handleBlur}
           onSubmit={handleSubmit}
+          errors={errors}
+          touched={touched}
           submitting={submitting}
           title="Recruiter Application"
           subtitle="Fill in your details to apply for a recruiter account"
@@ -115,7 +185,10 @@ const ApplyRecruiterPage = () => {
         <ApplicationForm
           formData={formData}
           onChange={handleChange}
+          onBlur={handleBlur}
           onSubmit={handleSubmit}
+          errors={errors}
+          touched={touched}
           submitting={submitting}
           title="Reapply as Recruiter"
           subtitle="You can submit a new application with updated information"

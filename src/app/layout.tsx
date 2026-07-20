@@ -4,6 +4,7 @@ import "./globals.css";
 import NavigationMenu from "@/components/shared/NavigationMenu";
 import Footer from "@/components/shared/Footer";
 import CustomToast from "@/components/shared/CustomToast";
+import FloatingChat from "@/components/shared/FloatingChat";
 
 const primaryFont = Plus_Jakarta_Sans({
   subsets: ["latin"],
@@ -37,7 +38,7 @@ export default function RootLayout({
         </main>
         <Footer/>
         <CustomToast/>
-
+        <FloatingChat/>
 
       </body>
     </html>

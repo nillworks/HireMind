@@ -1,0 +1,29 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Red Gradient -->
+    <linearGradient id="redGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF6363" />
+      <stop offset="100%" stop-color="#BF4A4A" />
+    </linearGradient>
+    
+    <!-- Green Gradient -->
+    <linearGradient id="greenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0F766E" />
+      <stop offset="100%" stop-color="#073531" />
+    </linearGradient>
+    
+    <!-- Shadows -->
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#0F766E" flood-opacity="0.3" />
+    </filter>
+    <filter id="shadowRed" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="16" flood-color="#FF6363" flood-opacity="0.35" />
+    </filter>
+  </defs>
+
+  <!-- Horizontal Top bar (Red) -->
+  <rect x="64" y="96" width="384" height="128" rx="64" fill="url(#redGrad)" filter="url(#shadowRed)" />
+  
+  <!-- Vertical Stem (Green) -->
+  <rect x="192" y="160" width="128" height="288" rx="64" fill="url(#greenGrad)" filter="url(#shadow)" />
+</svg>

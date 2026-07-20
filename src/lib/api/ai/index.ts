@@ -9,3 +9,6 @@ export type { ResumeAnalysis } from "./resumeAnalyzeApi";
 
 export { sendChatMessage, getChatHistory, clearChatHistory } from "./careerCoachApi";
 export type { ChatMessage } from "./careerCoachApi";
+
+export { classifyResumes } from "./classifyResumesApi";
+export type { ClassifierCandidate, ClassifierResult, ClassifierResponse } from "./classifyResumesApi";

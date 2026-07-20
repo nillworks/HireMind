@@ -2,9 +2,10 @@
 
 import { useState, useRef, useEffect } from "react";
 import { sendChatMessage, getChatHistory, clearChatHistory, type ChatMessage } from "@/lib/api/ai";
-import { ArrowLeft, Send, Bot, User, Trash2, Sparkles, Loader2 } from "lucide-react";
+import { ArrowLeft, Send, Bot, Trash2, Loader2 } from "lucide-react";
 import Link from "next/link";
 import ReactMarkdown from "react-markdown";
+import { useSession } from "@/lib/auth-client";
 
 const SUGGESTED_PROMPTS = [
   "What jobs match my skills?",
@@ -16,6 +17,7 @@ const SUGGESTED_PROMPTS = [
 ];
 
 export default function CareerCoachPage() {
+  const { data: session } = useSession();
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [input, setInput] = useState("");
   const [streaming, setStreaming] = useState(false);
@@ -194,9 +196,19 @@ export default function CareerCoachPage() {
               ) : msg.text}
             </div>
             {msg.role === "user" && (
-              <div className="size-8 rounded-xl bg-TextMuted/20 flex items-center justify-center shrink-0 mt-0.5">
-                <User size={16} className="text-TextSecondary" />
-              </div>
+              session?.user?.image ? (
+                <img
+                  src={session.user.image}
+                  alt={session.user.name || "You"}
+                  className="size-8 rounded-xl object-cover shrink-0 mt-0.5"
+                />
+              ) : (
+                <div className="size-8 rounded-xl bg-gradient-to-br from-PrimaryColor to-SrcPrimaryColor flex items-center justify-center shrink-0 mt-0.5">
+                  <span className="text-sm font-bold text-white">
+                    {session?.user?.name?.charAt(0)?.toUpperCase() || "U"}
+                  </span>
+                </div>
+              )
             )}
           </div>
         ))}

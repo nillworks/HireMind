@@ -120,7 +120,7 @@ const JobCard = ({ job, onDeleted }: JobCardProps) => {
 
         <div className="pt-4 border-t border-Border dark:border-secondary flex items-center gap-2">
           <Link
-            href={`/dashboard/recruiter/my-jobs/${job._id}`}
+            href={`/jobs/${job._id}`}
             className="flex-1 cursor-pointer"
           >
             <Button

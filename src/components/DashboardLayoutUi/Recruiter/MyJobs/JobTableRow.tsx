@@ -114,7 +114,7 @@ const JobTableRow = ({ job, onDeleted }: JobTableRowProps) => {
 
         <td className="py-3.5 px-4">
           <div className="flex items-center gap-1.5">
-            <Link href={`/dashboard/recruiter/my-jobs/${job._id}`} className="cursor-pointer">
+            <Link href={`/jobs/${job._id}`} className="cursor-pointer">
               <Button
                 type="button"
                 variant="ghost"

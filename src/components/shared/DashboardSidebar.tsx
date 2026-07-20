@@ -79,6 +79,7 @@ const seekerSections: SidebarSection[] = [
   {
     title: "AI Tools",
     items: [
+      { label: "Career Coach", href: "/dashboard/seeker/career-coach", icon: Bot },
       { label: "Cover Letter Generator", href: "/dashboard/seeker/ai-tools", icon: ScrollText },
       { label: "Job Recommendations", href: "/dashboard/seeker/recommendations", icon: Sparkles },
       { label: "Resume Analyzer", href: "/dashboard/seeker/resume-analyzer", icon: FileText },

@@ -298,7 +298,6 @@ const SeekerProfileForm = ({ profile }: SeekerProfileFormProps) => {
                 src={userImage}
                 alt={userName}
                 className="w-full h-full object-cover"
-                unoptimized
               />
             ) : (
               <span className="text-2xl font-bold font-PrimaryFont text-PrimaryColor">

@@ -22,7 +22,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
-import { authClient, signUp, signOut, useSession } from "@/lib/auth-client";
+import { authClient, signUp, signOut } from "@/lib/auth-client";
 import { uploadImageToImgBB } from "@/lib/imageUpload";
 import CustomToast from "@/components/shared/CustomToast";
 
@@ -151,9 +151,6 @@ const RegesterPage = () => {
     const emailErr = validateEmail(email);
     const passErr = validatePassword(password);
     const confirmErr = validateConfirmPassword(confirmPassword);
-    const {data: session}=useSession()
-    const user = session?.user
-  
 
     setErrors({ name: nameErr, email: emailErr, password: passErr, confirmPassword: confirmErr });
 

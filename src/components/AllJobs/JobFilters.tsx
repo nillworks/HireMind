@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useCallback } from "react"
+import { useState } from "react"
 import { Search, SlidersHorizontal, X } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -11,21 +11,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-
-const CATEGORIES = [
-  "All",
-  "Technology",
-  "Design",
-  "Marketing",
-  "Finance",
-  "Education",
-  "Healthcare",
-  "Engineering",
-  "Sales",
-  "Human Resources",
-]
-
-const JOB_TYPES = ["All", "Full-Time", "Part-Time", "Contract", "Internship"]
+import { type JobFilterOptions } from "@/lib/api/public/jobsApi"
+import MultiSelectFilter from "./MultiSelectFilter"
 
 const SORT_OPTIONS = [
   { value: "newest", label: "Newest First" },
@@ -34,72 +21,131 @@ const SORT_OPTIONS = [
   { value: "applications", label: "Most Applied" },
 ]
 
-interface JobFiltersProps {
-  filters: {
-    search: string
-    category: string
-    type: string
-    sortBy: string
-  }
-  onFilterChange: (key: string, value: string) => void
-  onReset: () => void
-  total: number
+// The applied filter state, derived from (and kept in sync with) the URL.
+// Salary bounds are strings so the number inputs stay controlled and an empty
+// string cleanly represents "no bound set".
+export interface AppliedJobFilters {
+  search: string
+  categories: string[]
+  types: string[]
+  locations: string[]
+  minSalary: string
+  maxSalary: string
 }
 
-const JobFilters = ({ filters, onFilterChange, onReset, total }: JobFiltersProps) => {
+interface JobFiltersProps {
+  options: JobFilterOptions
+  applied: AppliedJobFilters
+  sortBy: string
+  total: number
+  loading: boolean
+  onApply: (filters: AppliedJobFilters) => void
+  onSortChange: (sortBy: string) => void
+  onClearAll: () => void
+}
+
+const JobFilters = ({
+  options,
+  applied,
+  sortBy,
+  total,
+  loading,
+  onApply,
+  onSortChange,
+  onClearAll,
+}: JobFiltersProps) => {
   const [showMobileFilters, setShowMobileFilters] = useState(false)
+  const [draft, setDraft] = useState<AppliedJobFilters>(applied)
+  // Track the applied (URL) state we last synced from. When it changes — e.g.
+  // browser back/forward, a shared link, or Clear Filters — reset the draft
+  // during render so the inputs reflect it, without a setState-in-effect.
+  const [syncedApplied, setSyncedApplied] = useState(applied)
+  if (syncedApplied !== applied) {
+    setSyncedApplied(applied)
+    setDraft(applied)
+  }
+
+  const setDraftValue = <K extends keyof AppliedJobFilters>(
+    key: K,
+    value: AppliedJobFilters[K]
+  ) => setDraft((prev) => ({ ...prev, [key]: value }))
 
   const hasActiveFilters =
-    filters.category !== "All" ||
-    filters.type !== "All" ||
-    filters.sortBy !== "newest"
+    applied.search.trim() !== "" ||
+    applied.categories.length > 0 ||
+    applied.types.length > 0 ||
+    applied.locations.length > 0 ||
+    applied.minSalary !== "" ||
+    applied.maxSalary !== "" ||
+    sortBy !== "newest"
 
-  const filterContent = (
+  // Removing a chip acts on the applied (committed) state and re-applies
+  // immediately, so the URL and results stay in sync without a button press.
+  const removeValue = (key: "categories" | "types" | "locations", value: string) => {
+    onApply({ ...applied, [key]: applied[key].filter((v) => v !== value) })
+  }
+
+  const clearSalary = () => {
+    onApply({ ...applied, minSalary: "", maxSalary: "" })
+  }
+
+  const clearSearch = () => {
+    onApply({ ...applied, search: "" })
+  }
+
+  const filterControls = (
     <>
-      <Select
-        value={filters.category}
-        onValueChange={(value) => value && onFilterChange("category", value)}
-      >
-        <SelectTrigger className="w-full sm:w-[160px] h-10 rounded-xl border-Border bg-Surface dark:bg-[#1e293b] dark:border-secondary font-SecondaryFont text-sm text-TextSecondary dark:text-surface cursor-pointer">
-          <SelectValue placeholder="Category" />
-        </SelectTrigger>
-        <SelectContent className="bg-Surface dark:bg-[#1e293b] border-Border dark:border-secondary rounded-xl">
-          {CATEGORIES.map((cat) => (
-            <SelectItem
-              key={cat}
-              value={cat}
-              className="font-SecondaryFont text-sm cursor-pointer"
-            >
-              {cat}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <MultiSelectFilter
+        label="Category"
+        options={options.categories}
+        selected={draft.categories}
+        onChange={(value) => setDraftValue("categories", value)}
+      />
+      <MultiSelectFilter
+        label="Job Type"
+        options={options.jobTypes}
+        selected={draft.types}
+        onChange={(value) => setDraftValue("types", value)}
+      />
+      <MultiSelectFilter
+        label="Location"
+        options={options.locations}
+        selected={draft.locations}
+        onChange={(value) => setDraftValue("locations", value)}
+      />
 
-      <Select
-        value={filters.type}
-        onValueChange={(value) => value && onFilterChange("type", value)}
-      >
-        <SelectTrigger className="w-full sm:w-[160px] h-10 rounded-xl border-Border bg-Surface dark:bg-[#1e293b] dark:border-secondary font-SecondaryFont text-sm text-TextSecondary dark:text-surface cursor-pointer">
-          <SelectValue placeholder="Job Type" />
-        </SelectTrigger>
-        <SelectContent className="bg-Surface dark:bg-[#1e293b] border-Border dark:border-secondary rounded-xl">
-          {JOB_TYPES.map((type) => (
-            <SelectItem
-              key={type}
-              value={type}
-              className="font-SecondaryFont text-sm cursor-pointer"
-            >
-              {type}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <div className="flex items-center gap-2">
+        <Input
+          type="number"
+          min={0}
+          placeholder="Min $"
+          value={draft.minSalary}
+          onChange={(e) => setDraftValue("minSalary", e.target.value)}
+          className="w-full sm:w-[100px] h-10 rounded-xl border-Border bg-Surface dark:bg-[#1e293b] dark:border-secondary font-SecondaryFont text-sm text-TextPrimary dark:text-surface placeholder:text-TextMuted"
+        />
+        <span className="text-TextMuted">–</span>
+        <Input
+          type="number"
+          min={0}
+          placeholder="Max $"
+          value={draft.maxSalary}
+          onChange={(e) => setDraftValue("maxSalary", e.target.value)}
+          className="w-full sm:w-[100px] h-10 rounded-xl border-Border bg-Surface dark:bg-[#1e293b] dark:border-secondary font-SecondaryFont text-sm text-TextPrimary dark:text-surface placeholder:text-TextMuted"
+        />
+      </div>
 
-      <Select
-        value={filters.sortBy}
-        onValueChange={(value) => value && onFilterChange("sortBy", value)}
+      <Button
+        type="button"
+        size="sm"
+        onClick={() => onApply(draft)}
+        disabled={loading}
+        className="h-10 px-5 rounded-xl bg-gradient-to-r from-PrimaryColor to-SrcPrimaryColor hover:from-PrimaryColorHover hover:to-SrcPrimaryColorHover text-white font-SecondaryFont font-medium shadow-md cursor-pointer"
       >
+        <SlidersHorizontal className="size-4 mr-1.5" />
+        Apply Filters
+      </Button>
+
+      <Select value={sortBy} onValueChange={(value) => value && onSortChange(value)}>
         <SelectTrigger className="w-full sm:w-[160px] h-10 rounded-xl border-Border bg-Surface dark:bg-[#1e293b] dark:border-secondary font-SecondaryFont text-sm text-TextSecondary dark:text-surface cursor-pointer">
           <SelectValue placeholder="Sort by" />
         </SelectTrigger>
@@ -120,20 +166,32 @@ const JobFilters = ({ filters, onFilterChange, onReset, total }: JobFiltersProps
 
   return (
     <div className="space-y-4">
+      {/* Search row */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-TextMuted" />
           <Input
             type="text"
             placeholder="Search jobs by title or company..."
-            value={filters.search}
-            onChange={(e) => onFilterChange("search", e.target.value)}
-            className="pl-10 h-10 rounded-xl border-Border bg-Surface dark:bg-[#1e293b] dark:border-secondary font-SecondaryFont text-sm text-TextPrimary dark:text-surface placeholder:text-TextMuted"
+            value={draft.search}
+            onChange={(e) => setDraftValue("search", e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault()
+                onApply(draft)
+              }
+            }}
+            className="pl-10 pr-9 h-10 rounded-xl border-Border bg-Surface dark:bg-[#1e293b] dark:border-secondary font-SecondaryFont text-sm text-TextPrimary dark:text-surface placeholder:text-TextMuted"
           />
-          {filters.search && (
+          {draft.search && (
             <button
-              onClick={() => onFilterChange("search", "")}
+              type="button"
+              onClick={() => {
+                setDraftValue("search", "")
+                if (applied.search) clearSearch()
+              }}
               className="absolute right-3 top-1/2 -translate-y-1/2 size-4 text-TextMuted hover:text-PrimaryColor transition-colors cursor-pointer"
+              aria-label="Clear search"
             >
               <X className="size-4" />
             </button>
@@ -141,6 +199,17 @@ const JobFilters = ({ filters, onFilterChange, onReset, total }: JobFiltersProps
         </div>
 
         <Button
+          type="button"
+          onClick={() => onApply(draft)}
+          disabled={loading}
+          className="h-10 px-6 rounded-xl bg-gradient-to-r from-PrimaryColor to-SrcPrimaryColor hover:from-PrimaryColorHover hover:to-SrcPrimaryColorHover text-white font-SecondaryFont font-semibold shadow-md cursor-pointer"
+        >
+          <Search className="size-4 mr-1.5" />
+          Search
+        </Button>
+
+        <Button
+          type="button"
           variant="outline"
           size="sm"
           className="sm:hidden h-10 rounded-xl border-Border bg-Surface dark:bg-[#1e293b] dark:border-secondary font-SecondaryFont cursor-pointer"
@@ -151,14 +220,16 @@ const JobFilters = ({ filters, onFilterChange, onReset, total }: JobFiltersProps
         </Button>
       </div>
 
+      {/* Filter controls — desktop */}
       <div className="hidden sm:flex items-center gap-3 flex-wrap">
-        {filterContent}
+        {filterControls}
 
         {hasActiveFilters && (
           <Button
+            type="button"
             variant="ghost"
             size="sm"
-            onClick={onReset}
+            onClick={onClearAll}
             className="text-PrimaryColor hover:text-PrimaryColorHover font-SecondaryFont cursor-pointer"
           >
             <X className="size-4 mr-1" />
@@ -171,19 +242,21 @@ const JobFilters = ({ filters, onFilterChange, onReset, total }: JobFiltersProps
         </span>
       </div>
 
+      {/* Filter controls — mobile */}
       {showMobileFilters && (
-        <div className="sm:hidden space-y-3 p-4 rounded-xl bg-BorderLight dark:bg-[#0f172a] border border-Border dark:border-secondary">
-          {filterContent}
+        <div className="sm:hidden flex flex-col gap-3 p-4 rounded-xl bg-BorderLight dark:bg-[#0f172a] border border-Border dark:border-secondary">
+          {filterControls}
 
-          <div className="flex items-center justify-between pt-2">
+          <div className="flex items-center justify-between pt-1">
             <span className="text-sm font-SecondaryFont text-TextMuted">
               {total} job{total !== 1 ? "s" : ""} found
             </span>
             {hasActiveFilters && (
               <Button
+                type="button"
                 variant="ghost"
                 size="sm"
-                onClick={onReset}
+                onClick={onClearAll}
                 className="text-PrimaryColor hover:text-PrimaryColorHover font-SecondaryFont cursor-pointer"
               >
                 <X className="size-4 mr-1" />
@@ -193,8 +266,47 @@ const JobFilters = ({ filters, onFilterChange, onReset, total }: JobFiltersProps
           </div>
         </div>
       )}
+
+      {/* Active filter chips */}
+      {(applied.categories.length > 0 ||
+        applied.types.length > 0 ||
+        applied.locations.length > 0 ||
+        applied.minSalary !== "" ||
+        applied.maxSalary !== "") && (
+        <div className="flex items-center gap-2 flex-wrap">
+          {applied.categories.map((value) => (
+            <FilterChip key={`cat-${value}`} label={value} onRemove={() => removeValue("categories", value)} />
+          ))}
+          {applied.types.map((value) => (
+            <FilterChip key={`type-${value}`} label={value} onRemove={() => removeValue("types", value)} />
+          ))}
+          {applied.locations.map((value) => (
+            <FilterChip key={`loc-${value}`} label={value} onRemove={() => removeValue("locations", value)} />
+          ))}
+          {(applied.minSalary !== "" || applied.maxSalary !== "") && (
+            <FilterChip
+              label={`$${applied.minSalary || "0"} – $${applied.maxSalary || "∞"}`}
+              onRemove={clearSalary}
+            />
+          )}
+        </div>
+      )}
     </div>
   )
 }
+
+const FilterChip = ({ label, onRemove }: { label: string; onRemove: () => void }) => (
+  <span className="inline-flex items-center gap-1.5 rounded-full bg-PrimaryColorLight dark:bg-PrimaryColorDark/20 px-3 py-1 text-xs font-medium font-SecondaryFont text-PrimaryColor capitalize">
+    {label}
+    <button
+      type="button"
+      onClick={onRemove}
+      className="hover:text-PrimaryColorHover transition-colors cursor-pointer"
+      aria-label={`Remove ${label} filter`}
+    >
+      <X className="size-3" />
+    </button>
+  </span>
+)
 
 export default JobFilters

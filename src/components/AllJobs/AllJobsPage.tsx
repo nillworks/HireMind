@@ -1,82 +1,159 @@
 "use client"
 
-import { useState, useCallback, useEffect } from "react"
+import { useCallback, useEffect, useMemo, useRef, useState } from "react"
+import { useRouter, usePathname, useSearchParams } from "next/navigation"
 import { Briefcase, Sparkles } from "lucide-react"
-import { getJobs, type JobsQuery } from "@/lib/api/public/jobsApi"
+import {
+  getJobs,
+  getJobFilterOptions,
+  type Job,
+  type JobFilterOptions,
+} from "@/lib/api/public/jobsApi"
 import JobCard from "@/components/shared/JobCard"
 import JobCardSkeleton from "./JobCardSkeleton"
-import JobFilters from "./JobFilters"
+import JobFilters, { type AppliedJobFilters } from "./JobFilters"
+
+const EMPTY_OPTIONS: JobFilterOptions = {
+  categories: [],
+  jobTypes: [],
+  locations: [],
+  minSalary: 0,
+  maxSalary: 0,
+}
+
+// Read a comma-separated multi-value param into a clean array.
+const readMulti = (params: URLSearchParams, key: string): string[] =>
+  (params.get(key) || "")
+    .split(",")
+    .map((v) => v.trim())
+    .filter(Boolean)
 
 const AllJobsPage = () => {
-  const [jobs, setJobs] = useState<any[]>([])
+  const router = useRouter()
+  const pathname = usePathname()
+  const searchParams = useSearchParams()
+
+  const [jobs, setJobs] = useState<Job[]>([])
   const [total, setTotal] = useState(0)
   const [page, setPage] = useState(1)
   const [totalPages, setTotalPages] = useState(1)
   const [loading, setLoading] = useState(true)
+  const [options, setOptions] = useState<JobFilterOptions>(EMPTY_OPTIONS)
 
-  const [filters, setFilters] = useState({
-    search: "",
-    category: "All",
-    type: "All",
-    sortBy: "newest",
-  })
+  // The URL is the single source of truth. Everything below derives from it,
+  // so back/forward navigation and shared links "just work".
+  const applied: AppliedJobFilters = useMemo(
+    () => ({
+      search: searchParams.get("search") || "",
+      categories: readMulti(searchParams, "category"),
+      types: readMulti(searchParams, "type"),
+      locations: readMulti(searchParams, "location"),
+      minSalary: searchParams.get("minSalary") || "",
+      maxSalary: searchParams.get("maxSalary") || "",
+    }),
+    [searchParams]
+  )
+  const sortBy = searchParams.get("sortBy") || "newest"
+  const currentPage = Number(searchParams.get("page")) || 1
 
-  const fetchJobs = useCallback(async (query: JobsQuery) => {
+  // Filter options come from the backend once — new categories/types/locations
+  // added to jobs appear automatically with no frontend change.
+  useEffect(() => {
+    getJobFilterOptions()
+      .then(setOptions)
+      .catch(() => setOptions(EMPTY_OPTIONS))
+  }, [])
+
+  // Fetch jobs for the current URL state. A monotonically increasing request id
+  // guards against out-of-order responses when params change quickly. setState
+  // lives inside this async callback (not the effect body) so React's
+  // "no setState in effect" rule is satisfied.
+  const requestId = useRef(0)
+  const fetchJobs = useCallback(async () => {
+    const id = ++requestId.current
     setLoading(true)
     try {
-      const res = await getJobs(query)
+      const res = await getJobs({
+        search: applied.search || undefined,
+        category: applied.categories,
+        type: applied.types,
+        location: applied.locations,
+        minSalary: applied.minSalary !== "" ? Number(applied.minSalary) : undefined,
+        maxSalary: applied.maxSalary !== "" ? Number(applied.maxSalary) : undefined,
+        sortBy: sortBy !== "newest" ? sortBy : undefined,
+        page: currentPage,
+        limit: 12,
+      })
+      if (id !== requestId.current) return
       setJobs(res.jobs)
       setTotal(res.total)
       setTotalPages(res.totalPages)
       setPage(res.page)
     } catch {
+      if (id !== requestId.current) return
       setJobs([])
       setTotal(0)
+      setTotalPages(1)
     } finally {
-      setLoading(false)
+      if (id === requestId.current) setLoading(false)
     }
-  }, [])
+  }, [applied, sortBy, currentPage])
 
+  // Re-fetch whenever the derived URL state changes.
   useEffect(() => {
-    fetchJobs({
-      search: filters.search || undefined,
-      category: filters.category !== "All" ? filters.category : undefined,
-      type: filters.type !== "All" ? filters.type : undefined,
-      sortBy: filters.sortBy !== "newest" ? filters.sortBy : undefined,
-      page: 1,
-      limit: 12,
-    })
-  }, [filters, fetchJobs])
+    fetchJobs()
+  }, [fetchJobs])
 
-  const handleFilterChange = useCallback((key: string, value: string) => {
-    setFilters((prev) => ({ ...prev, [key]: value }))
-    setPage(1)
-  }, [])
+  // Build the next URL from a partial set of params and push it. Any key set to
+  // an empty string / empty array is removed, so outdated params never linger.
+  const pushParams = useCallback(
+    (updates: Record<string, string | string[] | undefined>) => {
+      const params = new URLSearchParams(searchParams.toString())
+      for (const [key, value] of Object.entries(updates)) {
+        const serialized = Array.isArray(value) ? value.join(",") : value
+        if (serialized && serialized !== "All") {
+          params.set(key, serialized)
+        } else {
+          params.delete(key)
+        }
+      }
+      const qs = params.toString()
+      router.push(qs ? `${pathname}?${qs}` : pathname, { scroll: false })
+    },
+    [searchParams, router, pathname]
+  )
 
-  const handleReset = useCallback(() => {
-    setFilters({
-      search: "",
-      category: "All",
-      type: "All",
-      sortBy: "newest",
-    })
-    setPage(1)
-  }, [])
+  const handleApply = useCallback(
+    (filters: AppliedJobFilters) => {
+      pushParams({
+        search: filters.search.trim(),
+        category: filters.categories,
+        type: filters.types,
+        location: filters.locations,
+        minSalary: filters.minSalary,
+        maxSalary: filters.maxSalary,
+        page: undefined, // reset pagination on any new search/filter
+      })
+    },
+    [pushParams]
+  )
+
+  const handleSortChange = useCallback(
+    (value: string) => pushParams({ sortBy: value, page: undefined }),
+    [pushParams]
+  )
+
+  // Clear everything: strip the query string entirely and reload all jobs.
+  const handleClearAll = useCallback(() => {
+    router.push(pathname, { scroll: false })
+  }, [router, pathname])
 
   const handlePageChange = useCallback(
     (newPage: number) => {
-      setPage(newPage)
-      fetchJobs({
-        search: filters.search || undefined,
-        category: filters.category !== "All" ? filters.category : undefined,
-        type: filters.type !== "All" ? filters.type : undefined,
-        sortBy: filters.sortBy !== "newest" ? filters.sortBy : undefined,
-        page: newPage,
-        limit: 12,
-      })
+      pushParams({ page: newPage > 1 ? String(newPage) : undefined })
       window.scrollTo({ top: 0, behavior: "smooth" })
     },
-    [filters, fetchJobs]
+    [pushParams]
   )
 
   return (
@@ -102,10 +179,14 @@ const AllJobsPage = () => {
           </div>
 
           <JobFilters
-            filters={filters}
-            onFilterChange={handleFilterChange}
-            onReset={handleReset}
+            options={options}
+            applied={applied}
+            sortBy={sortBy}
             total={total}
+            loading={loading}
+            onApply={handleApply}
+            onSortChange={handleSortChange}
+            onClearAll={handleClearAll}
           />
 
           <div className="mt-8">
@@ -116,17 +197,25 @@ const AllJobsPage = () => {
                 ))}
               </div>
             ) : jobs.length === 0 ? (
-              <div className="text-center py-20">
-                <div className="size-16 rounded-full bg-BorderLight dark:bg-secondary/20 flex items-center justify-center mx-auto mb-4">
+              <div className="flex flex-col items-center text-center py-20">
+                <div className="size-16 rounded-full bg-BorderLight dark:bg-secondary/20 flex items-center justify-center mb-4">
                   <Sparkles className="size-8 text-TextMuted" />
                 </div>
                 <h3 className="text-lg font-semibold font-PrimaryFont text-TextPrimary dark:text-white">
-                  No jobs found
+                  No jobs found matching your search or filters.
                 </h3>
                 <p className="mt-2 text-sm font-SecondaryFont text-TextMuted max-w-sm mx-auto">
-                  Try adjusting your filters or search terms to find what
-                  you&apos;re looking for.
+                  We couldn&apos;t find any jobs for your current search and filter
+                  selection. Try broadening your filters or clearing them to see all
+                  available jobs.
                 </p>
+                <button
+                  type="button"
+                  onClick={handleClearAll}
+                  className="mt-6 inline-flex items-center gap-2 px-5 h-10 rounded-xl bg-gradient-to-r from-PrimaryColor to-SrcPrimaryColor hover:from-PrimaryColorHover hover:to-SrcPrimaryColorHover text-white font-SecondaryFont font-medium text-sm shadow-md transition-all cursor-pointer"
+                >
+                  Clear Filters
+                </button>
               </div>
             ) : (
               <>

@@ -1,10 +1,11 @@
+import { Suspense } from 'react'
 import AllJobsPage from '@/components/AllJobs/AllJobsPage'
 
 const page = () => {
   return (
-    <>
-     <AllJobsPage/> 
-    </>
+    <Suspense>
+      <AllJobsPage />
+    </Suspense>
   )
 }
 

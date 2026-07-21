@@ -10,7 +10,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
 import { cn } from "@/lib/utils";
-import { signIn } from "@/lib/auth-client";
+import { authClient, signIn, useSession } from "@/lib/auth-client";
 import CustomToast from "@/components/shared/CustomToast";
 
 const LoginPage = () => {
@@ -18,20 +18,10 @@ const LoginPage = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const { data: session } = useSession()
+  // const user = session?.user
+  // const role = user?.role as string;
 
-  const getRoleRedirect = async (): Promise<string> => {
-    try {
-      const res = await fetch("/api/auth/session");
-      if (res.ok) {
-        const data = await res.json();
-        const role: string = data?.user?.role || "seeker";
-        return `/dashboard/${role}`;
-      }
-    } catch {
-      // fallback
-    }
-    return "/dashboard/seeker";
-  };
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -52,16 +42,26 @@ const LoginPage = () => {
       return;
     }
 
-    const redirectTo = await getRoleRedirect();
-    toast.success("Welcome back! Redirecting...");
-    router.push(redirectTo);
+    if (!signInError) {
+      toast.success("Login success");
+      router.push(`/`);
+    }
     setIsLoading(false);
   };
 
   const handleGoogleLogin = async () => {
-    setIsLoading(true);
-    // TODO: Implement Google OAuth with Better Auth
-    setIsLoading(false);
+    // setIsLoading(true);
+
+    const { error } = await authClient.signIn.social({
+      provider: "google",
+      // callbackURL: "/dashboard",
+      // errorCallbackURL: "/login",
+    });
+
+    if (error) {
+      toast.error(error.message || "Failed to sign in with Google");
+      // setIsLoading(false);
+    }
   };
 
   return (

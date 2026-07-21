@@ -44,7 +44,6 @@ export default function NavigationMenu() {
   const router = useRouter();
   const { data: session } = useSession();
 const user = session?.user;
-console.log(user);
 
   if (pathname?.startsWith("/dashboard")) {
     return null;

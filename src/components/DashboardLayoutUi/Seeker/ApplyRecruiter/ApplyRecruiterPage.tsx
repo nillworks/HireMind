@@ -62,13 +62,13 @@ const ApplyRecruiterPage = () => {
   const validate = (): FieldErrors => {
     const errs: FieldErrors = {}
     if (!formData.company.trim()) errs.company = "Company name is required"
-    if (formData.companyWebsite.trim() && !isValidUrl(formData.companyWebsite)) {
+    if (formData.companyWebsite?.trim() && !isValidUrl(formData.companyWebsite)) {
       errs.companyWebsite = "Please enter a valid URL (e.g. https://example.com)"
     }
     if (formData.experience && (isNaN(Number(formData.experience)) || Number(formData.experience) < 0)) {
       errs.experience = "Please enter a valid number"
     }
-    if (formData.description.trim() && formData.description.trim().length < 10) {
+    if (formData.description?.trim() && formData.description.trim().length < 10) {
       errs.description = "Please write at least 10 characters"
     }
     return errs

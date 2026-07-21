@@ -22,7 +22,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
-import { signUp, signOut } from "@/lib/auth-client";
+import { authClient, signUp, signOut, useSession } from "@/lib/auth-client";
 import { uploadImageToImgBB } from "@/lib/imageUpload";
 import CustomToast from "@/components/shared/CustomToast";
 
@@ -151,6 +151,9 @@ const RegesterPage = () => {
     const emailErr = validateEmail(email);
     const passErr = validatePassword(password);
     const confirmErr = validateConfirmPassword(confirmPassword);
+    const {data: session}=useSession()
+    const user = session?.user
+  
 
     setErrors({ name: nameErr, email: emailErr, password: passErr, confirmPassword: confirmErr });
 
@@ -184,16 +187,27 @@ const RegesterPage = () => {
       return;
     }
 
-    await signOut();
-    toast.success("Account created! Please sign in.");
-    router.push("/login");
+    if (!signUpError) {
+      await signOut()
+      toast.success("Account created! Please sign in.");
+      router.push(`/login`);
+    }
     setIsLoading(false);
   };
 
   const handleGoogleLogin = async () => {
-    setIsLoading(true);
-    // TODO: Implement Google OAuth with Better Auth
-    setIsLoading(false);
+    // setIsLoading(true);
+
+    const { error } = await authClient.signIn.social({
+      provider: "google",
+      // callbackURL: "/dashboard",
+      // errorCallbackURL: "/regester",
+    });
+
+    if (error) {
+      toast.error(error.message || "Failed to sign in with Google");
+      // setIsLoading(false);
+    }
   };
 
   return (

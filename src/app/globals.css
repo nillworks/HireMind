@@ -5,70 +5,65 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
-
   /* ==========================================================
      FONT FAMILY
   ========================================================== */
 
-  --font-PrimaryFont: "Plus Jakarta Sans", sans-serif;
-  --font-SecondaryFont: "Inter", sans-serif;
-
+  --font-PrimaryFont: 'Plus Jakarta Sans', sans-serif;
+  --font-SecondaryFont: 'Inter', sans-serif;
 
   /* ==========================================================
      FIRST PRIMARY COLOR (RED)
   ========================================================== */
 
-  --color-PrimaryColorLight: #FFEFEF;
-  --color-PrimaryColorLightHover: #FFE8E8;
-  --color-PrimaryColorLightActive: #FFCFCF;
+  --color-PrimaryColorLight: #ffefef;
+  --color-PrimaryColorLightHover: #ffe8e8;
+  --color-PrimaryColorLightActive: #ffcfcf;
 
-  --color-PrimaryColor: #FF6363;
-  --color-PrimaryColorHover: #E65959;
-  --color-PrimaryColorActive: #CC4F4F;
+  --color-PrimaryColor: #ff6363;
+  --color-PrimaryColorHover: #e65959;
+  --color-PrimaryColorActive: #cc4f4f;
 
-  --color-PrimaryColorDark: #BF4A4A;
-  --color-PrimaryColorDarkHover: #993B3B;
-  --color-PrimaryColorDarkActive: #732D2D;
+  --color-PrimaryColorDark: #bf4a4a;
+  --color-PrimaryColorDarkHover: #993b3b;
+  --color-PrimaryColorDarkActive: #732d2d;
 
   --color-PrimaryColorDarker: #592323;
-
 
   /* ==========================================================
      SECOND PRIMARY COLOR (GREEN)
   ========================================================== */
 
-  --color-SrcPrimaryColorLight: #E7F1F1;
-  --color-SrcPrimaryColorLightHover: #DBEAE9;
-  --color-SrcPrimaryColorLightActive: #B5D5D2;
+  --color-SrcPrimaryColorLight: #e7f1f1;
+  --color-SrcPrimaryColorLightHover: #dbeae9;
+  --color-SrcPrimaryColorLightActive: #b5d5d2;
 
-  --color-SrcPrimaryColor: #0F766E;
-  --color-SrcPrimaryColorHover: #0E6A63;
-  --color-SrcPrimaryColorActive: #0C5E58;
+  --color-SrcPrimaryColor: #0f766e;
+  --color-SrcPrimaryColorHover: #0e6a63;
+  --color-SrcPrimaryColorActive: #0c5e58;
 
-  --color-SrcPrimaryColorDark: #0B5953;
+  --color-SrcPrimaryColorDark: #0b5953;
   --color-SrcPrimaryColorDarkHover: #094742;
   --color-SrcPrimaryColorDarkActive: #073531;
 
   --color-SrcPrimaryColorDarker: #052927;
 
-
   /* ==========================================================
      NEUTRAL COLORS
   ========================================================== */
 
-  --color-Background: #FAFAFA;
-  --color-Surface: #FFFFFF;
+  --color-Background: #fafafa;
+  --color-Surface: #ffffff;
 
-  --color-Border: #E2E8F0;
-  --color-BorderLight: #F1F5F9;
+  --color-Border: #e2e8f0;
+  --color-BorderLight: #f1f5f9;
 
-  --color-TextPrimary: #0F172A;
+  --color-TextPrimary: #0f172a;
   --color-TextSecondary: #475569;
-  --color-TextMuted: #94A3B8;
+  --color-TextMuted: #94a3b8;
 
-  --color-White: #FFFFFF;
+  --color-White: #ffffff;
   --color-Black: #000000;
-
 
   /* ==========================================================
      SEMANTIC COLORS
@@ -76,9 +71,8 @@
 
   --color-Success: var(--color-SrcPrimaryColor);
   --color-Error: var(--color-PrimaryColor);
-  --color-Warning: #F59E0B;
-  --color-Info: #2563EB;
-
+  --color-Warning: #f59e0b;
+  --color-Info: #2563eb;
 
   /* ==========================================================
      COMPONENT COLORS
@@ -92,7 +86,6 @@
   --color-SecondaryButtonHover: var(--color-SrcPrimaryColorHover);
   --color-SecondaryButtonActive: var(--color-SrcPrimaryColorActive);
 
-
   /* ==========================================================
      LINK COLORS
   ========================================================== */
@@ -100,7 +93,6 @@
   --color-Link: var(--color-PrimaryColor);
   --color-LinkHover: var(--color-PrimaryColorHover);
   --color-LinkActive: var(--color-PrimaryColorActive);
-
 
   /* ==========================================================
      INPUT COLORS
@@ -110,7 +102,6 @@
   --color-InputFocus: var(--color-PrimaryColor);
   --color-InputBackground: var(--color-White);
 
-
   /* ==========================================================
      CARD COLORS
   ========================================================== */
@@ -118,14 +109,12 @@
   --color-CardBackground: var(--color-Surface);
   --color-CardBorder: var(--color-Border);
 
-
   /* ==========================================================
      PAGE COLORS
   ========================================================== */
 
   --color-PageBackground: var(--color-Background);
   --color-SectionBackground: var(--color-Surface);
-
 }
 
 .scrollbar-thin::-webkit-scrollbar {
@@ -135,6 +124,6 @@
   background: transparent;
 }
 .scrollbar-thin::-webkit-scrollbar-thumb {
-  background: #CBD5E1;
+  background: #cbd5e1;
   border-radius: 2px;
 }

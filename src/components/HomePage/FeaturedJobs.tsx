@@ -30,7 +30,7 @@ const FeaturedJobs = () => {
   }, []);
 
   return (
-    <section className="py-20 bg-Background dark:bg-[#0f172a]">
+    <section className="py-10 bg-Background dark:bg-[#0f172a]">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <motion.div

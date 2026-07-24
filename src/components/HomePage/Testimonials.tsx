@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { Star, Quote } from "lucide-react";
+import { Star, BadgeCheck } from "lucide-react";
 
 const testimonials = [
   {
@@ -40,7 +40,7 @@ const testimonials = [
 
 const Testimonials = () => {
   return (
-    <section className="py-20 bg-Surface">
+    <section className="py-10 bg-Surface">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
           <motion.h2
@@ -71,40 +71,51 @@ const Testimonials = () => {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.4, delay: index * 0.1 }}
-              className="p-6 rounded-2xl border border-Border bg-Background hover:shadow-lg transition-all duration-300"
+              className={`relative p-8 rounded-3xl border border-Border bg-Background hover:-translate-y-2 transition-all duration-500 overflow-hidden group hover:shadow-2xl ${
+                testimonial.color === "PrimaryColor"
+                  ? "hover:shadow-PrimaryColor/10 hover:border-PrimaryColor/30"
+                  : "hover:shadow-SrcPrimaryColor/10 hover:border-SrcPrimaryColor/30"
+              }`}
             >
-              <div className="mb-4">
-                <Quote
-                  size={24}
-                  className={`${testimonial.color === "PrimaryColor" ? "text-PrimaryColor/20" : "text-SrcPrimaryColor/20"}`}
-                />
-              </div>
+              {/* Decorative background glow on hover */}
+              <div 
+                className={`absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none ${
+                  testimonial.color === "PrimaryColor"
+                    ? "bg-gradient-to-b from-PrimaryColor/5 to-transparent"
+                    : "bg-gradient-to-b from-SrcPrimaryColor/5 to-transparent"
+                }`}
+              />
 
-              <div className="flex gap-0.5 mb-4">
+              <div className="flex gap-1 mb-6 relative z-10">
                 {[...Array(testimonial.rating)].map((_, i) => (
                   <Star
                     key={i}
-                    size={14}
-                    className="fill-Warning text-Warning"
+                    size={16}
+                    className="fill-Warning text-Warning drop-shadow-sm"
                   />
                 ))}
               </div>
 
-              <p className="text-sm font-SecondaryFont text-TextSecondary leading-relaxed mb-6">
+              <p className="text-base font-SecondaryFont text-TextSecondary leading-relaxed mb-8 relative z-10">
                 &ldquo;{testimonial.text}&rdquo;
               </p>
 
-              <div className="flex items-center gap-3 pt-4 border-t border-Border">
+              <div className="flex items-center gap-4 pt-6 border-t border-Border/60 relative z-10">
                 <img
                   src={testimonial.avatar}
                   alt={testimonial.name}
-                  className="w-10 h-10 rounded-full object-cover"
+                  className={`w-12 h-12 rounded-full object-cover border-2 ${
+                    testimonial.color === "PrimaryColor"
+                      ? "border-PrimaryColor/20"
+                      : "border-SrcPrimaryColor/20"
+                  }`}
                 />
                 <div>
-                  <h4 className="text-sm font-semibold font-PrimaryFont text-TextPrimary">
+                  <h4 className="flex items-center gap-1 text-sm font-bold font-PrimaryFont text-TextPrimary">
                     {testimonial.name}
+                    <BadgeCheck size={16} className="text-SrcPrimaryColor fill-SrcPrimaryColor/10" />
                   </h4>
-                  <p className="text-xs font-SecondaryFont text-TextMuted">
+                  <p className="text-xs font-SecondaryFont text-TextSecondary mt-0.5">
                     {testimonial.role}
                   </p>
                 </div>

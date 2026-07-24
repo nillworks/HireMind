@@ -54,7 +54,7 @@ const CountUp = ({ target, suffix }: { target: number; suffix: string }) => {
 
 const PlatformStats = () => {
   return (
-    <section className="py-20 bg-gradient-to-br from-PrimaryColorDarker via-PrimaryColorDark to-SrcPrimaryColorDarker relative overflow-hidden">
+    <section className="py-10 bg-gradient-to-br from-PrimaryColorDarker via-PrimaryColorDark to-SrcPrimaryColorDarker relative overflow-hidden">
       <div className="absolute top-0 left-0 w-64 h-64 bg-PrimaryColor/10 rounded-full blur-3xl" />
       <div className="absolute bottom-0 right-0 w-72 h-72 bg-SrcPrimaryColor/10 rounded-full blur-3xl" />
 

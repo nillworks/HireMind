@@ -17,7 +17,7 @@ const recruiterSteps = [
 
 const HowItWorks = () => {
   return (
-    <section className="py-20 bg-Background">
+    <section className="py-10 bg-Background">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-16">
           <motion.h2

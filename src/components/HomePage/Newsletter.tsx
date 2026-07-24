@@ -22,7 +22,7 @@ const Newsletter = () => {
   };
 
   return (
-    <section className="py-20 bg-Background relative overflow-hidden">
+    <section className="py-10 bg-Background relative overflow-hidden">
       <div className="absolute top-0 left-1/4 w-64 h-64 bg-PrimaryColorLight rounded-full blur-3xl opacity-40" />
       <div className="absolute bottom-0 right-1/4 w-72 h-72 bg-SrcPrimaryColorLight rounded-full blur-3xl opacity-40" />
 

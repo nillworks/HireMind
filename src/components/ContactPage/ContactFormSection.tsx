@@ -93,7 +93,7 @@ const contactInfo = [
   {
     icon: Mail,
     title: "Email Us",
-    detail: "info@talentai.com",
+    detail: "info@hiremind.com",
     sub: "We reply within 24 hours",
   },
   {

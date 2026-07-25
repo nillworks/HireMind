@@ -9,7 +9,7 @@ interface PageProps {
 }
 
 export const metadata: Metadata = {
-  title: "Job Details | TalentAI",
+  title: "Job Details | HireMind",
   description: "View job details and apply",
 }
 

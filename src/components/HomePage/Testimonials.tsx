@@ -9,7 +9,7 @@ const testimonials = [
     role: "Software Engineer at Google",
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Sarah",
     rating: 5,
-    text: "TalentAI completely transformed my job search. The AI cover letter generator saved me hours, and the smart recommendations helped me land my dream role at Google.",
+    text: "HireMind completely transformed my job search. The AI cover letter generator saved me hours, and the smart recommendations helped me land my dream role at Google.",
     color: "PrimaryColor",
   },
   {
@@ -25,7 +25,7 @@ const testimonials = [
     role: "UX Designer at Airbnb",
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=Emily",
     rating: 5,
-    text: "The career coach chatbot gave me personalized advice that actually worked. From resume tips to interview prep, TalentAI was with me every step of the way.",
+    text: "The career coach chatbot gave me personalized advice that actually worked. From resume tips to interview prep, HireMind was with me every step of the way.",
     color: "PrimaryColor",
   },
   {
@@ -33,7 +33,7 @@ const testimonials = [
     role: "Product Manager at Stripe",
     avatar: "https://api.dicebear.com/7.x/avataaars/svg?seed=David",
     rating: 5,
-    text: "I applied to 5 companies using TalentAI and got callbacks from 4. The AI-generated cover letters were spot-on and perfectly tailored to each role.",
+    text: "I applied to 5 companies using HireMind and got callbacks from 4. The AI-generated cover letters were spot-on and perfectly tailored to each role.",
     color: "SrcPrimaryColor",
   },
 ];

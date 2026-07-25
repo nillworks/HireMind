@@ -7,9 +7,9 @@ import { cn } from "@/lib/utils";
 
 const faqs = [
   {
-    question: "What is TalentAI?",
+    question: "What is HireMind?",
     answer:
-      "TalentAI is an AI-powered job board and career coaching platform. It helps job seekers discover opportunities, generate AI cover letters, get smart job recommendations, and chat with an AI career coach. Recruiters can post jobs, manage applicants, and use AI to auto-classify resumes.",
+      "HireMind is an AI-powered job board and career coaching platform. It helps job seekers discover opportunities, generate AI cover letters, get smart job recommendations, and chat with an AI career coach. Recruiters can post jobs, manage applicants, and use AI to auto-classify resumes.",
   },
   {
     question: "How does the AI Cover Letter Generator work?",
@@ -17,12 +17,12 @@ const faqs = [
       "Simply provide the job title, company name, and your skills/experience. Our AI analyzes the context and generates a personalized, professional cover letter tailored to the specific role. You can adjust the tone (Formal, Friendly, Confident) and length (Short, Medium, Long).",
   },
   {
-    question: "Is TalentAI free to use?",
+    question: "Is HireMind free to use?",
     answer:
-      "Yes! TalentAI offers a generous free tier for job seekers. You can browse jobs, apply, use basic AI tools, and chat with the career coach at no cost. Premium features like advanced resume analysis and unlimited AI generations are available with a subscription.",
+      "Yes! HireMind offers a generous free tier for job seekers. You can browse jobs, apply, use basic AI tools, and chat with the career coach at no cost. Premium features like advanced resume analysis and unlimited AI generations are available with a subscription.",
   },
   {
-    question: "How do I become a recruiter on TalentAI?",
+    question: "How do I become a recruiter on HireMind?",
     answer:
       "After creating a job seeker account, you can apply to become a recruiter from your dashboard. Submit your company details and our admin team will review your application. Once approved, you can post jobs, manage applicants, and access recruiter-specific AI tools.",
   },
@@ -61,7 +61,7 @@ const FAQ = () => {
             transition={{ duration: 0.5, delay: 0.1 }}
             className="mt-3 font-SecondaryFont text-TextSecondary max-w-lg mx-auto"
           >
-            Everything you need to know about TalentAI
+            Everything you need to know about HireMind
           </motion.p>
         </div>
 

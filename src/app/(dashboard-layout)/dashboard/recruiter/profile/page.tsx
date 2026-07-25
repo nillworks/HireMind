@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import RecruiterProfilePageComponent from "@/components/DashboardLayoutUi/Recruiter/Profile/RecruiterProfilePage";
 
 export const metadata: Metadata = {
-  title: "Company Profile | TalentAI",
+  title: "Company Profile | HireMind",
   description: "Manage your company profile and branding.",
 };
 

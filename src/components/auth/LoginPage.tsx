@@ -82,7 +82,7 @@ const LoginPage = () => {
               Welcome Back
             </h1>
             <p className="font-SecondaryFont text-TextSecondary mt-2">
-              Sign in to your TalentAI account
+              Sign in to your HireMind account
             </p>
           </div>
 

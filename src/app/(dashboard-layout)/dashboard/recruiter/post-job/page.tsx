@@ -1,8 +1,8 @@
 import { PostJobForm } from "@/components/DashboardLayoutUi/Recruiter/PostJob";
 
 export const metadata = {
-  title: "Post a Job | TalentAI Recruiter",
-  description: "Create a new job listing on TalentAI",
+  title: "Post a Job | HireMind Recruiter",
+  description: "Create a new job listing on HireMind",
 };
 
 export default function PostJobPage() {

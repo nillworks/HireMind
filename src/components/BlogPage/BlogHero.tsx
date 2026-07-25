@@ -5,7 +5,7 @@ const BlogHero = () => {
         Our <span className="text-PrimaryColor">Blog</span>
       </h1>
       <p className="mt-4 text-lg font-SecondaryFont text-TextSecondary dark:text-text-secondary max-w-2xl mx-auto">
-        Insights, tips, and stories from the TalentAI community
+        Insights, tips, and stories from the HireMind community
       </p>
     </div>
   );

@@ -54,7 +54,7 @@ const Footer = () => {
                 <Sparkles size={20} className="text-white" />
               </div>
               <span className="text-lg font-bold font-PrimaryFont tracking-tight">
-                TalentAI
+                HireMind
               </span>
               <VerifiedBadge size={10} />
             </Link>
@@ -131,10 +131,10 @@ const Footer = () => {
               <li className="flex items-center gap-2.5">
                 <Mail size={16} className="text-SrcPrimaryColor shrink-0" />
                 <a
-                  href="mailto:info@talentai.com"
+                  href="mailto:info@hiremind.com"
                   className="text-sm font-SecondaryFont text-white/60 hover:text-white transition-colors"
                 >
-                  info@talentai.com
+                  info@hiremind.com
                 </a>
               </li>
               <li className="flex items-center gap-2.5">
@@ -155,7 +155,7 @@ const Footer = () => {
       <div className="border-t border-white/10">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-5 flex flex-col sm:flex-row items-center justify-between gap-3">
           <p className="text-xs font-SecondaryFont text-white/40">
-            &copy; {new Date().getFullYear()} TalentAI. All rights reserved.
+            &copy; {new Date().getFullYear()} HireMind. All rights reserved.
           </p>
           <div className="flex gap-5">
             <Link

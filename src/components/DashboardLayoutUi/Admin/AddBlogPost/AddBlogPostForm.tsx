@@ -127,7 +127,7 @@ const AddBlogPostForm = ({ user }: AddBlogPostFormProps) => {
               {user?.name || "Admin"}
             </p>
             <p className="text-xs font-SecondaryFont text-TextMuted">
-              {user?.email || "admin@talentai.com"}
+              {user?.email || "admin@hiremind.com"}
             </p>
           </div>
           <span className="ml-auto inline-flex items-center rounded-full bg-gradient-to-r from-PrimaryColor/10 to-SrcPrimaryColor/10 border border-PrimaryColor/20 px-3 py-1 text-[11px] font-medium font-SecondaryFont text-PrimaryColor dark:text-SrcPrimaryColor">

@@ -7,7 +7,9 @@ let _auth: any = null;
 
 function getAuthInstance(): any {
   if (!_auth) {
-    const client = new MongoClient(process.env.MONGODB_URI || 'mongodb://localhost:27017');
+    const client = new MongoClient(
+      process.env.MONGODB_URI || 'mongodb://localhost:27017',
+    );
     const db = client.db('TalentAI');
     _auth = betterAuth({
       database: mongodbAdapter(db, { client }),
@@ -18,7 +20,7 @@ function getAuthInstance(): any {
             keyPairConfig: { alg: 'EdDSA', crv: 'Ed25519' },
           },
           jwt: {
-            definePayload: (session) => ({
+            definePayload: session => ({
               sub: session.user.id,
               id: session.user.id,
               email: session.user.email,
@@ -30,12 +32,22 @@ function getAuthInstance(): any {
         }),
       ],
       hooks: {
-        before: async (request) => ({ request }),
+        before: async request => ({ request }),
       },
       user: {
         additionalFields: {
-          role: { type: "string", required: false, defaultValue: "seeker", input: true },
-          plan: { type: "string", required: false, defaultValue: "free_seeker", input: true },
+          role: {
+            type: 'string',
+            required: false,
+            defaultValue: 'seeker',
+            input: true,
+          },
+          plan: {
+            type: 'string',
+            required: false,
+            defaultValue: 'free_seeker',
+            input: true,
+          },
         },
       },
       socialProviders: {

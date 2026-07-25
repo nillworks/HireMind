@@ -202,7 +202,7 @@ export default function DashboardSidebar({
                 exit={{ opacity: 0, width: 0 }}
                 className="text-lg font-bold font-PrimaryFont text-TextPrimary dark:text-surface tracking-tight whitespace-nowrap overflow-hidden"
               >
-                TalentAI
+                HireMind
               </motion.span>
             )}
           </AnimatePresence>

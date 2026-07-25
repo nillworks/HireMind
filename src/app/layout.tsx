@@ -16,7 +16,7 @@ const secondaryFont = Inter({
   variable: "--font-SecondaryFont",
 });
 export const metadata: Metadata = {
-  title: "TalentAI - AI-Powered Job Board & Career Coaching",
+  title: "HireMind - AI-Powered Job Board & Career Coaching",
   description: "Discover opportunities, get AI-generated cover letters, and advance your career with smart recommendations.",
 };
 

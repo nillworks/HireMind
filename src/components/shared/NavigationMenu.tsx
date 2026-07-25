@@ -1,41 +1,43 @@
-"use client";
+'use client';
 
-import { useState } from "react";
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { Menu, Sparkles } from "lucide-react";
-import { cn } from "@/lib/utils";
-import ActiveLink, { type NavItem } from "@/components/shared/ActiveLink";
-import MobileMenu from "@/components/shared/MobileMenu";
-import ProfileDropdown from "@/components/shared/ProfileDropDown";
-import VerifiedBadge from "@/components/shared/VerifiedBadge";
-import { signOut, useSession } from "@/lib/auth-client";
-import { toast } from "sonner";
-import CustomToast from "@/components/shared/CustomToast";
+import { useState } from 'react';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+import { Menu, Sparkles } from 'lucide-react';
+import { cn } from '@/lib/utils';
+import ActiveLink, { type NavItem } from '@/components/shared/ActiveLink';
+import MobileMenu from '@/components/shared/MobileMenu';
+import ProfileDropdown from '@/components/shared/ProfileDropDown';
+import VerifiedBadge from '@/components/shared/VerifiedBadge';
+import { signOut, useSession } from '@/lib/auth-client';
+import { toast } from 'sonner';
+import CustomToast from '@/components/shared/CustomToast';
+import Image from 'next/image';
+import logo from '../../../public/he.png'
 
 const LOGGED_OUT_NAV: NavItem[] = [
-  { id: 1, label: "Home", href: "/" },
-  { id: 2, label: "Browse Jobs", href: "/jobs" },
-  { id: 3, label: "About", href: "/about" },
-  { id: 4, label: "Contact", href: "/contact" },
+  { id: 1, label: 'Home', href: '/' },
+  { id: 2, label: 'Browse Jobs', href: '/jobs' },
+  { id: 3, label: 'About', href: '/about' },
+  { id: 4, label: 'Contact', href: '/contact' },
 ];
 
 const LOGGED_IN_NAV: NavItem[] = [
-  { id: 1, label: "Home", href: "/" },
-  { id: 2, label: "Browse Jobs", href: "/jobs" },
-  { id: 3, label: "Plans", href: "/plans" },
-  { id: 4, label: "About", href: "/about" },
-  { id: 5, label: "Contact", href: "/contact" },
-  { id: 6, label: "Blog", href: "/blog" },
-  { id: 7, label: "Company", href: "/company" },
+  { id: 1, label: 'Home', href: '/' },
+  { id: 2, label: 'Browse Jobs', href: '/jobs' },
+  { id: 3, label: 'Plans', href: '/plans' },
+  { id: 4, label: 'About', href: '/about' },
+  { id: 5, label: 'Contact', href: '/contact' },
+  { id: 6, label: 'Blog', href: '/blog' },
+  { id: 7, label: 'Company', href: '/company' },
   // { id: 3, label: "Saved Jobs", href: "/saved-jobs" },
   // { id: 4, label: "My Applications", href: "/my-applications" },
   // { id: 5, label: "AI Tools", href: "/ai-tools" },
 ];
 
 const AUTH_LINKS = {
-  login: { label: "Login", href: "/login" },
-  register: { label: "Register", href: "/regester" },
+  login: { label: 'Login', href: '/login' },
+  register: { label: 'Register', href: '/regester' },
 };
 
 export default function NavigationMenu() {
@@ -43,9 +45,9 @@ export default function NavigationMenu() {
   const pathname = usePathname();
   const router = useRouter();
   const { data: session } = useSession();
-const user = session?.user;
+  const user = session?.user;
 
-  if (pathname?.startsWith("/dashboard")) {
+  if (pathname?.startsWith('/dashboard')) {
     return null;
   }
 
@@ -59,8 +61,8 @@ const user = session?.user;
     await signOut({
       fetchOptions: {
         onSuccess: () => {
-          toast.success("Signed out successfully");
-          router.push("/login");
+          toast.success('Signed out successfully');
+          router.push('/login');
           router.refresh();
         },
       },
@@ -69,14 +71,14 @@ const user = session?.user;
 
   const dynamicUserLinks = {
     dashboard: {
-      label: "Dashboard",
-      href: dashboardHref[(user as any)?.role?.toLowerCase()] || "/dashboard",
+      label: 'Dashboard',
+      href: dashboardHref[(user as any)?.role?.toLowerCase()] || '/dashboard',
     },
     profile: {
-      label: "Profile",
-      href: `/dashboard/${(user as any)?.role?.toLowerCase() || "seeker"}/profile`,
+      label: 'Profile',
+      href: `/dashboard/${(user as any)?.role?.toLowerCase() || 'seeker'}/profile`,
     },
-    logout: { label: "Logout", onClick: handleSignOut },
+    logout: { label: 'Logout', onClick: handleSignOut },
   };
 
   const currentNavItems = user ? LOGGED_IN_NAV : LOGGED_OUT_NAV;
@@ -89,13 +91,11 @@ const user = session?.user;
             <Link
               href="/"
               className="flex items-center gap-2.5 shrink-0 group"
-              aria-label="TalentAI - Go to Home"
+              aria-label="HireMind - Go to Home"
             >
-              <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-br from-PrimaryColor to-SrcPrimaryColor transition-all duration-300 group-hover:scale-105 group-hover:-rotate-3 shadow-sm group-active:scale-95">
-                <Sparkles size={20} className="text-white transition-transform duration-300 group-hover:scale-110" />
-              </div>
+              <Image width={58} height={58} src={logo} alt='logo' />
               <span className="text-lg font-bold font-PrimaryFont tracking-tight text-TextPrimary group-hover:text-PrimaryColor transition-colors duration-200">
-                TalentAI
+                HireMind
               </span>
               <VerifiedBadge size={12} />
             </Link>
@@ -104,7 +104,7 @@ const user = session?.user;
               className="hidden lg:flex items-center gap-1"
               aria-label="Primary navigation"
             >
-              {currentNavItems.map((item) => (
+              {currentNavItems.map(item => (
                 <ActiveLink key={item.id} item={item} pathname={pathname} />
               ))}
             </nav>
@@ -112,7 +112,12 @@ const user = session?.user;
             <div className="flex items-center gap-3">
               <div className="hidden md:block">
                 {user ? (
-                  <ProfileDropdown user={user as { name?: string; email?: string; image?: string }} userLinks={dynamicUserLinks} />
+                  <ProfileDropdown
+                    user={
+                      user as { name?: string; email?: string; image?: string }
+                    }
+                    userLinks={dynamicUserLinks}
+                  />
                 ) : (
                   <div className="flex items-center gap-3">
                     <Link
@@ -124,8 +129,8 @@ const user = session?.user;
                     <Link
                       href={AUTH_LINKS.register.href}
                       className={cn(
-                        "inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold font-SecondaryFont transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0",
-                        "bg-SrcPrimaryColor text-white hover:bg-SrcPrimaryColorHover"
+                        'inline-flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold font-SecondaryFont transition-all duration-300 shadow-sm hover:shadow-md hover:-translate-y-0.5 active:translate-y-0',
+                        'bg-SrcPrimaryColor text-white hover:bg-SrcPrimaryColorHover',
                       )}
                     >
                       {AUTH_LINKS.register.label}

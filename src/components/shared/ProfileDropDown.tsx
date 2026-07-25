@@ -164,7 +164,7 @@ export default function ProfileDropdown({ user, userLinks }: ProfileDropdownProp
         </svg>
         <div className="absolute inset-[3px] rounded-full overflow-hidden">
           <Image
-            src={user.image || "https://api.dicebear.com/7.x/avataaars/svg?seed=TalentAI"}
+            src={user.image || "https://api.dicebear.com/7.x/avataaars/svg?seed=HireMind"}
             alt="User profile picture"
             fill
             unoptimized
@@ -220,7 +220,7 @@ export default function ProfileDropdown({ user, userLinks }: ProfileDropdownProp
                 </svg>
                 <div className="absolute inset-[3px] rounded-full overflow-hidden">
                   <Image
-                    src={user.image || "https://api.dicebear.com/7.x/avataaars/svg?seed=TalentAI"}
+                    src={user.image || "https://api.dicebear.com/7.x/avataaars/svg?seed=HireMind"}
                     alt="User profile picture"
                     fill
                     unoptimized

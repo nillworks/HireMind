@@ -225,7 +225,7 @@ const RegesterPage = () => {
               Create Account
             </h1>
             <p className="font-SecondaryFont text-TextSecondary mt-2">
-              Join TalentAI and advance your career
+              Join HireMind and advance your career
             </p>
           </div>
 

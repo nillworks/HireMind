@@ -2,9 +2,9 @@ import ContactPage from "@/components/ContactPage/ContactPage";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Contact Us | TalentAI",
+  title: "Contact Us | HireMind",
   description:
-    "Get in touch with the TalentAI team. We're here to help with questions, partnerships, and support.",
+    "Get in touch with the HireMind team. We're here to help with questions, partnerships, and support.",
 };
 
 export default function Contact() {

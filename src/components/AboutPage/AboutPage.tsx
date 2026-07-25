@@ -58,7 +58,7 @@ const AboutPage = () => {
             <div className="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-PrimaryColorLight to-SrcPrimaryColorLight dark:from-PrimaryColorDark/20 dark:to-SrcPrimaryColorDark/20 px-4 py-2 mb-6">
               <Sparkles size={16} className="text-PrimaryColor" />
               <span className="text-sm font-medium font-SecondaryFont text-PrimaryColor dark:text-SrcPrimaryColor">
-                About TalentAI
+                About HireMind
               </span>
             </div>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold font-PrimaryFont text-TextPrimary dark:text-white tracking-tight mb-6">
@@ -68,7 +68,7 @@ const AboutPage = () => {
               </span>
             </h1>
             <p className="text-lg font-SecondaryFont text-TextSecondary dark:text-text-secondary leading-relaxed">
-              TalentAI is an AI-powered job board and career coaching platform that connects
+              HireMind is an AI-powered job board and career coaching platform that connects
               job seekers with opportunities while providing intelligent tools to accelerate
               career growth.
             </p>
@@ -158,7 +158,7 @@ const AboutPage = () => {
               Meet Our Team
             </h2>
             <p className="font-SecondaryFont text-TextSecondary dark:text-text-secondary max-w-2xl mx-auto">
-              The passionate people behind TalentAI who are dedicated to transforming careers.
+              The passionate people behind HireMind who are dedicated to transforming careers.
             </p>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -226,7 +226,7 @@ const AboutPage = () => {
             Ready to Start Your Journey?
           </h2>
           <p className="font-SecondaryFont text-TextSecondary dark:text-text-secondary max-w-2xl mx-auto mb-8">
-            Join thousands of professionals who are already using TalentAI to advance their careers.
+            Join thousands of professionals who are already using HireMind to advance their careers.
           </p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
             <a

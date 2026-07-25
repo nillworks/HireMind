@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import BlogPostsPage from "@/components/DashboardLayoutUi/Admin/BlogPosts/BlogPostsPage";
 
 export const metadata: Metadata = {
-  title: "Blog Posts | TalentAI Admin",
-  description: "Manage all community blog posts on TalentAI.",
+  title: "Blog Posts | HireMind Admin",
+  description: "Manage all community blog posts on HireMind.",
 };
 
 const BlogPostsRoute = ({

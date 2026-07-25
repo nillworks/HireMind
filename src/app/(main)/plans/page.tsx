@@ -2,7 +2,7 @@ import PlansPage from "@/components/PlansPage/PlansPage";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Plans & Pricing | TalentAI",
+  title: "Plans & Pricing | HireMind",
   description:
     "Choose the right plan for your career. Upgrade to Pro for unlimited applications and AI-powered tools.",
 };

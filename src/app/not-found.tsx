@@ -3,7 +3,7 @@ import { Home, Search, Bot, Briefcase } from "lucide-react";
 import GoBackButton from "@/components/GoBackButton";
 
 export const metadata = {
-  title: "404 - Page Not Found | TalentAI",
+  title: "404 - Page Not Found | HireMind",
   description: "The page you're looking for doesn't exist.",
 };
 

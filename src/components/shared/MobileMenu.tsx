@@ -110,7 +110,7 @@ export default function MobileMenu({
               <Sparkles size={16} className="text-white" />
             </div>
             <span className="text-base font-bold font-PrimaryFont text-TextPrimary tracking-tight">
-              TalentAI
+              HireMind
             </span>
             <VerifiedBadge size={10} />
           </div>

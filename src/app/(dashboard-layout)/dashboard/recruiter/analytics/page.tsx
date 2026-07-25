@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { AnalyticsPage } from "@/components/DashboardLayoutUi/Recruiter/Analytics";
 
 export const metadata: Metadata = {
-  title: "Analytics | TalentAI",
+  title: "Analytics | HireMind",
   description: "Recruiter analytics dashboard with job insights and trends.",
 };
 

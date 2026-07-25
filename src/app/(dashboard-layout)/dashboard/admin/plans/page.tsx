@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import PlansManagementPage from "@/components/DashboardLayoutUi/Admin/Plans/PlansManagementPage";
 
 export const metadata: Metadata = {
-  title: "Manage Plans | TalentAI",
+  title: "Manage Plans | HireMind",
   description: "Admin panel to manage subscription plans and pricing.",
 };
 

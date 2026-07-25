@@ -3,8 +3,8 @@ import { getRecruiterJob } from "@/lib/api/recruiter/recruiterJobsApi";
 import { EditJobForm } from "@/components/DashboardLayoutUi/Recruiter/MyJobs";
 
 export const metadata = {
-  title: "Edit Job | TalentAI Recruiter",
-  description: "Update your job listing on TalentAI",
+  title: "Edit Job | HireMind Recruiter",
+  description: "Update your job listing on HireMind",
 };
 
 interface EditJobPageProps {

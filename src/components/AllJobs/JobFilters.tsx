@@ -1,7 +1,17 @@
 "use client"
 
-import { useState } from "react"
-import { Search, SlidersHorizontal, X } from "lucide-react"
+import { useState, useRef, useEffect, useCallback } from "react"
+import { motion } from "framer-motion"
+import {
+  Search,
+  SlidersHorizontal,
+  X,
+  Briefcase,
+  Building2,
+  Tag,
+  MapPin,
+  Loader2,
+} from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import {
@@ -11,7 +21,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import { type JobFilterOptions } from "@/lib/api/public/jobsApi"
+import {
+  type JobFilterOptions,
+  type Suggestion,
+  getJobSuggestions,
+} from "@/lib/api/public/jobsApi"
+import { useDebounce } from "@/hooks/useDebounce"
 import MultiSelectFilter from "./MultiSelectFilter"
 
 const SORT_OPTIONS = [
@@ -64,6 +79,49 @@ const JobFilters = ({
     setSyncedApplied(applied)
     setDraft(applied)
   }
+
+  const [dropdown, setDropdown] = useState({ suggestions: [] as Suggestion[], isOpen: false, loading: false });
+  const [selectedIndex, setSelectedIndex] = useState(-1);
+  const debouncedSearch = useDebounce(draft.search, 300);
+  const inputRef = useRef<HTMLDivElement>(null);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (debouncedSearch.length < 2) {
+      setDropdown({ suggestions: [], isOpen: false, loading: false });
+      return;
+    }
+    let active = true;
+    (async () => {
+      setDropdown((prev) => ({ ...prev, loading: true }));
+      const data = await getJobSuggestions(debouncedSearch);
+      if (!active) return;
+      setDropdown({ suggestions: data, isOpen: true, loading: false });
+      setSelectedIndex(-1);
+    })();
+    return () => { active = false; };
+  }, [debouncedSearch]);
+
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target as Node) &&
+        inputRef.current &&
+        !inputRef.current.contains(e.target as Node)
+      ) {
+        setDropdown((prev) => ({ ...prev, isOpen: false }));
+      }
+    };
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  const selectSuggestion = useCallback((text: string) => {
+    setDraft((prev) => ({ ...prev, search: text }));
+    setDropdown({ suggestions: [], isOpen: false, loading: false });
+    setSelectedIndex(-1);
+  }, []);
 
   const setDraftValue = <K extends keyof AppliedJobFilters>(
     key: K,
@@ -168,22 +226,48 @@ const JobFilters = ({
     <div className="space-y-4">
       {/* Search row */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
-        <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-TextMuted" />
+        <div className="relative flex-1" ref={inputRef}>
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-TextMuted z-10" />
           <Input
             type="text"
             placeholder="Search jobs by title or company..."
             value={draft.search}
             onChange={(e) => setDraftValue("search", e.target.value)}
+            onFocus={() => { if (dropdown.suggestions.length > 0) setDropdown((prev) => ({ ...prev, isOpen: true })); }}
             onKeyDown={(e) => {
+              const { isOpen, suggestions } = dropdown;
+              if (isOpen && suggestions.length > 0) {
+                if (e.key === "ArrowDown") {
+                  e.preventDefault();
+                  setSelectedIndex((prev) => (prev < suggestions.length - 1 ? prev + 1 : 0));
+                  return;
+                }
+                if (e.key === "ArrowUp") {
+                  e.preventDefault();
+                  setSelectedIndex((prev) => (prev > 0 ? prev - 1 : suggestions.length - 1));
+                  return;
+                }
+                if (e.key === "Enter" && selectedIndex >= 0) {
+                  e.preventDefault();
+                  selectSuggestion(suggestions[selectedIndex].text);
+                  return;
+                }
+                if (e.key === "Escape") {
+                  setDropdown((prev) => ({ ...prev, isOpen: false }));
+                  return;
+                }
+              }
               if (e.key === "Enter") {
-                e.preventDefault()
-                onApply(draft)
+                e.preventDefault();
+                onApply(draft);
               }
             }}
             className="pl-10 pr-9 h-10 rounded-xl border-Border bg-Surface dark:bg-[#1e293b] dark:border-secondary font-SecondaryFont text-sm text-TextPrimary dark:text-surface placeholder:text-TextMuted"
           />
-          {draft.search && (
+          {dropdown.loading && (
+            <Loader2 size={16} className="absolute right-3 top-1/2 -translate-y-1/2 text-TextMuted animate-spin" />
+          )}
+          {!dropdown.loading && draft.search && (
             <button
               type="button"
               onClick={() => {
@@ -195,6 +279,71 @@ const JobFilters = ({
             >
               <X className="size-4" />
             </button>
+          )}
+          {dropdown.isOpen && debouncedSearch.length >= 2 && (
+            <motion.div
+              ref={dropdownRef}
+              initial={{ opacity: 0, y: -4 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.15 }}
+              className="absolute left-0 right-0 top-full mt-1.5 bg-Surface border border-Border rounded-xl shadow-lg z-50 max-h-72 overflow-y-auto"
+            >
+              {dropdown.suggestions.length > 0 ? (
+                (["title", "company", "category", "location"] as const).map((type) => {
+                  const items = dropdown.suggestions.filter((s) => s.type === type);
+                  if (items.length === 0) return null;
+                  return (
+                    <div key={type}>
+                      <div className="px-3 py-2 text-[10px] font-semibold font-SecondaryFont text-TextMuted tracking-wider uppercase bg-BorderLight/50">
+                        {type === "title" ? "Job Titles" :
+                         type === "company" ? "Companies" :
+                         type === "category" ? "Categories" : "Locations"}
+                      </div>
+                      {items.map((s) => {
+                        const globalIdx = dropdown.suggestions.indexOf(s);
+                        const isSelected = globalIdx === selectedIndex;
+                        const isPrimary = (globalIdx % 2 === 0);
+                        return (
+                          <button
+                            key={`${type}-${s.text}`}
+                            type="button"
+                            onMouseDown={(e) => {
+                              e.preventDefault();
+                              selectSuggestion(s.text);
+                              onApply({ ...draft, search: s.text });
+                            }}
+                            className={`w-full flex items-center gap-2.5 px-3 py-2 text-left text-sm font-SecondaryFont transition-colors ${
+                              isSelected
+                                ? "bg-PrimaryColorLight/40 text-PrimaryColor"
+                                : isPrimary
+                                  ? "hover:bg-PrimaryColorLight/20 text-TextPrimary"
+                                  : "hover:bg-SrcPrimaryColorLight/20 text-TextPrimary"
+                            }`}
+                          >
+                            <span className={`shrink-0 ${
+                              type === "title" ? "text-PrimaryColor" :
+                              type === "company" ? "text-SrcPrimaryColor" :
+                              type === "category" ? "text-PrimaryColor" :
+                              "text-SrcPrimaryColor"
+                            }`}>
+                              {type === "title" && <Briefcase size={14} />}
+                              {type === "company" && <Building2 size={14} />}
+                              {type === "category" && <Tag size={14} />}
+                              {type === "location" && <MapPin size={14} />}
+                            </span>
+                            <span className="truncate">{s.text}</span>
+                          </button>
+                        );
+                      })}
+                    </div>
+                  );
+                })
+              ) : !dropdown.loading ? (
+                <div className="px-3 py-4 text-sm text-TextMuted font-SecondaryFont text-center">
+                  No suggestions found
+                </div>
+              ) : null}
+            </motion.div>
           )}
         </div>
 

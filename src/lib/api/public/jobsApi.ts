@@ -44,6 +44,11 @@ export interface JobsQuery {
   limit?: number;
 }
 
+export interface Suggestion {
+  text: string;
+  type: 'title' | 'company' | 'category' | 'location';
+}
+
 export interface JobFilterOptions {
   categories: string[];
   jobTypes: string[];
@@ -97,6 +102,20 @@ export const getJobs = async (query: JobsQuery = {}): Promise<JobsResponse> => {
     };
   } catch {
     return { jobs: [], total: 0, page: 1, totalPages: 1 };
+  }
+};
+
+export const getJobSuggestions = async (q: string): Promise<Suggestion[]> => {
+  if (q.length < 2) return [];
+  try {
+    const res = await fetch(`${API}/api/jobs/suggest?q=${encodeURIComponent(q)}`, {
+      cache: 'no-store',
+    });
+    if (!res.ok) return [];
+    const json = await res.json();
+    return json.data?.suggestions ?? [];
+  } catch {
+    return [];
   }
 };
 

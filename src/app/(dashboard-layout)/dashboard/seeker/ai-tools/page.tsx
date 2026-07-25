@@ -62,7 +62,7 @@ export default function CoverLetterPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="container mx-auto space-y-6">
       <div className="flex items-center gap-3">
         <Link href="/dashboard/seeker" className="p-2 rounded-xl hover:bg-BorderLight dark:hover:bg-secondary/15 transition-colors">
           <ArrowLeft size={20} className="text-TextSecondary" />

@@ -21,6 +21,8 @@ import {
 } from "lucide-react";
 import ActiveLink, { type NavItem } from "@/components/shared/ActiveLink";
 import VerifiedBadge from "@/components/shared/VerifiedBadge";
+import Image from "next/image";
+import logo from "../../../public/he.png";
 import { cn } from "@/lib/utils";
 
 const iconMap: Record<string, React.ElementType> = {
@@ -106,13 +108,11 @@ export default function MobileMenu({
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-5 border-b border-Border/60">
           <div className="flex items-center gap-2.5">
-            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-br from-PrimaryColor to-SrcPrimaryColor shadow-sm">
-              <Sparkles size={16} className="text-white" />
-            </div>
-            <span className="text-base font-bold font-PrimaryFont text-TextPrimary tracking-tight">
-              HireMind
+            <Image width={58} height={58} src={logo} alt="logo" />
+            <span className="text-2xl font-PrimaryFont flex text-PrimaryColor font-bold">
+              Hire <span className="text-SrcPrimaryColor">Mind</span>
             </span>
-            <VerifiedBadge size={10} />
+            <VerifiedBadge size={12} />
           </div>
           <button
             onClick={onClose}

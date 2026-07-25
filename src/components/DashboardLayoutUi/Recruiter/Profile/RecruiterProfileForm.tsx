@@ -171,50 +171,50 @@ export default function RecruiterProfileForm({
         </div>
 
         <div className="rounded-2xl border border-surface bg-white dark:bg-[#1e293b] dark:border-secondary p-6 space-y-6">
-          <h3 className="text-lg font-PrimaryFont text-gray-900 dark:text-white flex items-center gap-2">
+          <h3 className="text-lg font-PrimaryFont text-TextPrimary dark:text-surface flex items-center gap-2">
             <Building2 className="w-5 h-5 text-PrimaryColor" />
             Company Information
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label className="font-SecondaryFont text-gray-700 dark:text-surface">
+              <Label className="font-SecondaryFont text-TextPrimary dark:text-surface">
                 Company Name *
               </Label>
               <Input
                 value={formData.companyName}
                 onChange={(e) => updateField("companyName", e.target.value)}
                 placeholder="Enter company name"
-                className="rounded-xl font-SecondaryFont dark:bg-[#0f172a] dark:border-secondary dark:text-white"
+                className="rounded-xl font-SecondaryFont bg-white dark:bg-[#0f172a] border-Border dark:border-secondary text-TextPrimary dark:text-surface"
               />
             </div>
             <div className="space-y-2">
-              <Label className="font-SecondaryFont text-gray-700 dark:text-surface">
+              <Label className="font-SecondaryFont text-TextPrimary dark:text-surface">
                 Phone
               </Label>
               <Input
                 value={formData.phone}
                 onChange={(e) => updateField("phone", e.target.value)}
                 placeholder="Enter phone number"
-                className="rounded-xl font-SecondaryFont dark:bg-[#0f172a] dark:border-secondary dark:text-white"
+                className="rounded-xl font-SecondaryFont bg-white dark:bg-[#0f172a] border-Border dark:border-secondary text-TextPrimary dark:text-surface"
               />
             </div>
           </div>
         </div>
 
-        <div className="rounded-2xl border border-surface bg-white dark:bg-[#1e293b] dark:border-secondary p-6 space-y-6">
-          <h3 className="text-lg font-PrimaryFont text-gray-900 dark:text-white flex items-center gap-2">
+        <div className="rounded-2xl border border-Border bg-white dark:bg-[#1e293b] dark:border-secondary p-6 space-y-6">
+          <h3 className="text-lg font-PrimaryFont text-TextPrimary dark:text-surface flex items-center gap-2">
             <Users className="w-5 h-5 text-SrcPrimaryColor" />
             Company Details
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label className="font-SecondaryFont text-gray-700 dark:text-surface">
+              <Label className="font-SecondaryFont text-TextPrimary dark:text-surface">
                 Industry
               </Label>
               <select
                 value={formData.industry}
                 onChange={(e) => updateField("industry", e.target.value)}
-                className="w-full rounded-xl border border-surface bg-white px-3 py-2 text-sm font-SecondaryFont dark:bg-[#0f172a] dark:border-secondary dark:text-white"
+                className="w-full rounded-xl border border-Border bg-white px-3 py-2 text-sm font-SecondaryFont text-TextPrimary dark:bg-[#0f172a] dark:border-secondary dark:text-surface"
               >
                 <option value="">Select industry</option>
                 {industryOptions.map((opt) => (
@@ -225,13 +225,13 @@ export default function RecruiterProfileForm({
               </select>
             </div>
             <div className="space-y-2">
-              <Label className="font-SecondaryFont text-gray-700 dark:text-surface">
+              <Label className="font-SecondaryFont text-TextPrimary dark:text-surface">
                 Company Size
               </Label>
               <select
                 value={formData.companySize}
                 onChange={(e) => updateField("companySize", e.target.value)}
-                className="w-full rounded-xl border border-surface bg-white px-3 py-2 text-sm font-SecondaryFont dark:bg-[#0f172a] dark:border-secondary dark:text-white"
+                className="w-full rounded-xl border border-Border bg-white px-3 py-2 text-sm font-SecondaryFont text-TextPrimary dark:bg-[#0f172a] dark:border-secondary dark:text-surface"
               >
                 <option value="">Select company size</option>
                 {companySizeOptions.map((opt) => (
@@ -244,24 +244,24 @@ export default function RecruiterProfileForm({
           </div>
         </div>
 
-        <div className="rounded-2xl border border-surface bg-white dark:bg-[#1e293b] dark:border-secondary p-6 space-y-6">
-          <h3 className="text-lg font-PrimaryFont text-gray-900 dark:text-white flex items-center gap-2">
+        <div className="rounded-2xl border border-Border bg-white dark:bg-[#1e293b] dark:border-secondary p-6 space-y-6">
+          <h3 className="text-lg font-PrimaryFont text-TextPrimary dark:text-surface flex items-center gap-2">
             <ImagePlus className="w-5 h-5 text-PrimaryColor" />
             Company Branding
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div className="space-y-2">
-              <Label className="font-SecondaryFont text-gray-700 dark:text-surface">
+              <Label className="font-SecondaryFont text-TextPrimary dark:text-surface">
                 Company Logo URL
               </Label>
               <Input
                 value={formData.companyLogo}
                 onChange={(e) => updateField("companyLogo", e.target.value)}
                 placeholder="https://example.com/logo.png"
-                className="rounded-xl font-SecondaryFont dark:bg-[#0f172a] dark:border-secondary dark:text-white"
+                className="rounded-xl font-SecondaryFont bg-white dark:bg-[#0f172a] border-Border dark:border-secondary text-TextPrimary dark:text-surface"
               />
               {isValidLogoUrl && (
-                <div className="mt-2 relative w-16 h-16 rounded-lg overflow-hidden border border-surface dark:border-secondary">
+                <div className="mt-2 relative w-16 h-16 rounded-lg overflow-hidden border border-Border dark:border-secondary">
                   <Image
                     src={formData.companyLogo}
                     alt="Logo preview"
@@ -273,21 +273,21 @@ export default function RecruiterProfileForm({
               )}
             </div>
             <div className="space-y-2">
-              <Label className="font-SecondaryFont text-gray-700 dark:text-surface">
+              <Label className="font-SecondaryFont text-TextPrimary dark:text-surface">
                 Company Website
               </Label>
               <Input
                 value={formData.companyWebsite}
                 onChange={(e) => updateField("companyWebsite", e.target.value)}
                 placeholder="https://example.com"
-                className="rounded-xl font-SecondaryFont dark:bg-[#0f172a] dark:border-secondary dark:text-white"
+                className="rounded-xl font-SecondaryFont bg-white dark:bg-[#0f172a] border-Border dark:border-secondary text-TextPrimary dark:text-surface"
               />
             </div>
           </div>
         </div>
 
-        <div className="rounded-2xl border border-surface bg-white dark:bg-[#1e293b] dark:border-secondary p-6 space-y-4">
-          <h3 className="text-lg font-PrimaryFont text-gray-900 dark:text-white flex items-center gap-2">
+        <div className="rounded-2xl border border-Border bg-white dark:bg-[#1e293b] dark:border-secondary p-6 space-y-4">
+          <h3 className="text-lg font-PrimaryFont text-TextPrimary dark:text-surface flex items-center gap-2">
             <FileText className="w-5 h-5 text-SrcPrimaryColor" />
             Company Description
           </h3>
@@ -296,15 +296,15 @@ export default function RecruiterProfileForm({
             onChange={(e) => updateField("companyDescription", e.target.value)}
             placeholder="Describe your company..."
             rows={5}
-            className="w-full rounded-xl border border-surface bg-white px-4 py-3 text-sm font-SecondaryFont resize-none dark:bg-[#0f172a] dark:border-secondary dark:text-white"
+            className="w-full rounded-xl border border-Border bg-white px-4 py-3 text-sm font-SecondaryFont resize-none text-TextPrimary dark:bg-[#0f172a] dark:border-secondary dark:text-surface"
           />
-          <p className="text-xs text-gray-500 dark:text-surface font-SecondaryFont text-right">
+          <p className="text-xs text-TextMuted font-SecondaryFont text-right">
             {formData.companyDescription.length} characters
           </p>
         </div>
 
-        <div className="rounded-2xl border border-surface bg-white dark:bg-[#1e293b] dark:border-secondary p-6 space-y-4">
-          <h3 className="text-lg font-PrimaryFont text-gray-900 dark:text-white flex items-center gap-2">
+        <div className="rounded-2xl border border-Border bg-white dark:bg-[#1e293b] dark:border-secondary p-6 space-y-4">
+          <h3 className="text-lg font-PrimaryFont text-TextPrimary dark:text-surface flex items-center gap-2">
             <MapPin className="w-5 h-5 text-PrimaryColor" />
             Location
           </h3>
@@ -312,14 +312,14 @@ export default function RecruiterProfileForm({
             value={formData.companyLocation}
             onChange={(e) => updateField("companyLocation", e.target.value)}
             placeholder="Enter company location"
-            className="rounded-xl font-SecondaryFont dark:bg-[#0f172a] dark:border-secondary dark:text-white"
+            className="rounded-xl font-SecondaryFont bg-white dark:bg-[#0f172a] border-Border dark:border-secondary text-TextPrimary dark:text-surface"
           />
         </div>
 
         <div className="flex justify-end gap-3">
           <Button
             onClick={handleCancel}
-            className="px-6 py-2 rounded-xl font-SecondaryFont border border-surface dark:border-secondary dark:text-white cursor-pointer"
+            className="px-6 py-2 rounded-xl font-SecondaryFont border border-Border dark:border-secondary bg-white dark:bg-[#1e293b] text-TextPrimary dark:text-surface cursor-pointer"
           >
             Cancel
           </Button>
@@ -405,25 +405,25 @@ export default function RecruiterProfileForm({
       </motion.div>
 
       <motion.div variants={itemVariants}>
-        <div className="rounded-2xl border border-surface bg-white dark:bg-[#1e293b] dark:border-secondary p-6">
-          <h3 className="text-lg font-PrimaryFont text-gray-900 dark:text-white flex items-center gap-2 mb-4">
+        <div className="rounded-2xl border border-Border bg-white dark:bg-[#1e293b] dark:border-secondary p-6">
+          <h3 className="text-lg font-PrimaryFont text-TextPrimary dark:text-surface flex items-center gap-2 mb-4">
             <Building2 className="w-5 h-5 text-PrimaryColor" />
             Company Information
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <p className="text-sm text-gray-500 dark:text-surface font-SecondaryFont">
+              <p className="text-sm text-TextMuted font-SecondaryFont">
                 Company Name
               </p>
-              <p className="text-gray-900 dark:text-white font-SecondaryFont mt-1">
+              <p className="text-TextPrimary dark:text-surface font-SecondaryFont mt-1">
                 {profile?.companyName || "\u2014"}
               </p>
             </div>
             <div>
-              <p className="text-sm text-gray-500 dark:text-surface font-SecondaryFont">
+              <p className="text-sm text-TextMuted font-SecondaryFont">
                 Phone
               </p>
-              <p className="text-gray-900 dark:text-white font-SecondaryFont mt-1 flex items-center gap-1">
+              <p className="text-TextPrimary dark:text-surface font-SecondaryFont mt-1 flex items-center gap-1">
                 <Phone className="w-4 h-4 text-PrimaryColor" />
                 {profile?.phone || "\u2014"}
               </p>
@@ -433,25 +433,25 @@ export default function RecruiterProfileForm({
       </motion.div>
 
       <motion.div variants={itemVariants}>
-        <div className="rounded-2xl border border-surface bg-white dark:bg-[#1e293b] dark:border-secondary p-6">
-          <h3 className="text-lg font-PrimaryFont text-gray-900 dark:text-white flex items-center gap-2 mb-4">
+        <div className="rounded-2xl border border-Border bg-white dark:bg-[#1e293b] dark:border-secondary p-6">
+          <h3 className="text-lg font-PrimaryFont text-TextPrimary dark:text-surface flex items-center gap-2 mb-4">
             <Users className="w-5 h-5 text-SrcPrimaryColor" />
             Company Details
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <p className="text-sm text-gray-500 dark:text-surface font-SecondaryFont">
+              <p className="text-sm text-TextMuted font-SecondaryFont">
                 Industry
               </p>
-              <p className="text-gray-900 dark:text-white font-SecondaryFont mt-1">
+              <p className="text-TextPrimary dark:text-surface font-SecondaryFont mt-1">
                 {profile?.industry || "\u2014"}
               </p>
             </div>
             <div>
-              <p className="text-sm text-gray-500 dark:text-surface font-SecondaryFont">
+              <p className="text-sm text-TextMuted font-SecondaryFont">
                 Company Size
               </p>
-              <p className="text-gray-900 dark:text-white font-SecondaryFont mt-1">
+              <p className="text-TextPrimary dark:text-surface font-SecondaryFont mt-1">
                 {profile?.companySize || "\u2014"}
               </p>
             </div>
@@ -460,20 +460,20 @@ export default function RecruiterProfileForm({
       </motion.div>
 
       <motion.div variants={itemVariants}>
-        <div className="rounded-2xl border border-surface bg-white dark:bg-[#1e293b] dark:border-secondary p-6">
-          <h3 className="text-lg font-PrimaryFont text-gray-900 dark:text-white flex items-center gap-2 mb-4">
+        <div className="rounded-2xl border border-Border bg-white dark:bg-[#1e293b] dark:border-secondary p-6">
+          <h3 className="text-lg font-PrimaryFont text-TextPrimary dark:text-surface flex items-center gap-2 mb-4">
             <ImagePlus className="w-5 h-5 text-PrimaryColor" />
             Company Branding
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <p className="text-sm text-gray-500 dark:text-surface font-SecondaryFont mb-2">
+              <p className="text-sm text-TextMuted font-SecondaryFont mb-2">
                 Company Logo
               </p>
               {profile?.companyLogo &&
               (profile.companyLogo.startsWith("http://") ||
                 profile.companyLogo.startsWith("https://")) ? (
-                <div className="relative w-20 h-20 rounded-lg overflow-hidden border border-surface dark:border-secondary">
+                <div className="relative w-20 h-20 rounded-lg overflow-hidden border border-Border dark:border-secondary">
                   <Image
                     src={profile.companyLogo}
                     alt="Company Logo"
@@ -483,13 +483,13 @@ export default function RecruiterProfileForm({
                   />
                 </div>
               ) : (
-                <p className="text-gray-900 dark:text-white font-SecondaryFont">
+                <p className="text-TextPrimary dark:text-surface font-SecondaryFont">
                   {"\u2014"}
                 </p>
               )}
             </div>
             <div>
-              <p className="text-sm text-gray-500 dark:text-surface font-SecondaryFont mb-2">
+              <p className="text-sm text-TextMuted font-SecondaryFont mb-2">
                 Website
               </p>
               {profile?.companyWebsite ? (
@@ -503,7 +503,7 @@ export default function RecruiterProfileForm({
                   {profile.companyWebsite}
                 </a>
               ) : (
-                <p className="text-gray-900 dark:text-white font-SecondaryFont">
+                <p className="text-TextPrimary dark:text-surface font-SecondaryFont">
                   {"\u2014"}
                 </p>
               )}
@@ -513,24 +513,24 @@ export default function RecruiterProfileForm({
       </motion.div>
 
       <motion.div variants={itemVariants}>
-        <div className="rounded-2xl border border-surface bg-white dark:bg-[#1e293b] dark:border-secondary p-6">
-          <h3 className="text-lg font-PrimaryFont text-gray-900 dark:text-white flex items-center gap-2 mb-4">
+        <div className="rounded-2xl border border-Border bg-white dark:bg-[#1e293b] dark:border-secondary p-6">
+          <h3 className="text-lg font-PrimaryFont text-TextPrimary dark:text-surface flex items-center gap-2 mb-4">
             <FileText className="w-5 h-5 text-SrcPrimaryColor" />
             Company Description
           </h3>
-          <p className="text-gray-900 dark:text-white font-SecondaryFont whitespace-pre-wrap">
+          <p className="text-TextPrimary dark:text-surface font-SecondaryFont whitespace-pre-wrap">
             {profile?.companyDescription || "\u2014"}
           </p>
         </div>
       </motion.div>
 
       <motion.div variants={itemVariants}>
-        <div className="rounded-2xl border border-surface bg-white dark:bg-[#1e293b] dark:border-secondary p-6">
-          <h3 className="text-lg font-PrimaryFont text-gray-900 dark:text-white flex items-center gap-2 mb-4">
+        <div className="rounded-2xl border border-Border bg-white dark:bg-[#1e293b] dark:border-secondary p-6">
+          <h3 className="text-lg font-PrimaryFont text-TextPrimary dark:text-surface flex items-center gap-2 mb-4">
             <MapPin className="w-5 h-5 text-PrimaryColor" />
             Location
           </h3>
-          <p className="text-gray-900 dark:text-white font-SecondaryFont">
+          <p className="text-TextPrimary dark:text-surface font-SecondaryFont">
             {profile?.companyLocation || "\u2014"}
           </p>
         </div>

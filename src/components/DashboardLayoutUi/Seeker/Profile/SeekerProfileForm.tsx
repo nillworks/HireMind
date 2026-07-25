@@ -381,7 +381,7 @@ const SeekerProfileForm = ({ profile }: SeekerProfileFormProps) => {
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="space-y-6 max-w-4xl mx-auto"
+        className="space-y-6"
       >
         <motion.div variants={itemVariants}>
           <div className={sectionCard}>
@@ -671,7 +671,7 @@ const SeekerProfileForm = ({ profile }: SeekerProfileFormProps) => {
   }
 
   return (
-    <div className="space-y-6 max-w-4xl mx-auto">
+    <div className="space-y-6">
       <div className={sectionCard}>
         <ProfileBanner isEdit={true} />
         <div className="pt-12 pb-4 px-6 flex flex-wrap gap-2">

@@ -2,9 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Sparkles, Mail, MapPin, Phone } from "lucide-react";
+import { Mail, MapPin, Phone } from "lucide-react";
 import { FaLinkedin, FaTwitter } from "react-icons/fa";
 import { SiGithub } from "react-icons/si";
+import Image from "next/image";
+import logo from "../../../public/he.png";
 import VerifiedBadge from "@/components/shared/VerifiedBadge";
 
 const footerLinks = {
@@ -50,13 +52,11 @@ const Footer = () => {
           {/* Brand */}
           <div>
             <Link href="/" className="flex items-center gap-2.5 mb-4">
-              <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-br from-PrimaryColor to-SrcPrimaryColor">
-                <Sparkles size={20} className="text-white" />
-              </div>
-              <span className="text-lg font-bold font-PrimaryFont tracking-tight">
-                HireMind
+              <Image width={58} height={58} src={logo} alt="logo" />
+              <span className="text-2xl font-PrimaryFont flex text-PrimaryColor font-bold">
+                Hire <span className="text-SrcPrimaryColor">Mind</span>
               </span>
-              <VerifiedBadge size={10} />
+              <VerifiedBadge size={12} />
             </Link>
             <p className="text-sm font-SecondaryFont text-white/60 leading-relaxed mb-6">
               Your AI-powered career partner. Discover opportunities, generate

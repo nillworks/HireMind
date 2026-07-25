@@ -13,7 +13,7 @@ import { signOut, useSession } from '@/lib/auth-client';
 import { toast } from 'sonner';
 import CustomToast from '@/components/shared/CustomToast';
 import Image from 'next/image';
-import logo from '../../../public/he.png'
+import logo from '../../../public/he.png';
 
 const LOGGED_OUT_NAV: NavItem[] = [
   { id: 1, label: 'Home', href: '/' },
@@ -93,9 +93,9 @@ export default function NavigationMenu() {
               className="flex items-center gap-2.5 shrink-0 group"
               aria-label="HireMind - Go to Home"
             >
-              <Image width={58} height={58} src={logo} alt='logo' />
-              <span className="text-lg font-bold font-PrimaryFont tracking-tight text-TextPrimary group-hover:text-PrimaryColor transition-colors duration-200">
-                HireMind
+              <Image width={58} height={58} src={logo} alt="logo" />
+              <span className="text-2xl font-PrimaryFont flex text-PrimaryColor font-bold">
+                Hire <span className="text-SrcPrimaryColor">Mind</span>
               </span>
               <VerifiedBadge size={12} />
             </Link>

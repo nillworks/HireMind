@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 const RecruiterProfileRoute = () => {
   return (
-    <div className="space-y-6">
+    <div className="container mx-auto space-y-6">
       <h1 className="text-2xl font-bold font-PrimaryFont text-TextPrimary dark:text-surface">
         Company Profile
       </h1>

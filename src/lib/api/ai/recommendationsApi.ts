@@ -12,6 +12,10 @@ export interface RecommendationResult {
   jobId: string;
   matchScore: number;
   reason: string;
+  title: string;
+  companyName: string;
+  shortDescription: string;
+  location: string;
 }
 
 export async function getJobRecommendations(

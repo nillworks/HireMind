@@ -7,7 +7,7 @@ import { useSession } from "@/lib/auth-client";
 import { getSeekerProfileClient } from "@/lib/api/seeker/overviewApi";
 import { getMyApplicationsClient } from "@/lib/api/seeker/overviewApi";
 import { getSavedJobsClient } from "@/lib/api/seeker/overviewApi";
-import { ArrowLeft, Sparkles, Briefcase, MapPin, DollarSign, Target } from "lucide-react";
+import { ArrowLeft, Sparkles, Briefcase, MapPin, DollarSign, Target, ChevronDown, ChevronUp, Building2 } from "lucide-react";
 
 export default function RecommendationsPage() {
   const { data: session } = useSession();
@@ -15,6 +15,7 @@ export default function RecommendationsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [totalJobs, setTotalJobs] = useState(0);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -68,7 +69,7 @@ export default function RecommendationsPage() {
   };
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6">
+    <div className="container mx-auto space-y-6">
       <div className="flex items-center gap-3">
         <Link href="/dashboard/seeker" className="p-2 rounded-xl hover:bg-BorderLight dark:hover:bg-secondary/15 transition-colors">
           <ArrowLeft size={20} className="text-TextSecondary" />
@@ -117,32 +118,65 @@ export default function RecommendationsPage() {
           </p>
           <div className="space-y-3">
             {recommendations.map((rec) => (
-              <Link
-                key={rec.jobId}
-                href={`/jobs/${rec.jobId}`}
-                className="block bg-white dark:bg-[#1e293b] rounded-2xl border border-Border dark:border-secondary/40 p-5 hover:shadow-md hover:border-PrimaryColor/30 dark:hover:border-PrimaryColor/20 transition-all group"
-              >
-                <div className="flex items-start justify-between gap-4">
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-sm font-semibold font-PrimaryFont text-TextPrimary dark:text-white group-hover:text-PrimaryColor transition-colors truncate">
-                      {rec.jobId}
-                    </h3>
-                    <p className="text-xs font-SecondaryFont text-TextSecondary mt-1.5 leading-relaxed">
-                      {rec.reason}
-                    </p>
+              <div key={rec.jobId} className="bg-white dark:bg-[#1e293b] rounded-2xl border border-Border dark:border-secondary/40 transition-all">
+                <div className="p-5">
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1 min-w-0">
+                      <Link href={`/jobs/${rec.jobId}`} className="hover:opacity-80 transition-opacity">
+                        <h3 className="text-base font-semibold font-PrimaryFont text-TextPrimary dark:text-white truncate">
+                          {rec.title || rec.jobId}
+                        </h3>
+                      </Link>
+                      {rec.companyName && (
+                        <p className="text-xs font-SecondaryFont text-TextSecondary mt-1 flex items-center gap-1">
+                          <Building2 size={12} className="shrink-0" />
+                          {rec.companyName}
+                          {rec.location && <><span className="text-TextMuted">·</span><MapPin size={12} className="shrink-0" />{rec.location}</>}
+                        </p>
+                      )}
+                      {rec.shortDescription && (
+                        <p className="text-xs font-SecondaryFont text-TextMuted mt-2 line-clamp-2 leading-relaxed">
+                          {rec.shortDescription}
+                        </p>
+                      )}
+                    </div>
+                    <div className={`shrink-0 flex items-center gap-1.5 rounded-xl px-3 py-1.5 ${scoreBg(rec.matchScore)}`}>
+                      <span className={`text-sm font-bold font-SecondaryFont ${scoreColor(rec.matchScore)}`}>
+                        {rec.matchScore}%
+                      </span>
+                    </div>
                   </div>
-                  <div className={`shrink-0 flex items-center gap-1.5 rounded-xl px-3 py-1.5 ${scoreBg(rec.matchScore)}`}>
-                    <span className={`text-sm font-bold font-SecondaryFont ${scoreColor(rec.matchScore)}`}>
-                      {rec.matchScore}%
-                    </span>
+                  <div className="flex items-center justify-between mt-3">
+                    <Link
+                      href={`/jobs/${rec.jobId}`}
+                      className="text-xs font-medium font-SecondaryFont text-PrimaryColor hover:underline inline-flex items-center gap-1"
+                    >
+                      <Briefcase size={12} />
+                      View Job Details
+                    </Link>
+                    <button
+                      onClick={() => setExpandedId(expandedId === rec.jobId ? null : rec.jobId)}
+                      className="inline-flex items-center gap-1 text-xs font-medium font-SecondaryFont text-TextMuted hover:text-TextSecondary transition-colors"
+                    >
+                      {expandedId === rec.jobId ? (
+                        <><ChevronUp size={14} /> Hide Recommendation</>
+                      ) : (
+                        <><ChevronDown size={14} /> Show Recommendation</>
+                      )}
+                    </button>
                   </div>
                 </div>
-                <div className="flex items-center gap-3 mt-3 text-xs font-SecondaryFont text-TextMuted">
-                  <span className="flex items-center gap-1">
-                    <Briefcase size={12} /> Match
-                  </span>
-                </div>
-              </Link>
+                {expandedId === rec.jobId && (
+                  <div className="mx-5 pb-5">
+                    <div className="rounded-xl bg-BorderLight/50 dark:bg-secondary/10 border border-Border dark:border-secondary/30 p-4">
+                      <p className="text-xs font-medium font-SecondaryFont text-TextMuted uppercase tracking-wider mb-2">Why this match?</p>
+                      <p className="text-sm font-SecondaryFont text-TextPrimary dark:text-white leading-relaxed">
+                        {rec.reason}
+                      </p>
+                    </div>
+                  </div>
+                )}
+              </div>
             ))}
           </div>
         </>

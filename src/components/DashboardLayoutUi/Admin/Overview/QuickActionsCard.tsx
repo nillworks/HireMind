@@ -87,7 +87,7 @@ const QuickActionsCard = () => {
                 className="absolute right-4 bottom-4 text-TextMuted group-hover:text-PrimaryColor group-hover:translate-x-1 transition-all duration-200"
               />
               <div
-                className={`absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r ${action.gradient} scale-x-0 group-hover:scale-x-100 transition-transform duration-500`}
+                className={`absolute bottom-0 left-2 right-2 h-0.5 rounded-full bg-gradient-to-r ${action.gradient} scale-x-0 group-hover:scale-x-100 transition-transform duration-500`}
               />
             </Link>
           );

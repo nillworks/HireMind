@@ -1,11 +1,11 @@
 import React from "react";
 import Link from "next/link";
-import Image from "next/image";
 import {
   Clock,
   CheckCircle,
   XCircle,
   FileText,
+  Building2,
 } from "lucide-react";
 import type { RecruiterJob } from "@/lib/api/recruiter/recruiterJobsApi";
 
@@ -48,33 +48,25 @@ const statusConfig: Record<
   },
 };
 
-const UserAvatar = ({
-  user,
-}: {
-  user: { name?: string | null; image?: string | null } | null;
-}) => {
-  const name = user?.name || "R";
-  const initial = name.charAt(0).toUpperCase();
-  const hasImage =
-    user?.image &&
-    (user.image.startsWith("http://") || user.image.startsWith("https://"));
+const CompanyLogo = ({ job }: { job: RecruiterJob }) => {
+  const hasLogo =
+    job.companyLogo &&
+    (job.companyLogo.startsWith("http://") || job.companyLogo.startsWith("https://"));
 
-  if (hasImage) {
+  if (hasLogo) {
     return (
-      <Image
-        src={user!.image!}
-        alt={name}
-        width={36}
-        height={36}
-        className="size-9 rounded-lg object-cover"
+      <img
+        src={job.companyLogo}
+        alt={job.companyName}
+        className="size-11 rounded-xl object-cover ring-2 ring-gray-100 dark:ring-gray-700 shadow-sm"
       />
     );
   }
 
   return (
-    <div className="flex size-9 items-center justify-center rounded-lg bg-gradient-to-br from-PrimaryColor to-SrcPrimaryColor">
-      <span className="text-sm font-bold font-PrimaryFont text-white">
-        {initial}
+    <div className="flex size-11 items-center justify-center rounded-xl bg-gradient-to-br from-PrimaryColor to-PrimaryColorDark shadow-sm ring-2 ring-gray-100 dark:ring-gray-700">
+      <span className="text-lg font-bold font-PrimaryFont text-white">
+        {job.companyName?.charAt(0)?.toUpperCase() || <Building2 size={18} />}
       </span>
     </div>
   );
@@ -82,10 +74,9 @@ const UserAvatar = ({
 
 interface ActivitySectionProps {
   jobs: RecruiterJob[];
-  user: { name?: string | null; image?: string | null } | null;
 }
 
-const ActivitySection = ({ jobs, user }: ActivitySectionProps) => {
+const ActivitySection = ({ jobs }: ActivitySectionProps) => {
   const recentJobs = [...jobs]
     .filter((j) => j.createdAt)
     .sort(
@@ -128,7 +119,7 @@ const ActivitySection = ({ jobs, user }: ActivitySectionProps) => {
                 key={job._id}
                 className="flex items-center gap-3 p-3 rounded-xl bg-Background dark:bg-dark-bg cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-800/50 transition-colors"
               >
-                <UserAvatar user={user} />
+                <CompanyLogo job={job} />
 
                 <div className="flex-1 min-w-0">
                   <p className="text-sm font-SecondaryFont font-medium text-TextPrimary dark:text-surface truncate">

@@ -1,27 +1,30 @@
-import { Suspense } from "react";
-import { getMyJobs } from "@/lib/api/recruiter/recruiterJobsApi";
-import AnalyticsCharts from "./AnalyticsCharts";
-import RecentActivity from "./RecentActivity";
-import AnalyticsSkeleton from "./AnalyticsSkeleton";
+import { Suspense } from 'react';
+import { getMyJobs } from '@/lib/api/recruiter/recruiterJobsApi';
+import AnalyticsCharts from './AnalyticsCharts';
+import RecentActivity from './RecentActivity';
+import AnalyticsSkeleton from './AnalyticsSkeleton';
 
 const AnalyticsContent = async () => {
   const jobs = await getMyJobs();
 
   const totalJobs = jobs.length;
-  const totalApplications = jobs.reduce((acc, j) => acc + (j.applicationCount || 0), 0);
-  const approvedJobs = jobs.filter((j) => j.status === "approved").length;
-  const pendingJobs = jobs.filter((j) => j.status === "pending").length;
-  const rejectedJobs = jobs.filter((j) => j.status === "rejected").length;
+  const totalApplications = jobs.reduce(
+    (acc, j) => acc + (j.applicationCount || 0),
+    0,
+  );
+  const approvedJobs = jobs.filter(j => j.status === 'approved').length;
+  const pendingJobs = jobs.filter(j => j.status === 'pending').length;
+  const rejectedJobs = jobs.filter(j => j.status === 'rejected').length;
 
   const jobsByStatus = [
-    { name: "Approved", value: approvedJobs, color: "#0F766E" },
-    { name: "Pending", value: pendingJobs, color: "#FF6363" },
-    { name: "Rejected", value: rejectedJobs, color: "#64748b" },
-  ].filter((d) => d.value > 0);
+    { name: 'Approved', value: approvedJobs, color: '#0F766E' },
+    { name: 'Pending', value: pendingJobs, color: '#FF6363' },
+    { name: 'Rejected', value: rejectedJobs, color: '#64748b' },
+  ].filter(d => d.value > 0);
 
   const typeCounts: Record<string, number> = {};
-  jobs.forEach((j) => {
-    const t = j.jobType || "unknown";
+  jobs.forEach(j => {
+    const t = j.jobType || 'unknown';
     typeCounts[t] = (typeCounts[t] || 0) + 1;
   });
   const jobsByType = Object.entries(typeCounts).map(([name, count]) => ({
@@ -32,16 +35,19 @@ const AnalyticsContent = async () => {
   const topJobs = [...jobs]
     .sort((a, b) => (b.applicationCount || 0) - (a.applicationCount || 0))
     .slice(0, 5)
-    .map((j) => ({
-      name: j.title.length > 25 ? j.title.slice(0, 25) + "..." : j.title,
+    .map(j => ({
+      name: j.title.length > 25 ? j.title.slice(0, 25) + '...' : j.title,
       applications: j.applicationCount || 0,
     }));
 
   const monthCounts: Record<string, number> = {};
-  jobs.forEach((j) => {
+  jobs.forEach(j => {
     if (j.createdAt) {
       const d = new Date(j.createdAt);
-      const key = d.toLocaleDateString("en-US", { month: "short", year: "numeric" });
+      const key = d.toLocaleDateString('en-US', {
+        month: 'short',
+        year: 'numeric',
+      });
       monthCounts[key] = (monthCounts[key] || 0) + 1;
     }
   });
@@ -50,8 +56,8 @@ const AnalyticsContent = async () => {
     .reverse();
 
   const catCounts: Record<string, number> = {};
-  jobs.forEach((j) => {
-    const c = j.category || "Other";
+  jobs.forEach(j => {
+    const c = j.category || 'Other';
     catCounts[c] = (catCounts[c] || 0) + 1;
   });
   const jobsByCategory = Object.entries(catCounts)

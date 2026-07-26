@@ -127,7 +127,7 @@ const JobCard = ({ job, onDeleted }: JobCardProps) => {
               type="button"
               variant="outline"
               size="sm"
-              className="w-full h-8 rounded-lg font-SecondaryFont text-xs border-Border dark:border-secondary text-TextSecondary dark:text-text-secondary hover:bg-PrimaryColorLight dark:hover:bg-PrimaryColorDark/20 hover:text-PrimaryColor hover:border-PrimaryColor/30 transition-colors cursor-pointer"
+              className="w-full h-8 rounded-lg font-SecondaryFont text-xs border-Border dark:border-secondary text-PrimaryColor bg-PrimaryColorLight/40 dark:bg-PrimaryColorDark/10 hover:bg-PrimaryColorLight dark:hover:bg-PrimaryColorDark/20 hover:text-PrimaryColorHover hover:border-PrimaryColor/30 transition-colors cursor-pointer"
             >
               <Eye size={14} />
               View
@@ -138,7 +138,7 @@ const JobCard = ({ job, onDeleted }: JobCardProps) => {
             variant="outline"
             size="sm"
             onClick={() => setApplicantsOpen(true)}
-            className="h-8 px-3 rounded-lg font-SecondaryFont text-xs border-Border dark:border-secondary text-TextSecondary dark:text-text-secondary hover:bg-SrcPrimaryColorLight dark:hover:bg-SrcPrimaryColorDark/20 hover:text-SrcPrimaryColor hover:border-SrcPrimaryColor/30 transition-colors cursor-pointer"
+            className="h-8 px-3 rounded-lg font-SecondaryFont text-xs border-Border dark:border-secondary text-SrcPrimaryColor bg-SrcPrimaryColorLight/40 dark:bg-SrcPrimaryColorDark/10 hover:bg-SrcPrimaryColorLight dark:hover:bg-SrcPrimaryColorDark/20 hover:text-SrcPrimaryColorHover hover:border-SrcPrimaryColor/30 transition-colors cursor-pointer"
           >
             <UserCheck size={14} />
             {job.applicationCount ?? 0}
@@ -151,7 +151,7 @@ const JobCard = ({ job, onDeleted }: JobCardProps) => {
               type="button"
               variant="outline"
               size="sm"
-              className="w-full h-8 rounded-lg font-SecondaryFont text-xs border-Border dark:border-secondary text-TextSecondary dark:text-text-secondary hover:bg-SrcPrimaryColorLight dark:hover:bg-SrcPrimaryColorDark/20 hover:text-SrcPrimaryColor hover:border-SrcPrimaryColor/30 transition-colors cursor-pointer"
+              className="w-full h-8 rounded-lg font-SecondaryFont text-xs border-Border dark:border-secondary text-SrcPrimaryColor bg-SrcPrimaryColorLight/40 dark:bg-SrcPrimaryColorDark/10 hover:bg-SrcPrimaryColorLight dark:hover:bg-SrcPrimaryColorDark/20 hover:text-SrcPrimaryColorHover hover:border-SrcPrimaryColor/30 transition-colors cursor-pointer"
             >
               <Pencil size={14} />
               Edit
@@ -162,13 +162,13 @@ const JobCard = ({ job, onDeleted }: JobCardProps) => {
             variant="outline"
             size="sm"
             onClick={() => setDeleteOpen(true)}
-            className="h-8 w-8 shrink-0 rounded-lg border-Border dark:border-secondary text-TextMuted hover:bg-PrimaryColorLight dark:hover:bg-PrimaryColorDark/20 hover:text-PrimaryColor hover:border-PrimaryColor/30 p-0 cursor-pointer"
+            className="h-8 w-8 shrink-0 rounded-lg border-Border dark:border-secondary text-red-500 bg-red-50/60 dark:bg-red-900/10 hover:bg-red-100 dark:hover:bg-red-900/20 hover:text-red-600 hover:border-red-300 p-0 cursor-pointer"
           >
             <Trash2 size={14} />
           </Button>
         </div>
 
-        <div className="absolute bottom-0 left-0 right-0 h-0.5 rounded-full bg-gradient-to-r from-PrimaryColor to-SrcPrimaryColor scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
+        <div className="absolute bottom-2 left-5 right-5 h-0.5 rounded-full bg-gradient-to-r from-PrimaryColor to-SrcPrimaryColor scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
       </div>
 
       <DeleteJobDialog

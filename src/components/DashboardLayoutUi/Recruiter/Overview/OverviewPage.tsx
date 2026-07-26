@@ -22,7 +22,7 @@ const OverviewPage = ({ jobs, user, plan = "recruiter_free", jobCount = 0 }: Ove
     <div className="space-y-6">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         <QuickActionsCard />
-        <ActivitySection jobs={jobs} user={user} />
+        <ActivitySection jobs={jobs} />
         <TipsSidebar />
       </div>
       <div className="max-w-md">

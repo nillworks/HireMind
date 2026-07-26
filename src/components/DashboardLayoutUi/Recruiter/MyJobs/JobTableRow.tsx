@@ -119,7 +119,7 @@ const JobTableRow = ({ job, onDeleted }: JobTableRowProps) => {
                 type="button"
                 variant="ghost"
                 size="sm"
-                className="h-8 w-8 rounded-lg text-TextMuted hover:text-PrimaryColor hover:bg-PrimaryColorLight dark:hover:bg-PrimaryColorDark/20 p-0 transition-colors cursor-pointer"
+                className="h-8 w-8 rounded-lg text-PrimaryColor bg-PrimaryColorLight/40 dark:bg-PrimaryColorDark/10 hover:bg-PrimaryColorLight dark:hover:bg-PrimaryColorDark/20 p-0 transition-colors cursor-pointer"
                 aria-label="View job"
               >
                 <Eye size={15} />
@@ -130,7 +130,7 @@ const JobTableRow = ({ job, onDeleted }: JobTableRowProps) => {
               variant="ghost"
               size="sm"
               onClick={() => setApplicantsOpen(true)}
-              className="h-8 w-8 rounded-lg text-TextMuted hover:text-SrcPrimaryColor hover:bg-SrcPrimaryColorLight dark:hover:bg-SrcPrimaryColorDark/20 p-0 transition-colors cursor-pointer"
+              className="h-8 w-8 rounded-lg text-SrcPrimaryColor bg-SrcPrimaryColorLight/40 dark:bg-SrcPrimaryColorDark/10 hover:bg-SrcPrimaryColorLight dark:hover:bg-SrcPrimaryColorDark/20 p-0 transition-colors cursor-pointer"
               aria-label="View applicants"
             >
               <UserCheck size={15} />
@@ -140,7 +140,7 @@ const JobTableRow = ({ job, onDeleted }: JobTableRowProps) => {
                 type="button"
                 variant="ghost"
                 size="sm"
-                className="h-8 w-8 rounded-lg text-TextMuted hover:text-SrcPrimaryColor hover:bg-SrcPrimaryColorLight dark:hover:bg-SrcPrimaryColorDark/20 p-0 transition-colors cursor-pointer"
+                className="h-8 w-8 rounded-lg text-SrcPrimaryColor bg-SrcPrimaryColorLight/40 dark:bg-SrcPrimaryColorDark/10 hover:bg-SrcPrimaryColorLight dark:hover:bg-SrcPrimaryColorDark/20 p-0 transition-colors cursor-pointer"
                 aria-label="Edit job"
               >
                 <Pencil size={15} />
@@ -151,7 +151,7 @@ const JobTableRow = ({ job, onDeleted }: JobTableRowProps) => {
               variant="ghost"
               size="sm"
               onClick={() => setDeleteOpen(true)}
-              className="h-8 w-8 rounded-lg text-TextMuted hover:text-PrimaryColor hover:bg-PrimaryColorLight dark:hover:bg-PrimaryColorDark/20 p-0 transition-colors cursor-pointer"
+              className="h-8 w-8 rounded-lg text-red-500 bg-red-50/60 dark:bg-red-900/10 hover:bg-red-100 dark:hover:bg-red-900/20 p-0 transition-colors cursor-pointer"
               aria-label="Delete job"
             >
               <Trash2 size={15} />

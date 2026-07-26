@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef, useEffect, useCallback } from "react"
+import { useState, useRef, useEffect, useCallback, useMemo } from "react"
 import { motion } from "framer-motion"
 import {
   Search,
@@ -71,12 +71,13 @@ const JobFilters = ({
 }: JobFiltersProps) => {
   const [showMobileFilters, setShowMobileFilters] = useState(false)
   const [draft, setDraft] = useState<AppliedJobFilters>(applied)
-  // Track the applied (URL) state we last synced from. When it changes — e.g.
-  // browser back/forward, a shared link, or Clear Filters — reset the draft
-  // during render so the inputs reflect it, without a setState-in-effect.
-  const [syncedApplied, setSyncedApplied] = useState(applied)
-  if (syncedApplied !== applied) {
-    setSyncedApplied(applied)
+  // Sync draft when applied (URL) changes — browser back/forward, shared links.
+  // Render-time sync with deep string comparison avoids re-render loops from
+  // unstable object references AND satisfies the "no setState in effect" rule.
+  const [prevAppliedKey, setPrevAppliedKey] = useState('')
+  const appliedKey = useMemo(() => JSON.stringify(applied), [applied])
+  if (appliedKey !== prevAppliedKey) {
+    setPrevAppliedKey(appliedKey)
     setDraft(applied)
   }
 

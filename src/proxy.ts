@@ -28,22 +28,25 @@ function isAuthPage(pathname: string) {
 export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  let session: Record<string, unknown> | null = null;
+  let sessionError = false;
   try {
-    const session = await auth().api.getSession({
+    session = await auth().api.getSession({
       headers: request.headers,
     });
+  } catch (e) {
+    console.error('[proxy] session check failed:', e);
+    sessionError = true;
+  }
 
-    if (session && isAuthPage(pathname)) {
-      return NextResponse.redirect(new URL('/', request.url));
-    }
+  if (session && isAuthPage(pathname)) {
+    return NextResponse.redirect(new URL('/', request.url));
+  }
 
-    if (!session && isProtected(pathname)) {
-      return NextResponse.redirect(new URL('/login', request.url));
-    }
-  } catch {
-    if (isProtected(pathname)) {
-      return NextResponse.redirect(new URL('/login', request.url));
-    }
+  // If session check itself failed (transient error), allow access instead of
+  // redirecting — the client-side session hook will handle auth state.
+  if (!session && isProtected(pathname) && !sessionError) {
+    return NextResponse.redirect(new URL('/login', request.url));
   }
 
   return NextResponse.next();

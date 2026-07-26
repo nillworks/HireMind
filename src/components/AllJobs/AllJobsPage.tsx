@@ -42,6 +42,9 @@ const AllJobsPage = () => {
 
   // The URL is the single source of truth. Everything below derives from it,
   // so back/forward navigation and shared links "just work".
+  // Use a stable string key instead of raw searchParams reference to avoid
+  // unnecessary re-derives when Next.js creates a new URLSearchParams instance.
+  const searchKey = useMemo(() => searchParams.toString(), [searchParams])
   const applied: AppliedJobFilters = useMemo(
     () => ({
       search: searchParams.get("search") || "",
@@ -51,10 +54,11 @@ const AllJobsPage = () => {
       minSalary: searchParams.get("minSalary") || "",
       maxSalary: searchParams.get("maxSalary") || "",
     }),
-    [searchParams]
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [searchKey]
   )
-  const sortBy = searchParams.get("sortBy") || "newest"
-  const currentPage = Number(searchParams.get("page")) || 1
+  const sortBy = useMemo(() => searchParams.get("sortBy") || "newest", [searchKey]) // eslint-disable-line react-hooks/exhaustive-deps
+  const currentPage = useMemo(() => Number(searchParams.get("page")) || 1, [searchKey]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Filter options come from the backend once — new categories/types/locations
   // added to jobs appear automatically with no frontend change.
@@ -108,7 +112,7 @@ const AllJobsPage = () => {
   // an empty string / empty array is removed, so outdated params never linger.
   const pushParams = useCallback(
     (updates: Record<string, string | string[] | undefined>) => {
-      const params = new URLSearchParams(searchParams.toString())
+      const params = new URLSearchParams(searchKey)
       for (const [key, value] of Object.entries(updates)) {
         const serialized = Array.isArray(value) ? value.join(",") : value
         if (serialized && serialized !== "All") {
@@ -120,7 +124,7 @@ const AllJobsPage = () => {
       const qs = params.toString()
       router.push(qs ? `${pathname}?${qs}` : pathname, { scroll: false })
     },
-    [searchParams, router, pathname]
+    [searchKey, router, pathname]
   )
 
   const handleApply = useCallback(

@@ -13,6 +13,7 @@ import { cn } from "@/lib/utils";
 import { useState, useRef, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
+import DashboardSearch from "./DashboardSearch";
 
 interface User {
   id?: string;
@@ -60,14 +61,10 @@ export default function DashboardTopBar({
   const [showSearch, setShowSearch] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const searchRef = useRef<HTMLDivElement>(null);
   const notificationRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     function handleClickOutside(e: MouseEvent) {
-      if (searchRef.current && !searchRef.current.contains(e.target as Node))
-        setShowSearch(false);
       if (notificationRef.current && !notificationRef.current.contains(e.target as Node))
         setShowNotifications(false);
     }
@@ -117,7 +114,7 @@ export default function DashboardTopBar({
       </div>
 
       <div className="flex items-center gap-2">
-        <div className="relative" ref={searchRef}>
+        <div className="relative">
           <button
             onClick={() => setShowSearch(!showSearch)}
             className="flex size-9 items-center justify-center rounded-xl text-TextSecondary dark:text-text-secondary hover:bg-BorderLight dark:hover:bg-secondary/20 transition-colors duration-200 cursor-pointer"
@@ -133,17 +130,10 @@ export default function DashboardTopBar({
                 exit={{ opacity: 0, y: 8 }}
                 className="absolute right-0 top-full mt-2 w-72"
               >
-                <div className="flex items-center gap-2 rounded-xl bg-white dark:bg-[#1e293b] border border-Border dark:border-secondary shadow-lg p-2">
-                  <Search size={16} className="text-TextMuted shrink-0" />
-                  <input
-                    type="text"
-                    placeholder="Search in dashboard..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="w-full bg-transparent text-sm font-SecondaryFont text-TextPrimary dark:text-surface placeholder:text-TextMuted outline-none"
-                    autoFocus
-                  />
-                </div>
+                <DashboardSearch
+                  userRole={user?.role || 'seeker'}
+                  onNavigate={() => setShowSearch(false)}
+                />
               </motion.div>
             )}
           </AnimatePresence>

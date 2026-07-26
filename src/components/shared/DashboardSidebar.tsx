@@ -202,7 +202,7 @@ const adminSections: SidebarSection[] = [
   },
 ];
 
-const getSectionsByRole = (role: string): SidebarSection[] => {
+export const getSectionsByRole = (role: string): SidebarSection[] => {
   switch (role) {
     case 'admin':
       return adminSections;

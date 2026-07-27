@@ -6,6 +6,48 @@ Two independent npm packages — `frontend/` (Next.js 16) and `backend/` (Expres
 
 ---
 
+## Features
+
+### Recruiter
+- Create, edit, delete job postings; track applicant flow
+- Review applicants, update status (reviewed / accepted / rejected)
+- AI-powered resume classification against job descriptions
+- Analytics dashboard: job counts, application volume, recent activity
+- Recruiter profile with company branding
+
+### Seeker
+- Browse and search jobs with filtering (category, type, location, salary range)
+- AI-generated cover letters tailored to specific job listings
+- Resume upload and AI analysis with feedback
+- AI-driven job recommendations based on profile
+- Save jobs, track applications
+
+### Admin
+- User management: block, role changes, deletion
+- Job moderation: approve / reject listings
+- Recruiter request workflow: approve or reject applications
+- Blog CRUD
+- Subscription plan management (create, edit, price, delete)
+- Platform analytics: total users, jobs, applications, recruiters
+
+### AI Tools
+| Tool | Description |
+|------|-------------|
+| Cover letter generation | Personalized cover letter for a given job |
+| Job recommendations | Match jobs to seeker profile and history |
+| Resume analysis | Upload a resume, get structured feedback |
+| Chat assistant | Conversational AI helper |
+| Resume classification | Score/classify multiple resumes against a job |
+| Job post generation | Draft a complete job description from prompts |
+
+### Payments
+- Stripe Checkout session creation and webhook confirmation
+- Plan types: `free_seeker`, `pro_seeker`, `recruiter_free`, `pro_recruiter`
+- Monthly subscription with per-user usage tracking
+- Self-service cancellation via Stripe API
+
+---
+
 ## Tech Stack
 
 | Layer | Technology |
@@ -114,48 +156,6 @@ NEXT_PUBLIC_IMGBB_KEY
 | | `npm start` | Run compiled server |
 
 Frontend has no typecheck (`tsconfig.json` `noEmit: true`). Backend has no lint or typecheck scripts.
-
----
-
-## Features
-
-### Recruiter
-- Create, edit, delete job postings; track applicant flow
-- Review applicants, update status (reviewed / accepted / rejected)
-- AI-powered resume classification against job descriptions
-- Analytics dashboard: job counts, application volume, recent activity
-- Recruiter profile with company branding
-
-### Seeker
-- Browse and search jobs with filtering (category, type, location, salary range)
-- AI-generated cover letters tailored to specific job listings
-- Resume upload and AI analysis with feedback
-- AI-driven job recommendations based on profile
-- Save jobs, track applications
-
-### Admin
-- User management: block, role changes, deletion
-- Job moderation: approve / reject listings
-- Recruiter request workflow: approve or reject applications
-- Blog CRUD
-- Subscription plan management (create, edit, price, delete)
-- Platform analytics: total users, jobs, applications, recruiters
-
-### AI Tools
-| Tool | Description |
-|------|-------------|
-| Cover letter generation | Personalized cover letter for a given job |
-| Job recommendations | Match jobs to seeker profile and history |
-| Resume analysis | Upload a resume, get structured feedback |
-| Chat assistant | Conversational AI helper |
-| Resume classification | Score/classify multiple resumes against a job |
-| Job post generation | Draft a complete job description from prompts |
-
-### Payments
-- Stripe Checkout session creation and webhook confirmation
-- Plan types: `free_seeker`, `pro_seeker`, `recruiter_free`, `pro_recruiter`
-- Monthly subscription with per-user usage tracking
-- Self-service cancellation via Stripe API
 
 ---
 

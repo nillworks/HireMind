@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Mail, Lock, Eye, EyeOff, LogIn, Sparkles, Loader2 } from "lucide-react";
+import Image from "next/image";
+import { Mail, Lock, Eye, EyeOff, LogIn, Loader2, User, Shield, Briefcase } from "lucide-react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -13,14 +14,20 @@ import { cn } from "@/lib/utils";
 import { authClient, signIn, useSession } from "@/lib/auth-client";
 import CustomToast from "@/components/shared/CustomToast";
 
+const ROLES = [
+  { label: "Seeker", icon: User, email: "seeker@gmail.com", password: "seeker123", color: "border-PrimaryColor text-PrimaryColor hover:bg-PrimaryColorLight" },
+  { label: "Recruiter", icon: Briefcase, email: "recruiter@gmail.com", password: "recruiter123", color: "border-SrcPrimaryColor text-SrcPrimaryColor hover:bg-SrcPrimaryColorLight" },
+  { label: "Admin", icon: Shield, email: "admin@gmail.com", password: "admin123", color: "border-PrimaryColorDark text-PrimaryColorDark hover:bg-PrimaryColorLight" },
+];
+
 const LoginPage = () => {
   const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
   const [rememberMe, setRememberMe] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const { data: session } = useSession()
-  // const user = session?.user
-  // const role = user?.role as string;
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const { data: session } = useSession();
 
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -75,19 +82,48 @@ const LoginPage = () => {
         <div className="w-full max-w-md relative z-10">
           {/* Logo / Brand */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-PrimaryColor to-SrcPrimaryColor mb-4">
-              <Sparkles className="text-white" size={28} />
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <Image width={58} height={58} src="/he.png" alt="HireMind" />
+              <span className="text-3xl font-PrimaryFont font-bold">
+                <span className="text-PrimaryColor">Hire </span>
+                <span className="text-SrcPrimaryColor">Mind</span>
+              </span>
             </div>
-            <h1 className="font-PrimaryFont text-3xl font-bold text-TextPrimary tracking-tight">
+            <h1 className="font-SecondaryFont text-xl font-semibold text-TextPrimary">
               Welcome Back
             </h1>
-            <p className="font-SecondaryFont text-TextSecondary mt-2">
-              Sign in to your HireMind account
+            <p className="font-SecondaryFont text-TextSecondary mt-1 text-sm">
+              Sign in to your account
             </p>
           </div>
 
           {/* Login Form Card */}
           <div className="bg-Surface rounded-2xl shadow-lg border border-Border p-8">
+            {/* Quick Role Login Buttons */}
+            <div className="flex gap-2 mb-6">
+              {ROLES.map((role) => {
+                const Icon = role.icon;
+                return (
+                  <button
+                    key={role.label}
+                    type="button"
+                    onClick={() => {
+                      setEmail(role.email);
+                      setPassword(role.password);
+                    }}
+                    className={cn(
+                      "flex-1 flex flex-col items-center gap-1 py-3 rounded-xl border-2 font-SecondaryFont text-xs font-semibold transition-all duration-200 cursor-pointer",
+                      role.color,
+                      email === role.email && password === role.password ? "ring-2 ring-offset-1 ring-PrimaryColor" : ""
+                    )}
+                  >
+                    <Icon size={20} />
+                    {role.label}
+                  </button>
+                );
+              })}
+            </div>
+
             {/* Login Form */}
             <form onSubmit={handleSubmit} className="space-y-5">
               {/* Email Field */}
@@ -105,6 +141,8 @@ const LoginPage = () => {
                     name="email"
                     type="email"
                     placeholder="you@example.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     className="pl-10 h-11 rounded-xl border-Border bg-Surface text-TextPrimary placeholder:text-TextMuted focus:border-PrimaryColor focus:ring-PrimaryColor/20"
                     required
                   />
@@ -126,6 +164,8 @@ const LoginPage = () => {
                     name="password"
                     type={showPassword ? "text" : "password"}
                     placeholder="Enter your password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
                     className="pl-10 pr-10 h-11 rounded-xl border-Border bg-Surface text-TextPrimary placeholder:text-TextMuted focus:border-PrimaryColor focus:ring-PrimaryColor/20"
                     required
                   />

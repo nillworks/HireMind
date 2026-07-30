@@ -3,6 +3,7 @@
 import { useState, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import {
   Mail,
   Lock,
@@ -12,7 +13,6 @@ import {
   Camera,
   UserPlus,
   X,
-  Sparkles,
   CheckCircle2,
   AlertCircle,
   Loader2,
@@ -218,13 +218,17 @@ const RegesterPage = () => {
         <div className="w-full max-w-md relative z-10">
           {/* Logo / Brand */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-SrcPrimaryColor to-PrimaryColor mb-4">
-              <Sparkles className="text-white" size={28} />
+            <div className="flex items-center justify-center gap-2 mb-4">
+              <Image width={58} height={58} src="/he.png" alt="HireMind" />
+              <span className="text-3xl font-PrimaryFont font-bold">
+                <span className="text-PrimaryColor">Hire </span>
+                <span className="text-SrcPrimaryColor">Mind</span>
+              </span>
             </div>
-            <h1 className="font-PrimaryFont text-3xl font-bold text-TextPrimary tracking-tight">
+            <h1 className="font-SecondaryFont text-xl font-semibold text-TextPrimary">
               Create Account
             </h1>
-            <p className="font-SecondaryFont text-TextSecondary mt-2">
+            <p className="font-SecondaryFont text-TextSecondary mt-1 text-sm">
               Join HireMind and advance your career
             </p>
           </div>

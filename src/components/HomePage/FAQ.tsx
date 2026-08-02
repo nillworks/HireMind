@@ -66,46 +66,56 @@ const FAQ = () => {
         </div>
 
         <div className="max-w-2xl mx-auto space-y-3">
-          {faqs.map((faq, index) => (
-            <motion.div
-              key={faq.question}
-              initial={{ opacity: 0, y: 10 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.3, delay: index * 0.05 }}
-            >
-              <button
-                onClick={() =>
-                  setOpenIndex(openIndex === index ? null : index)
-                }
-                className={cn(
-                  "w-full flex items-center justify-between p-5 rounded-2xl text-left transition-all duration-200 cursor-pointer",
-                  openIndex === index
-                    ? "bg-PrimaryColorLight border border-PrimaryColor/20"
-                    : "bg-Background border border-Border hover:border-PrimaryColor/20"
-                )}
+          {faqs.map((faq, index) => {
+            const isEven = index % 2 === 0;
+            const activeBg = isEven
+              ? "bg-PrimaryColorLight border-PrimaryColor/20"
+              : "bg-SrcPrimaryColorLight border-SrcPrimaryColor/20";
+            const activeText = isEven
+              ? "text-PrimaryColor"
+              : "text-SrcPrimaryColor";
+            const hoverBorder = isEven
+              ? "hover:border-PrimaryColor/30"
+              : "hover:border-SrcPrimaryColor/30";
+
+            return (
+              <motion.div
+                key={faq.question}
+                initial={{ opacity: 0, y: 10 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.3, delay: index * 0.05 }}
               >
-                <div className="flex items-center gap-3">
-                  <HelpCircle
-                    size={18}
-                    className={
-                      openIndex === index
-                        ? "text-PrimaryColor"
-                        : "text-TextMuted"
-                    }
-                  />
-                  <span className="font-semibold font-PrimaryFont text-TextPrimary text-sm sm:text-base">
-                    {faq.question}
-                  </span>
-                </div>
-                <ChevronDown
-                  size={18}
+                <button
+                  onClick={() =>
+                    setOpenIndex(openIndex === index ? null : index)
+                  }
                   className={cn(
-                    "shrink-0 text-TextMuted transition-transform duration-300",
-                    openIndex === index && "rotate-180 text-PrimaryColor"
+                    "w-full flex items-center justify-between p-5 rounded-2xl text-left transition-all duration-200 cursor-pointer",
+                    openIndex === index
+                      ? `${activeBg} border`
+                      : `bg-Background border border-Border ${hoverBorder}`
                   )}
-                />
-              </button>
+                >
+                  <div className="flex items-center gap-3">
+                    <HelpCircle
+                      size={18}
+                      className={
+                        openIndex === index ? activeText : "text-TextMuted"
+                      }
+                    />
+                    <span className="font-semibold font-PrimaryFont text-TextPrimary text-sm sm:text-base">
+                      {faq.question}
+                    </span>
+                  </div>
+                  <ChevronDown
+                    size={18}
+                    className={cn(
+                      "shrink-0 text-TextMuted transition-transform duration-300",
+                      openIndex === index && `rotate-180 ${activeText}`
+                    )}
+                  />
+                </button>
 
               <AnimatePresence>
                 {openIndex === index && (
@@ -123,7 +133,8 @@ const FAQ = () => {
                 )}
               </AnimatePresence>
             </motion.div>
-          ))}
+            );
+          })}
         </div>
       </div>
     </section>

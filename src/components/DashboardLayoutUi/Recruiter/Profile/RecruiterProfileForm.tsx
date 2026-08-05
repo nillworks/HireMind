@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { useSession } from "@/lib/auth-client";
+import { useSession, authClient } from "@/lib/auth-client";
 import fetchClient from "@/lib/utils/fetchClient";
+import { uploadImageToImgBB } from "@/lib/imageUpload";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -20,6 +21,8 @@ import {
   ImagePlus,
   Pencil,
   Mail,
+  Camera,
+  User,
 } from "lucide-react";
 import { motion, type Variants } from "framer-motion";
 
@@ -83,6 +86,13 @@ export default function RecruiterProfileForm({
   const { data: session } = useSession();
   const [mode, setMode] = useState<"view" | "edit">("view");
   const [saving, setSaving] = useState(false);
+  const [displayName, setDisplayName] = useState<string | null>(null);
+  const [avatarImage, setAvatarImage] = useState<string | null>(null);
+  const [avatarUploading, setAvatarUploading] = useState(false);
+  const [savingPersonal, setSavingPersonal] = useState(false);
+
+  const personalName = displayName ?? session?.user?.name ?? "";
+  const personalAvatar = avatarImage ?? session?.user?.image ?? "";
 
   const [formData, setFormData] = useState({
     companyName: profile?.companyName ?? "",
@@ -111,6 +121,45 @@ export default function RecruiterProfileForm({
   const handleCancel = () => {
     resetForm();
     setMode("view");
+  };
+
+  const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setAvatarUploading(true);
+    try {
+      const url = await uploadImageToImgBB(file);
+      setAvatarImage(url);
+      toast.success("Profile picture uploaded successfully");
+    } catch (err) {
+      toast.error(
+        err instanceof Error ? err.message : "Profile picture upload failed"
+      );
+    } finally {
+      setAvatarUploading(false);
+      e.target.value = "";
+    }
+  };
+
+  const handlePersonalSave = async () => {
+    if (!personalName.trim()) {
+      toast.error("Name is required");
+      return;
+    }
+    setSavingPersonal(true);
+    try {
+      await authClient.updateUser({
+        name: personalName.trim(),
+        image: personalAvatar || null,
+      });
+      toast.success("Personal info updated successfully!");
+    } catch (err) {
+      toast.error(
+        err instanceof Error ? err.message : "Failed to update personal info"
+      );
+    } finally {
+      setSavingPersonal(false);
+    }
   };
 
   const handleSave = async () => {
@@ -167,6 +216,75 @@ export default function RecruiterProfileForm({
             >
               Cancel
             </Button>
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-Border bg-white dark:bg-[#1e293b] dark:border-secondary p-6">
+          <h3 className="text-lg font-PrimaryFont text-TextPrimary dark:text-surface flex items-center gap-2 mb-4">
+            <User className="w-5 h-5 text-PrimaryColor" />
+            Personal Information
+          </h3>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
+            <div className="flex flex-col items-center gap-3 shrink-0">
+              <div className="relative">
+                <div className="w-24 h-24 rounded-full border-4 border-PrimaryColor/20 overflow-hidden flex items-center justify-center bg-PrimaryColorLight dark:bg-PrimaryColorDark/20">
+                  {personalAvatar ? (
+                    <img
+                      src={personalAvatar}
+                      alt={personalName || "Avatar"}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <span className="text-3xl font-bold font-PrimaryFont text-PrimaryColor">
+                      {(personalName || "R").charAt(0).toUpperCase()}
+                    </span>
+                  )}
+                </div>
+                <label className="absolute bottom-0 right-0 size-8 rounded-full bg-PrimaryColor hover:bg-PrimaryColorHover text-white flex items-center justify-center border-2 border-white dark:border-[#1e293b] cursor-pointer transition-colors shadow-md">
+                  {avatarUploading ? (
+                    <Loader2 size={13} className="animate-spin" />
+                  ) : (
+                    <Camera size={13} />
+                  )}
+                  <input
+                    type="file"
+                    accept="image/*"
+                    className="hidden"
+                    disabled={avatarUploading}
+                    onChange={handleAvatarChange}
+                  />
+                </label>
+              </div>
+              <p className="text-[11px] font-SecondaryFont text-TextMuted">
+                Click the camera icon to upload
+              </p>
+            </div>
+            <div className="flex-1 w-full space-y-2">
+              <div className="space-y-1.5">
+                <Label className="font-SecondaryFont text-TextPrimary dark:text-surface">
+                  Full Name *
+                </Label>
+                <Input
+                  value={personalName}
+                  onChange={(e) => setDisplayName(e.target.value)}
+                  placeholder="Your full name"
+                  className="rounded-xl font-SecondaryFont bg-white dark:bg-[#0f172a] border-Border dark:border-secondary text-TextPrimary dark:text-surface"
+                />
+              </div>
+              <Button
+                type="button"
+                onClick={handlePersonalSave}
+                disabled={savingPersonal}
+                className="px-5 py-2 rounded-xl font-SecondaryFont bg-gradient-to-r from-PrimaryColor to-SrcPrimaryColor text-white hover:opacity-90 cursor-pointer disabled:opacity-50"
+              >
+                {savingPersonal ? (
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                ) : (
+                  <Save className="w-4 h-4" />
+                )}
+                Save Personal Info
+              </Button>
+            </div>
           </div>
         </div>
 

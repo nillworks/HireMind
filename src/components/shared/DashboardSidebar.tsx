@@ -177,6 +177,7 @@ const adminSections: SidebarSection[] = [
         href: '/dashboard/admin/recruiters',
         icon: UserCheck,
       },
+      { label: 'Profile', href: '/dashboard/admin/profile', icon: UserCircle },
     ],
   },
   {

@@ -4,6 +4,7 @@ import { Suspense, useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { CheckCircle2, ArrowRight, Loader2, XCircle } from "lucide-react";
+import fetchClient from "@/lib/utils/fetchClient";
 
 const PaymentSuccessContent = () => {
   const searchParams = useSearchParams();
@@ -21,21 +22,24 @@ const PaymentSuccessContent = () => {
 
     const verify = async () => {
       try {
-        const res = await fetch("/api/payments/verify", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ sessionId }),
-        });
-        const data = await res.json();
+        const data = await fetchClient<{ success: boolean; message?: string }>(
+          "/api/payments/confirm",
+          {
+            method: "POST",
+            body: JSON.stringify({ sessionId }),
+          }
+        );
         if (data.success) {
           setStatus("success");
         } else {
           setStatus("error");
           setMessage(data.message || "Payment verification failed");
         }
-      } catch {
+      } catch (err) {
         setStatus("error");
-        setMessage("Network error. Please try again.");
+        setMessage(
+          err instanceof Error ? err.message : "Network error. Please try again."
+        );
       }
     };
 

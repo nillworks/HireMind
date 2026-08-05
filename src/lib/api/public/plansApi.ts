@@ -1,3 +1,5 @@
+import fetchClient from "@/lib/utils/fetchClient";
+
 export type PlanType = "free_seeker" | "pro_seeker" | "recruiter_free" | "pro_recruiter";
 
 export interface Plan {
@@ -51,28 +53,15 @@ export const getCurrentSubscription = async (): Promise<SubscriptionData | null>
 export const createCheckoutSession = async (
   planId: string
 ): Promise<{ url: string | null; sessionId: string | null }> => {
-  const plan = await getPlanForCheckout(planId);
-  if (!plan) throw new Error("Plan not found");
-
-  const res = await fetch("/api/payments/create-checkout", {
+  const json = await fetchClient<{
+    success: boolean;
+    data?: { url: string | null; sessionId: string | null };
+  }>("/api/payments/create-checkout", {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({
-      planId: plan.id,
-      planName: plan.name,
-      price: plan.price,
-      interval: plan.interval,
-    }),
+    body: JSON.stringify({ planId }),
   });
 
-  const json = await res.json();
-  if (!res.ok) throw new Error(json.message || "Checkout failed");
   return { url: json.data?.url ?? null, sessionId: json.data?.sessionId ?? null };
-};
-
-const getPlanForCheckout = async (planId: string): Promise<Plan | null> => {
-  const plans = await getPlans();
-  return plans.find((p) => p.id === planId) || null;
 };
 
 export const cancelSubscription = async (): Promise<boolean> => {

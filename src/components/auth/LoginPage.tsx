@@ -17,7 +17,7 @@ import CustomToast from "@/components/shared/CustomToast";
 const ROLES = [
   { label: "Seeker", icon: User, email: "seeker@gmail.com", password: "seeker123", color: "border-PrimaryColor text-PrimaryColor hover:bg-PrimaryColorLight" },
   { label: "Recruiter", icon: Briefcase, email: "recruiter@gmail.com", password: "recruiter123", color: "border-SrcPrimaryColor text-SrcPrimaryColor hover:bg-SrcPrimaryColorLight" },
-  { label: "Admin", icon: Shield, email: "admin@gmail.com", password: "admin123", color: "border-PrimaryColorDark text-PrimaryColorDark hover:bg-PrimaryColorLight" },
+  { label: "Admin", icon: Shield, email: "admin@gmail.com", password: "admin23N", color: "border-PrimaryColorDark text-PrimaryColorDark hover:bg-PrimaryColorLight" },
 ];
 
 const LoginPage = () => {

@@ -11,6 +11,7 @@ import {
   Trash2,
   Ban,
   CheckCircle,
+  Eye,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
@@ -18,6 +19,7 @@ import fetchClient from "@/lib/utils/fetchClient";
 import type { AdminUser } from "@/lib/api/admin/users.types";
 import ChangeRoleDialog from "./ChangeRoleDialog";
 import DeleteUserDialog from "./DeleteUserDialog";
+import UserProfileScoreDialog from "./UserProfileScoreDialog";
 
 const defaultRole = {
   label: "User",
@@ -63,8 +65,20 @@ const UserTable = ({ users }: UserTableProps) => {
     open: false,
     user: null,
   });
+  const [scoreDialog, setScoreDialog] = useState<{ open: boolean; user: AdminUser | null }>({
+    open: false,
+    user: null,
+  });
   const [blocking, setBlocking] = useState<string | null>(null);
   const router = useRouter();
+
+  const getScoreBadgeClass = (score: number) => {
+    if (score >= 80)
+      return "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800";
+    if (score >= 50)
+      return "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-800";
+    return "bg-red-50 text-red-700 border-red-200 dark:bg-red-900/20 dark:text-red-400 dark:border-red-800";
+  };
 
   const filtered = (users || []).filter((u) => {
     const matchesSearch =
@@ -155,7 +169,10 @@ const UserTable = ({ users }: UserTableProps) => {
                 className="flex flex-col sm:grid sm:grid-cols-12 gap-3 sm:gap-4 items-start sm:items-center px-5 py-3.5 border-b border-Border/50 dark:border-secondary/50 last:border-0 hover:bg-gray-50 dark:hover:bg-gray-800/30 transition-colors"
               >
                 {/* User */}
-                <div className="col-span-5 sm:col-span-4 flex items-center gap-3 min-w-0">
+                <div
+                  className="col-span-5 sm:col-span-4 flex items-center gap-3 min-w-0 cursor-pointer group"
+                  onClick={() => setScoreDialog({ open: true, user })}
+                >
                   {hasImage ? (
                     <Image
                       src={user.image!}
@@ -172,8 +189,18 @@ const UserTable = ({ users }: UserTableProps) => {
                     </div>
                   )}
                   <div className="min-w-0">
-                    <p className="text-sm font-SecondaryFont font-medium text-TextPrimary dark:text-surface truncate">
+                    <p className="text-sm font-SecondaryFont font-medium text-TextPrimary dark:text-surface truncate flex items-center gap-2 group-hover:text-PrimaryColor dark:group-hover:text-PrimaryColorLight transition-colors">
                       {user.name}
+                      {(user.role === "seeker" || user.role === "recruiter") &&
+                        typeof user.profileScore === "number" && (
+                          <span
+                            className={`inline-flex items-center text-[10px] font-bold font-SecondaryFont px-1.5 py-0.5 rounded-full border ${getScoreBadgeClass(
+                              user.profileScore
+                            )}`}
+                          >
+                            {user.profileScore}%
+                          </span>
+                        )}
                     </p>
                     <p className="text-xs font-SecondaryFont text-TextMuted truncate">
                       {user.email}
@@ -193,6 +220,15 @@ const UserTable = ({ users }: UserTableProps) => {
 
                 {/* Actions */}
                 <div className="col-span-4 sm:col-span-5 flex items-center sm:justify-end gap-2">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setScoreDialog({ open: true, user })}
+                    className="h-8 px-3 text-xs font-SecondaryFont font-medium border-PrimaryColor/30 text-PrimaryColor hover:bg-PrimaryColorLight dark:hover:bg-PrimaryColorDark/20 cursor-pointer"
+                  >
+                    <Eye size={14} className="mr-1" />
+                    Score
+                  </Button>
                   <Button
                     size="sm"
                     variant="outline"
@@ -250,6 +286,13 @@ const UserTable = ({ users }: UserTableProps) => {
           onOpenChange={(open) => setDeleteDialog({ open, user: deleteDialog.user })}
           userId={deleteDialog.user._id}
           userName={deleteDialog.user.name}
+        />
+      )}
+      {scoreDialog.user && (
+        <UserProfileScoreDialog
+          open={scoreDialog.open}
+          onOpenChange={(open) => setScoreDialog({ open, user: scoreDialog.user })}
+          user={scoreDialog.user}
         />
       )}
     </div>

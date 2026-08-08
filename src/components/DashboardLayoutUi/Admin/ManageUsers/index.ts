@@ -3,3 +3,4 @@ export { default as UserTable } from "./UserTable";
 export { default as ChangeRoleDialog } from "./ChangeRoleDialog";
 export { default as DeleteUserDialog } from "./DeleteUserDialog";
 export { default as ManageUsersSkeleton } from "./ManageUsersSkeleton";
+export { default as UserProfileScoreDialog } from "./UserProfileScoreDialog";

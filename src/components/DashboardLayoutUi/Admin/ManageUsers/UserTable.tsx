@@ -198,11 +198,10 @@ const UserTable = ({ users }: UserTableProps) => {
                     variant="outline"
                     onClick={() => handleBlock(user)}
                     disabled={blocking === user._id}
-                    className={`h-8 px-3 text-xs font-SecondaryFont font-medium cursor-pointer ${
-                      user.isBlocked
+                    className={`h-8 px-3 text-xs font-SecondaryFont font-medium cursor-pointer ${user.isBlocked
                         ? "border-emerald-200 text-emerald-700 hover:bg-emerald-50 dark:border-emerald-800 dark:text-emerald-400 dark:hover:bg-emerald-900/20"
                         : "border-amber-200 text-amber-700 hover:bg-amber-50 dark:border-amber-800 dark:text-amber-400 dark:hover:bg-amber-900/20"
-                    }`}
+                      }`}
                   >
                     {user.isBlocked ? (
                       <CheckCircle size={14} className="mr-1" />
